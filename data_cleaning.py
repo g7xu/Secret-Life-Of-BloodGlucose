@@ -55,6 +55,9 @@ def clean_CGMarcros(folder_path: str):
                 file_path = os.path.join(subdir, file)
                 df = pd.read_csv(file_path)
                 df.drop(columns=["Image path"])
+                # df contain column 'Unnamed: 0', drop it
+                if "Unnamed: 0" in df.columns:
+                    df.drop(columns=["Unnamed: 0"], inplace=True)
                 df.name = file
                 CGMacros.append(df)
     return CGMacros
