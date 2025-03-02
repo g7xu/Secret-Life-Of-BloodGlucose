@@ -1,0 +1,5 @@
+- [ ] switch libre gl to dexcom to match w/ my food data readings?
+- [ ] drop day 11 of glucose?
+- [ ] eventually annotate the line chart made
+- [ ] get the glucose to be labeled at timestamp in data
+- [ ] pass dummys to gl graphs
