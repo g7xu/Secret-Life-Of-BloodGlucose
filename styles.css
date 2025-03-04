@@ -1,0 +1,99 @@
+html, body {
+  margin: 0;
+  height: 100%;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+h1, h2 {
+  text-align: center;
+}
+
+.full-screen {
+  display: block;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Intro Section */
+#intro {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: var(--color-just-black);
+}
+
+/* Navigation Styling */
+#masthead {
+  position: fixed;
+  display: flex;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.7);
+  width: 100%;
+  padding: 10px;
+}
+#masthead a {
+  padding: 1rem 2rem;
+  color: white;
+  text-decoration: none;
+}
+
+/* Enable Horizontal Scroll */
+#graphs {
+  overflow: hidden;
+  width: 100vw;
+}
+
+#graphs-container {
+  display: flex;
+  width: 300%; /* 3 panels each taking full width */
+  height: 100vh;
+  flex-wrap: nowrap;
+}
+
+/* Individual Graph Panels */
+#graphs-container article {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: white;
+  border-right: 2px solid #ccc;
+}
+
+/* SVG Placeholder */
+svg {
+  width: 80%;
+  height: 50vh;
+  background: lightgray;
+  border-radius: 10px;
+}
+
+/* Navigation Container */
+.panels-navigation {
+  display: flex;
+  justify-content: flex-end; /* Align buttons to the right */
+  gap: 20px; /* Space between buttons */
+  margin-top: 20px;
+  width: 90%; /* Adjust width to align properly */
+}
+
+/* Navigation Buttons */
+.panels-navigation .nav-panel a {
+  padding: 10px 20px;
+  background: #333;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background 0.3s ease-in-out;
+}
+
+/* Hover Effect */
+.panels-navigation .nav-panel a:hover {
+  background: #ff9800;
+}

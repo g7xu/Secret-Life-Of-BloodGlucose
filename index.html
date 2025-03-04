@@ -6,8 +6,80 @@
     <title>Document</title>
 
     <script type="module" src="global.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js"></script>
+
+     
 </head>
 <body>
-    
+    <div id="page" class="site">
+      
+        <header id="masthead" class="site-header" role="banner">
+          <nav class="anchor-nav" role="navigation">
+            <a href="#intro" class="anchor">Home</a>
+            <a href="#graph-1" class="anchor">Panel 1</a>
+            <a href="#graph-2" class="anchor">Panel 2</a>
+            <a href="#graph-3" class="anchor">Panel 3</a>
+            <a href="#takeaway" class="anchor">Take away</a>
+          </nav>
+        </header>
+      
+        <main id="content" class="site-content" role="main">
+      
+          <section id="intro" class="full-screen">
+            <h1>Meal Frequency Impacts</h1>
+          </section>
+
+
+          <section id="graphs">
+            <div id="graphs-container"  style = "width: 500%"> 
+                <article id="graph-1">
+                    <h2>Panel 1</h2>
+                    <p class="step-description">
+                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Including versions of Lorem Ipsum.
+                      </p>
+                    <svg></svg>
+                    <div class="panels-navigation text-right">
+                        <div class="nav-panel" data-sign="plus"><a href="#graph-2" class="anchor">Next</a></div>
+                      </div>
+                </article>
+           
+        
+                <article id="graph-2">
+                    <h2>Panel 2</h2>
+                    <p class="step-description">
+                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Including versions of Lorem Ipsum.
+                      </p>
+                    <svg></svg>
+                    
+                <div class="panels-navigation">
+                    <div class="nav-panel" data-sign="minus"><a href="#graph-1" class="anchor">Prev</a></div>
+                    <div class="nav-panel" data-sign="plus"><a href="#graph-3" class="anchor">Next</a></div>
+                  </div>
+                </article>
+          
+          
+          
+                <article id="graph-3">
+                    <h2>Panel 3</h2>
+                    <p class="step-description">
+                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Including versions of Lorem Ipsum.
+                      </p>
+                    <svg></svg>
+                    
+                <div class="panels-navigation">
+                    <div class="nav-panel" data-sign="minus"><a href="#graph-2" class="anchor">Prev</a></div>
+                  </div>
+                </article>
+
+
+            </div>
+          </section>
+      
+
+        </main>
+
+    </div>
+        
 </body>
 </html>
