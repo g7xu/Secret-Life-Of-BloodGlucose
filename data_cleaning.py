@@ -6,6 +6,16 @@ import numpy as np
 import pandas as pd
 
 
+# helper functions
+def identify_diabetes(A1c):
+    if A1c < 5.7:
+        return "Normal"
+    elif A1c >= 5.7 and A1c < 6.5:
+        return "Prediabetes"
+    else:
+        return "Diabetes"
+
+
 def clean_geo_data(gemographic_data: pd.DataFrame):
     # rename the some of the column name
     gemographic_data.rename(
@@ -34,6 +44,11 @@ def clean_geo_data(gemographic_data: pd.DataFrame):
         inplace=True,
     )
 
+    # categorize participants based on their A1c level
+    gemographic_data["diabetes level"] = gemographic_data["A1c PDL (Lab)"].apply(
+        identify_diabetes
+    )
+
     return gemographic_data
 
 
@@ -58,6 +73,23 @@ def clean_CGMarcros(folder_path: str):
                 # df contain column 'Unnamed: 0', drop it
                 if "Unnamed: 0" in df.columns:
                     df.drop(columns=["Unnamed: 0"], inplace=True)
+
+                # drop Dexcom GL
+                if "Dexcom GL" in df.columns:
+                    df.drop(columns=["Dexcom GL"], inplace=True)
+
+                # reset the timestamp
+                df["Timestamp"] = pd.to_datetime(df["Timestamp"])
+                df["Timestamp"] = df["Timestamp"] - df["Timestamp"].min()
+
+                # set all the words in the meal tyle to lower case
+                df["Meal Type"] = (
+                    df["Meal Type"].str.lower().str.replace("snack 1", "snack")
+                )
+                df["Meal Type"] = (
+                    df["Meal Type"].str.lower().str.replace("snacks", "snack")
+                )
+
                 df.name = file
                 CGMacros.append(df)
     return CGMacros
