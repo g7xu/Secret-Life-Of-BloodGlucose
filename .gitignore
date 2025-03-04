@@ -3,3 +3,4 @@ data
 CGMacros
 cleaned_data
 .ipynb_checkpoints
+/__pycache__
