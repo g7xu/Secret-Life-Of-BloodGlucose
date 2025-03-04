@@ -6,3 +6,4 @@
 - [ ] get all the gl over the particpants on days average onto the same graph and by group(pre,non,dia)
 - [ ] GOAL DIFFERENTATING BETWEEN A SPIKE AND TREND
 - [ ] show the meal choice having a long term effect
+- [ ] apply instrumental variables to the choices made by the diabetic group (stat test needed?)
