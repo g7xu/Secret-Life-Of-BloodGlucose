@@ -9,11 +9,11 @@ import pandas as pd
 # helper functions
 def identify_diabetes(A1c):
     if A1c < 5.7:
-        return "Normal"
+        return "Non-diabetic"
     elif A1c >= 5.7 and A1c < 6.5:
-        return "Prediabetes"
+        return "Pre-diabetic"
     else:
-        return "Diabetes"
+        return "Diabetic"
 
 
 def clean_geo_data(gemographic_data: pd.DataFrame):
