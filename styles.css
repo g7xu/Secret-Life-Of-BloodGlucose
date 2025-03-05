@@ -93,3 +93,16 @@ h2 {
 a {
   color: var(--color-just-black)
 }
+
+
+.graph-container {
+  margin: 10px 0;
+  width: 700;
+  height: 100;
+}
+
+p {
+  width: 600px;
+  margin: 0 auto;
+  word-wrap: break-word;
+}
