@@ -82,6 +82,9 @@ def clean_CGMarcros(folder_path: str):
                 df["Timestamp"] = pd.to_datetime(df["Timestamp"])
                 df["Timestamp"] = df["Timestamp"] - df["Timestamp"].min()
 
+                # row the row if the timestamp go over 10 days
+                df = df[df["Timestamp"] < pd.Timedelta(days=10)]
+
                 # set all the words in the meal tyle to lower case
                 df["Meal Type"] = (
                     df["Meal Type"].str.lower().str.replace("snack 1", "snack")
@@ -90,9 +93,17 @@ def clean_CGMarcros(folder_path: str):
                     df["Meal Type"].str.lower().str.replace("snacks", "snack")
                 )
 
+                df.columns = df.columns.str.strip()
                 df.name = file
+
+                # creating a new column for the df name indicating the PID of the participant
+                df["PID"] = int(file.split("-")[1].split(".")[0])
+
                 CGMacros.append(df)
-    return CGMacros
+    CGMacroDF = pd.concat(CGMacros).drop(
+        columns=["Sugar", "Intensity", "Steps", "RecordIndex"]
+    )
+    return CGMacroDF
 
 
 if __name__ == "__main__":
@@ -111,7 +122,16 @@ if __name__ == "__main__":
     cleaned_geo_data.to_csv("cleaned_data/bio.csv", index=False)
     cleaned_gut_health_data.to_csv("cleaned_data/gut_health.csv", index=False)
 
-    for df in cleaned_CGMarcros:
-        df.to_csv(f"cleaned_data/{df.name}", index=False)
+    cleaned_CGMarcros.to_csv("cleaned_data/CGMacros.csv", index=False)
+
+    # save the meal data
+    meal_data = cleaned_CGMarcros[cleaned_CGMarcros["Meal Type"].notnull()]
+    meal_data["Timestamp"] = meal_data["Timestamp"].astype(str)
+
+    # adding diabetes level to the meal data
+    meal_data = meal_data.merge(cleaned_geo_data, on="PID", how="left")
+
+    # save the meal data in json file
+    meal_data.to_json("assets/vis_data/meal_data.json", orient="records", indent=4)
 
     print("Data cleaning is done")

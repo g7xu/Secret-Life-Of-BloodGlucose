@@ -1,4 +1,4 @@
-d3.json("./eda/meal_data.json").then(data => {
+d3.json("./assets/vis_data/meal_data.json").then(data => {
     const parseTime = d3.timeParse("%d days %H:%M:%S");
 
     data.forEach(d => {
