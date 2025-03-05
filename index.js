@@ -75,8 +75,8 @@ d3.json("./eda/meal_data.json").then(data => {
         
     }
 
-    createGraph(data.filter(d => d['diabetes level'] === 'Normal'), "graph-normal", "Normal Group");
-    createGraph(data.filter(d => d['diabetes level'] === 'Prediabetes'), "graph-prediabetes", "Prediabetes Group");
-    createGraph(data.filter(d => d['diabetes level'] === 'Diabetes'), "graph-diabetes", "Diabetes Group");
+    createGraph(data.filter(d => d['diabetes level'] === 'Non-diabetic'), "graph-nondiabetic", "Non-Diabetic Group");
+    createGraph(data.filter(d => d['diabetes level'] === 'Pre-diabetic'), "graph-prediabetic", "Pre-Diabetic Group");
+    createGraph(data.filter(d => d['diabetes level'] === 'Diabetic'), "graph-diabetic", "Diabetic Group");
 
 }).catch(error => console.error("Error loading the JSON data:", error));
