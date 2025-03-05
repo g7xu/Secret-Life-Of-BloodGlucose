@@ -320,6 +320,112 @@ def _(participant_groups):
 
 
 @app.cell
+def _(mo):
+    mo.md("""cleaned_data removed bad participants [24, 25, 37, 40] already""")
+    return
+
+
+@app.cell
+def _():
+    return
+
+
+@app.cell
+def _():
+    return
+
+
+@app.cell
+def _(participant_groups):
+    diabetes_idx = participant_groups[participant_groups['Diabetes'] == 1].index.tolist()
+
+
+    pre_diabetes_idx = participant_groups[participant_groups['Prediabetes'] == 1].index.tolist()
+
+
+    non_diabetes_idx = participant_groups[participant_groups['Normal'] == 1].index.tolist()
+
+
+
+    return diabetes_idx, non_diabetes_idx, pre_diabetes_idx
+
+
+@app.cell
+def _(diabetes_idx, non_diabetes_idx, participant_groups, pre_diabetes_idx):
+    diabetes_pid = participant_groups[participant_groups['Diabetes'] == 1].loc[diabetes_idx]
+    non_diabetes_pid = participant_groups[participant_groups['Normal'] == 1].loc[non_diabetes_idx]
+    pre_diabetes_pid = participant_groups[participant_groups['Prediabetes'] == 1].loc[pre_diabetes_idx]
+
+    return diabetes_pid, non_diabetes_pid, pre_diabetes_pid
+
+
+@app.cell
+def _(non_diabetes_pid):
+    non_diabetes_pid["PID"] # 1
+    return
+
+
+@app.cell
+def _(pre_diabetes_pid):
+    pre_diabetes_pid["PID"] # 7
+    return
+
+
+@app.cell
+def _(diabetes_pid):
+    diabetes_pid["PID"]# 3
+    return
+
+
+@app.cell
+def _(dexcom_equivalent):
+    participant_1 = dexcom_equivalent
+    return (participant_1,)
+
+
+@app.cell
+def _(participant_1):
+    temp_part_1 = participant_1.reset_index()
+    return (temp_part_1,)
+
+
+@app.cell
+def _(sns, temp_part_1):
+    sns.lineplot(x = "Timestamp",y="Libre GL",data = temp_part_1)
+    return
+
+
+@app.cell
+def _(pd):
+    temp_part_3 = pd.read_csv("cleaned_data/CGMacros-003.csv")
+    temp_part_7 = pd.read_csv("cleaned_data/CGMacros-007.csv")
+    return temp_part_3, temp_part_7
+
+
+@app.cell
+def _(temp_part_3):
+    temp_part_3
+    return
+
+
+@app.cell
+def _(participant_1):
+    temp_part_1 = participant_1.reset_index()
+    temp_part_1 = participant_1.reset_index()
+    return (temp_part_1,)
+
+
+@app.cell
+def _():
+    return
+
+
+@app.cell
+def _():
+    return
+
+
+@app.cell
 def _():
     return
 
@@ -337,7 +443,7 @@ def _(indices):
 
 @app.cell
 def _(missing_files, np):
-    np.array(missing_files) - 1
+    np.array(missing_files) 
     return
 
 
