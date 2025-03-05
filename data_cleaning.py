@@ -129,7 +129,9 @@ if __name__ == "__main__":
     meal_data["Timestamp"] = meal_data["Timestamp"].astype(str)
 
     # adding diabetes level to the meal data
-    meal_data = meal_data.merge(cleaned_geo_data, on="PID", how="left")
+    meal_data = meal_data.merge(
+        cleaned_geo_data[["PID", "diabetes level"]], on="PID", how="left"
+    )
 
     # save the meal data in json file
     meal_data.to_json("assets/vis_data/meal_data.json", orient="records", indent=4)
