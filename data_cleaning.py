@@ -126,6 +126,12 @@ if __name__ == "__main__":
 
     # save the meal data
     meal_data = cleaned_CGMarcros[cleaned_CGMarcros["Meal Type"].notnull()]
-    meal_data.to_json("assets/meal_data.json", orient="records", lines=True)
+    meal_data["Timestamp"] = meal_data["Timestamp"].astype(str)
+
+    # adding diabetes level to the meal data
+    meal_data = meal_data.merge(cleaned_geo_data, on="PID", how="left")
+
+    # save the meal data in json file
+    meal_data.to_json("assets/vis_data/meal_data.json", orient="records", indent=4)
 
     print("Data cleaning is done")
