@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function() {
       scrub: 1,
       snap: {
         snapTo: 1 / (panels.length - 1),
-        inertia: false,
+        inertia: true,
         duration: {min: 0.1, max: 0.1}
       },
       end: () =>  "+=" + (panelsContainer.offsetWidth - innerWidth)
