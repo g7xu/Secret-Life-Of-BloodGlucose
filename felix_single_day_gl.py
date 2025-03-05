@@ -397,9 +397,9 @@ def _(sns, temp_part_1):
 
 @app.cell
 def _(pd):
-    temp_part_3 = pd.read_csv("cleaned_data/CGMacros-003.csv")
-    temp_part_7 = pd.read_csv("cleaned_data/CGMacros-007.csv")
-    return temp_part_3, temp_part_7
+    temp_part_3 = pd.read_csv("cleaned_data/CGMacros-003.csv").reset_index()
+    temp_part_8 = pd.read_csv("cleaned_data/CGMacros-008.csv").reset_index()
+    return temp_part_3, temp_part_8
 
 
 @app.cell
@@ -409,29 +409,38 @@ def _(temp_part_3):
 
 
 @app.cell
-def _(participant_1):
-    temp_part_1 = participant_1.reset_index()
-    temp_part_1 = participant_1.reset_index()
-    return (temp_part_1,)
-
-
-@app.cell
-def _():
+def _(sns, temp_part_3):
+    sns.lineplot(x = "Timestamp",y="Libre GL",data = temp_part_3)
     return
 
 
 @app.cell
-def _():
+def _(temp_part_8):
+    temp_part_8
     return
 
 
 @app.cell
-def _():
+def _(sns, temp_part_8):
+    sns.lineplot(x = "Timestamp",y="Libre GL",data = temp_part_8)
     return
 
 
 @app.cell
-def _():
+def _(temp_part_1):
+    temp_part_1[["Timestamp","Libre GL"]].iloc[:1000]
+    return
+
+
+@app.cell
+def _(temp_part_3):
+    temp_part_3[["Timestamp","Libre GL"]].iloc[:1000]
+    return
+
+
+@app.cell
+def _(temp_part_8):
+    temp_part_8[["Timestamp","Libre GL"]].iloc[:1000]
     return
 
 

@@ -17,29 +17,35 @@ const g = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 // Sample data for the line graph
-const data = [
-  { x: 0, y: 50 },
-  { x: 50, y: 80 },
-  { x: 100, y: 20 },
-  { x: 150, y: 100 },
-  { x: 200, y: 50 }
-];
+// const non_dia = [
+//   { x: 0, y: 50 },
+//   { x: 50, y: 80 },
+//   { x: 100, y: 20 },
+//   { x: 150, y: 100 },
+//   { x: 200, y: 50 }
+// ];
 
-const pre = [
-    { x: 0, y: 50 },
-    { x: 50, y: 80 },
-    { x: 30, y: 100 },
-    { x: 40, y: 100 },
-    { x: 200, y: 50 }
-];
 
-const dia = [
-    { x: 0, y: 69 },
-    { x: 50, y: 69 },
-    { x: 100, y: 69 },
-    { x: 69, y: 69 },
-    { x: 200, y: 50 }
-];
+
+// const pre_dia = [
+//     { x: 0, y: 50 },
+//     { x: 50, y: 80 },
+//     { x: 30, y: 100 },
+//     { x: 40, y: 100 },
+//     { x: 200, y: 50 }
+// ];
+
+// const dia = [
+//     { x: 0, y: 69 },
+//     { x: 50, y: 69 },
+//     { x: 100, y: 69 },
+//     { x: 69, y: 69 },
+//     { x: 200, y: 50 }
+// ];
+
+const data = d3.csv('non_patient_1.csv')
+const pre = d3.csv('pre_dia_patient_8.csv')
+const dia = d3.csv('dia_patient_3.csv')
 
 
 // Combine all datasets to determine unified scales
