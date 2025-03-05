@@ -69,7 +69,7 @@ def clean_CGMarcros(folder_path: str):
             if file.endswith(".csv") and "CGMacros-" in subdir:
                 file_path = os.path.join(subdir, file)
                 df = pd.read_csv(file_path)
-                df.drop(columns=["Image path"], inplace=True)
+                # df.drop(columns=["Image path"], inplace=True)
                 # df contain column 'Unnamed: 0', drop it
                 if "Unnamed: 0" in df.columns:
                     df.drop(columns=["Unnamed: 0"], inplace=True)
