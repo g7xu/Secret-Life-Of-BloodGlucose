@@ -317,3 +317,42 @@ input[type="range"]::-webkit-slider-thumb:hover {
   color: #1d1d1f;
   margin-top: 24px;
 }
+.participant-btn {
+  margin: 5px;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+}
+
+.participant-btn.active {
+  background: #007bff;
+  color: white;
+  border-color: #0056b3;
+}
+
+.time-btn {
+  margin: 5px;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+}
+
+.time-btn.active {
+  background: #28a745;
+  color: white;
+  border-color: #1e7e34;
+}
+
+.tooltip {
+  position: absolute;
+  background: white;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  pointer-events: none;
+  opacity: 0;
+}

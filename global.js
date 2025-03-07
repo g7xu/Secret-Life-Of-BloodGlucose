@@ -9,9 +9,9 @@ const height = svgHeight - margin.top - margin.bottom;
 // State management
 let activeParticipants = new Set();
 let timeRange = 'all';
-let data, processedData, xScale, yScale;
+let data, processedData, xScale, yScale, colorScale;
 
-const container = d3.select('.col-6.d-flex.flex-column .graph-wrapper');
+const container = d3.select('.graph-wrapper');
 // container.html(''); // Remove existing text if needed
 
 const svg = container.append('svg')
@@ -255,6 +255,27 @@ function updateVisualization() {
     .call(d3.axisBottom(xScale)
       .ticks(5)
       .tickFormat(d => `${Math.floor(d)}`));
+      
+  // Make sure y-axis is always visible
+  g.select(".y-axis")
+    .transition()
+    .duration(750)
+    .call(d3.axisLeft(yScale));
+    
+  // Update grid lines
+  g.select(".grid")
+    .selectAll("line")
+    .data(yScale.ticks(5))
+    .join("line")
+    .transition()
+    .duration(750)
+    .attr("x1", 0)
+    .attr("x2", width)
+    .attr("y1", d => yScale(d))
+    .attr("y2", d => yScale(d))
+    .attr("stroke", "#e0e0e0")
+    .attr("stroke-width", 1)
+    .attr("stroke-dasharray", "3,3");
   
   // Update lines
   const lines = g.selectAll(".line")
@@ -285,6 +306,50 @@ function updateVisualization() {
     .transition()
     .duration(750)
     .style("opacity", 0.7);
+    
+  // Update legend
+  const legendData = processedData.filter(d => activeParticipants.has(d.pid));
+  
+  // Remove existing legend
+  svg.select(".legend").remove();
+  
+  // Only show legend if there are selected participants
+  if (legendData.length > 0) {
+    const legend = svg.append("g")
+      .attr("class", "legend")
+      .attr("transform", `translate(${svgWidth - margin.right - 100}, ${margin.top})`);
+    
+    legendData.forEach((d, i) => {
+      const legendRow = legend.append("g")
+        .attr("transform", `translate(0, ${i * 20})`);
+      
+      legendRow.append("rect")
+        .attr("width", 15)
+        .attr("height", 15)
+        .attr("fill", colorScale(d.pid));
+      
+      legendRow.append("text")
+        .attr("x", 20)
+        .attr("y", 12)
+        .attr("font-size", "12px")
+        .text(`Participant ${d.pid}`);
+    });
+  }
+    
+  // Add a message when no participants are selected
+  const noDataMessage = g.selectAll(".no-data-message")
+    .data(activeParticipants.size === 0 ? [1] : []);
+    
+  noDataMessage.exit().remove();
+  
+  noDataMessage.enter()
+    .append("text")
+    .attr("class", "no-data-message")
+    .attr("text-anchor", "middle")
+    .attr("x", width/2)
+    .attr("y", height/2)
+    .attr("font-size", "14px")
+    .text("Select participants to view their glucose data");
 }
 
 async function loadDataAndPlot() {
@@ -299,7 +364,7 @@ async function loadDataAndPlot() {
     const participants = [...new Set(preDiabeticData.map(d => d.PID))];
     
     // Generate colors for each participant
-    const colorScale = d3.scaleOrdinal()
+    colorScale = d3.scaleOrdinal()
       .domain(participants)
       .range(d3.schemeCategory10);
 
@@ -358,6 +423,21 @@ async function loadDataAndPlot() {
     g.append("g")
       .attr("class", "y-axis")
       .call(d3.axisLeft(yScale));
+    
+    // Add grid lines
+    g.append("g")
+      .attr("class", "grid")
+      .selectAll("line")
+      .data(yScale.ticks(5))
+      .enter()
+      .append("line")
+      .attr("x1", 0)
+      .attr("x2", width)
+      .attr("y1", d => yScale(d))
+      .attr("y2", d => yScale(d))
+      .attr("stroke", "#e0e0e0")
+      .attr("stroke-width", 1)
+      .attr("stroke-dasharray", "3,3");
 
     // Add axis labels
     g.append("text")
@@ -395,6 +475,9 @@ async function loadDataAndPlot() {
     const tooltip = d3.select('body').append('div')
       .attr('class', 'tooltip')
       .style('opacity', 0);
+      
+    // Initialize the visualization
+    updateVisualization();
 
   } catch (error) {
     console.error('Error loading or processing the data:', error);
