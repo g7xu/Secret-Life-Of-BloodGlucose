@@ -48,8 +48,8 @@
 
         <p class="write-up-q2">The most challenging part is looking to be several small obstacles as opposed to anything major halting progress such as finding through EDA data anomalies presenting themselves right now for a subset of our diabetic participants who appear to eating into a strict regimen. 
           Another issue that will present itself later is high data density pushing speedy data access to the foreground due to needing to have fast subsets of the data needing to be rendered. Although we may be able to solve the problem with JSON usage of only the data needed as opposed to what may 
-          be an API call to some cloud storage whether that’s necessary yet 
-          isn’t certain. One more typical issue that's arising is the quantity of NaN being found in some of our groups and will likely require some type of imputation more analysis of the data is still needed to find out whether that’s most appropriate for where it's happening.</p>
+          be an API call to some cloud storage whether that's necessary yet 
+          isn't certain. One more typical issue that's arising is the quantity of NaN being found in some of our groups and will likely require some type of imputation more analysis of the data is still needed to find out whether that's most appropriate for where it's happening.</p>
 
 
 
@@ -91,21 +91,39 @@
             </div>
           </article>
           <article id="panel-2" class="panel full-screen gradient-blue">
-            <div class="container">
-              <div class="row">
-                <div class="col-6">
-  
-                  <img src="" alt="">
-  
+            <div class="container-fluid">
+              <div class="visualization-container">
+                <div class="control-panel-wrapper">
+                  <div class="control-panel">
+                    <div class="control-section">
+                      <h3>Participants</h3>
+                      <div id="participant-selector" class="selector-grid">
+                        <!-- Participant buttons will be added here by D3 -->
+                      </div>
+                    </div>
+                    <div class="control-section">
+                      <h3>Time Range</h3>
+                      <div id="time-range-selector" class="time-controls">
+                        <div class="time-preset">
+                          <button class="time-btn active">All Time</button>
+                          <button class="time-btn">24 Hours</button>
+                          <button class="time-btn">3 Days</button>
+                          <button class="time-btn">7 Days</button>
+                        </div>
+                        <div class="time-custom">
+                          <input type="range" id="time-slider" min="0" max="100" value="100">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="col-6 d-flex flex-column">
-  
-                  <h2>Panel 2</h2>
-  
+
+                <div class="visualization-wrapper">
+                  <h2>Pre-diabetic Glucose Levels</h2>
+                  <div class="graph-wrapper"></div>
                   <p class="step-description">
-                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Including versions of Lorem Ipsum.
+                    This visualization shows glucose levels over time for pre-diabetic participants. Select participants from the control panel to compare their glucose patterns. The x-axis shows time in minutes from the start of monitoring, while the y-axis shows the glucose levels measured by the Libre GL device.
                   </p>
-  
                   <div class="panels-navigation">
                     <div class="nav-panel" data-sign="minus"><a href="#panel-1" class="anchor">Prev</a></div>
                     <div class="nav-panel" data-sign="plus"><a href="#panel-3" class="anchor">Next</a></div>
@@ -149,7 +167,6 @@
                 <div class="col-6 d-flex flex-column">
   
                   <h2>Panel 4</h2>
-                  <div class="graph-wrapper"></div>
                   <p class="step-description">
                     These are the eventually glucose levels of the individuals in the study.
                   </p>
