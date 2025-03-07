@@ -36,7 +36,21 @@ document.addEventListener("DOMContentLoaded", function() {
       start: "top top",
       scrub: 1,
       snap: {
-        snapTo: 1 / (panels.length - 1),
+        snapTo: (progress) => {
+          const panelCount = panels.length - 1;
+          const snapPoints = Array.from({ length: panels.length }, (_, i) => i / panelCount);
+
+          let closest = snapPoints.reduce((prev, curr) => 
+            Math.abs(curr - progress) < Math.abs(prev - progress) ? curr : prev
+          );
+
+          let index = snapPoints.indexOf(closest);
+          if (index < panelCount && progress > closest + (0.5 / panelCount)) {
+            return snapPoints[index + 1]; // Move to next panel only if at least 50% scrolled
+          } else {
+            return closest; // Stay in the current panel
+          }
+        },
         inertia: true,
         duration: {min: 0.1, max: 0.1}
       },
@@ -45,21 +59,26 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
   let $path = document.querySelector(".mat"),
-    $logo = document.querySelector(".bowl"),
-    $fork = document.querySelector(".fork"),
-    $knife = document.querySelector(".knife");
 
-let tl = gsap.timeline({ repeat: 1, repeatDelay: 0.5 }); 
+  $logo = document.querySelector(".bowl"),
+  $fork = document.querySelector(".fork"),
+  $knife = document.querySelector(".knife");
 
+  let tl = gsap.timeline({ repeat: 0, repeatDelay: 0.5 });
 const start = "M 0 100 V 50 Q 50 0 100 50 V 100 z";
 const end = "M 0 100 V 0 Q 50 0 100 0 V 100 z";
 
+// Set initial positions (move fork left and knife right)
+gsap.set($fork, { x: "-100%" });
+gsap.set($knife, { x: "100%" });
+
 tl.to($path, { duration: 0.8, attr: { d: start }, ease: "power2.in" })
   .to($path, { duration: 0.4, attr: { d: end }, ease: "power2.out" })
-  .from($logo, { duration: 0.8, y: 75 }, "-=0.8")  // ✅ Moves bowl first
-  .from([$fork, $knife], { duration: 0.8, y: 75, stagger: 0 }, "-=0.3"); 
+  .from($logo, { duration: 0.8, y: 75 }, "-=0.8") 
+  .to([$fork, $knife], { duration: 0.8, x: 0 }, "-=0.3"); // Move fork & knife to center
 
-// Start animation
+// Starts the animation
 tl.play();
-
 });
+
+
