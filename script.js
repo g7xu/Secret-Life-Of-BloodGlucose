@@ -59,6 +59,7 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
   let $path = document.querySelector(".mat"),
+
   $logo = document.querySelector(".bowl"),
   $fork = document.querySelector(".fork"),
   $knife = document.querySelector(".knife");
@@ -79,4 +80,5 @@ tl.to($path, { duration: 0.8, attr: { d: start }, ease: "power2.in" })
 // Starts the animation
 tl.play();
 });
+
 

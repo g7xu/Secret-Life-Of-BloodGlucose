@@ -10,6 +10,7 @@
     <script src="script.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="index.js", type="module"></script>
+
     <link rel="icon"  href="assets/pics/bread.png">
 
      
@@ -39,6 +40,7 @@
 
   
       <section id="intro" class="full-screen pt-5 gradient-orange">
+
         
         <div class="mat">
           <img class = "fork"  src = "assets/pics/fork.png" alt = "fork">        
@@ -49,10 +51,10 @@
           <img class = "knife" src = "assets/pics/knife.png" alt = "knife">
 
 
+
           
         </div>
         
-  
         <div id="clouds-layer-1" class="clouds"></div>
         <div id="clouds-layer-2" class="clouds"></div>
       </section>
@@ -79,7 +81,7 @@
                     Here is our interactive prototype of the meal distributions of Diabetic, Pre-Diabetic, and Non-Diabetic individuals.
                     We added a zoom interaction so users can dive deep into when exactly individuals had meals across the 10-day period of the study.
 
-                  </p>
+                  </p>~
   
                   <div class="panels-navigation text-right">
                     <div class="nav-panel" data-sign="plus"><a href="#panel-2" class="anchor">Next</a></div>
@@ -89,21 +91,39 @@
             </div>
           </article>
           <article id="panel-2" class="panel full-screen gradient-blue">
-            <div class="container">
-              <div class="row">
-                <div class="col-6">
-  
-                  <img src="" alt="">
-  
+            <div class="container-fluid">
+              <div class="visualization-container">
+                <div class="control-panel-wrapper">
+                  <div class="control-panel">
+                    <div class="control-section">
+                      <h3>Participants</h3>
+                      <div id="participant-selector" class="selector-grid">
+                        <!-- Participant buttons will be added here by D3 -->
+                      </div>
+                    </div>
+                    <div class="control-section">
+                      <h3>Time Range</h3>
+                      <div id="time-range-selector" class="time-controls">
+                        <div class="time-preset">
+                          <button class="time-btn active">All Time</button>
+                          <button class="time-btn">24 Hours</button>
+                          <button class="time-btn">3 Days</button>
+                          <button class="time-btn">7 Days</button>
+                        </div>
+                        <div class="time-custom">
+                          <input type="range" id="time-slider" min="0" max="100" value="100">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="col-6 d-flex flex-column">
-  
-                  <h2>Panel 2</h2>
-  
+
+                <div class="visualization-wrapper">
+                  <h2>Pre-diabetic Glucose Levels</h2>
+                  <div class="graph-wrapper"></div>
                   <p class="step-description">
-                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Including versions of Lorem Ipsum.
+                    This visualization shows glucose levels over time for pre-diabetic participants. Select participants from the control panel to compare their glucose patterns. The x-axis shows time in minutes from the start of monitoring, while the y-axis shows the glucose levels measured by the Libre GL device.
                   </p>
-  
                   <div class="panels-navigation">
                     <div class="nav-panel" data-sign="minus"><a href="#panel-1" class="anchor">Prev</a></div>
                     <div class="nav-panel" data-sign="plus"><a href="#panel-3" class="anchor">Next</a></div>
@@ -125,7 +145,7 @@
                   <h2>Panel 3</h2>
   
                   <p class="step-description">
-                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Including versions of Lorem Ipsum.
+                    This is where only the one meal choice glucose will be shown.
                   </p>
   
                   <div class="panels-navigation">
@@ -147,9 +167,8 @@
                 <div class="col-6 d-flex flex-column">
   
                   <h2>Panel 4</h2>
-                  <div class="graph-wrapper"></div>
                   <p class="step-description">
-                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Including versions of Lorem Ipsum.
+                    These are the eventually glucose levels of the individuals in the study.
                   </p>
   
                   <div class="panels-navigation">
@@ -173,7 +192,7 @@
                   <h2>Panel 5</h2>
   
                   <p class="step-description">
-                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Including versions of Lorem Ipsum.
+                    This is where we'll give health guidance (dependent on previous panels?) for what the choices were in the time spectrum they made.
                   </p>
   
                   <div class="panels-navigation text-right">

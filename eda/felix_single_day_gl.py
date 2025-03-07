@@ -163,8 +163,8 @@ def _(mo):
 
 
 @app.cell
-def _(participants_group):
-    participants_group.to_csv("bio_mutated.csv")
+def _():
+    # participants_group.to_csv("bio_mutated.csv")
     return
 
 
@@ -320,12 +320,123 @@ def _(participant_groups):
 
 
 @app.cell
+def _(mo):
+    mo.md("""cleaned_data removed bad participants [24, 25, 37, 40] already""")
+    return
+
+
+@app.cell
 def _():
     return
 
 
 @app.cell
 def _():
+    return
+
+
+@app.cell
+def _(participant_groups):
+    diabetes_idx = participant_groups[participant_groups['Diabetes'] == 1].index.tolist()
+
+
+    pre_diabetes_idx = participant_groups[participant_groups['Prediabetes'] == 1].index.tolist()
+
+
+    non_diabetes_idx = participant_groups[participant_groups['Normal'] == 1].index.tolist()
+    return diabetes_idx, non_diabetes_idx, pre_diabetes_idx
+
+
+@app.cell
+def _(diabetes_idx, non_diabetes_idx, participant_groups, pre_diabetes_idx):
+    diabetes_pid = participant_groups[participant_groups['Diabetes'] == 1].loc[diabetes_idx]
+    non_diabetes_pid = participant_groups[participant_groups['Normal'] == 1].loc[non_diabetes_idx]
+    pre_diabetes_pid = participant_groups[participant_groups['Prediabetes'] == 1].loc[pre_diabetes_idx]
+    return diabetes_pid, non_diabetes_pid, pre_diabetes_pid
+
+
+@app.cell
+def _(non_diabetes_pid):
+    non_diabetes_pid["PID"] # 1
+    return
+
+
+@app.cell
+def _(pre_diabetes_pid):
+    pre_diabetes_pid["PID"] # 7
+    return
+
+
+@app.cell
+def _(diabetes_pid):
+    diabetes_pid["PID"]# 3
+    return
+
+
+@app.cell
+def _(dexcom_equivalent):
+    participant_1 = dexcom_equivalent
+    return (participant_1,)
+
+
+@app.cell
+def _(participant_1):
+    temp_part_1 = participant_1.reset_index()
+    return (temp_part_1,)
+
+
+@app.cell
+def _():
+    # sns.lineplot(x = "Timestamp",y="Libre GL",data = temp_part_1)
+    return
+
+
+@app.cell
+def _(pd):
+    temp_part_3 = pd.read_csv("cleaned_data/CGMacros-003.csv").reset_index()
+    temp_part_8 = pd.read_csv("cleaned_data/CGMacros-008.csv").reset_index()
+    return temp_part_3, temp_part_8
+
+
+@app.cell
+def _(temp_part_3):
+    temp_part_3
+    return
+
+
+@app.cell
+def _():
+    # sns.lineplot(x = "Timestamp",y="Libre GL",data = temp_part_3)
+    return
+
+
+@app.cell
+def _(temp_part_8):
+    temp_part_8
+    return
+
+
+@app.cell
+def _():
+    # sns.lineplot(x = "Timestamp",y="Libre GL",data = temp_part_8)
+    return
+
+
+@app.cell
+def _(temp_part_1):
+    temp_part_1[["Timestamp","Libre GL"]].iloc[:1000]
+    return
+
+
+@app.cell
+def _(temp_part_3):
+    temp_part_3[["Timestamp","Libre GL"]].iloc[:1000]
+    return
+
+
+@app.cell
+def _(np, temp_part_8):
+    np.unique(temp_part_8[["Timestamp","Libre GL"]].iloc[:1000])
     return
 
 
@@ -337,7 +448,7 @@ def _(indices):
 
 @app.cell
 def _(missing_files, np):
-    np.array(missing_files) - 1
+    np.array(missing_files)
     return
 
 
@@ -498,16 +609,15 @@ def _(final_df):
 
 
 @app.cell
-def _(final_df, sns):
-    df_melted = final_df.melt(id_vars='Timestamp', 
-                               value_vars=['Normal', 'Pre-Diabetic', 'Diabetic'],
-                               var_name='Condition', 
-                               value_name='GL')
+def _():
+    # df_melted = final_df.melt(id_vars='Timestamp', 
+    #                            value_vars=['Normal', 'Pre-Diabetic', 'Diabetic'],
+    #                            var_name='Condition', 
+    #                            value_name='GL')
 
     # Create the line plot using Seaborn
-    sns.lineplot(data=df_melted, x='Timestamp', y='GL', hue='Condition')
-
-    return (df_melted,)
+    # sns.lineplot(data=df_melted, x='Timestamp', y='GL', hue='Condition')
+    return
 
 
 @app.cell
