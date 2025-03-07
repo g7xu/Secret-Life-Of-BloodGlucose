@@ -4,6 +4,25 @@ Final Project for DSC 106
 To get started:
 located the data from the [website](https://physionet.org/content/cgmacros/1.0.0/), unzip it and rename the folder to `data`.
 
+
+# Brief Introduction
+...
+
+# Project Folder Layout
+    .
+    ├── script.js                   # Handles page interactions and animations using GSAP
+    ├── styles.css                  # Defines CSS styles for the webpage
+    ├── index.js                    # Loads and processes JSON data using D3.js to create interactive graphs and visualizations
+    ├── index.html                  # The main HTML file that structures the webpage and includes references to CSS and JavaScript files
+    ├── global.js                   # Manages state and interactions for visualizations, including participant selection and time range controls, using D3.js
+
+# Design Logistics
+
+# acknowledgements
+
+# Contact info
+
+
 ## Prototype Write-up:
 1. So far we have done a lot of exploratory data analysis to understand all the facets of the data from our study and isolate key takeaways we want to communicate to our audience.
 Namely, we wish to use data to inform users on the importance of their diet in managing their blood glucose levels, which impacts their wellbeing from moment-to-moment in terms of their energy level, as well as their health in the long-run, such as in predicting the onset of Type II Diabetes.
