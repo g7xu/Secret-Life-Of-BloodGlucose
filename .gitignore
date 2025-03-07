@@ -4,19 +4,4 @@ CGMacros
 cleaned_data
 .ipynb_checkpoints
 /__pycache__
-/__marimo__/session
-/__marimo__
-/__marimo__/session
-__marimo__/session/felix_single_day_gl.py.json
-__marimo__/session/felix_single_day_gl.py.json
-/__marimo__
-/__marimo__/session
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-__marimo__/session/felix_single_day_gl.py.json
-/__marimo__/session
-/__marimo__
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+__pycache__
