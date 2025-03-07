@@ -163,8 +163,8 @@ def _(mo):
 
 
 @app.cell
-def _(participants_group):
-    participants_group.to_csv("bio_mutated.csv")
+def _():
+    # participants_group.to_csv("bio_mutated.csv")
     return
 
 
@@ -344,9 +344,6 @@ def _(participant_groups):
 
 
     non_diabetes_idx = participant_groups[participant_groups['Normal'] == 1].index.tolist()
-
-
-
     return diabetes_idx, non_diabetes_idx, pre_diabetes_idx
 
 
@@ -355,7 +352,6 @@ def _(diabetes_idx, non_diabetes_idx, participant_groups, pre_diabetes_idx):
     diabetes_pid = participant_groups[participant_groups['Diabetes'] == 1].loc[diabetes_idx]
     non_diabetes_pid = participant_groups[participant_groups['Normal'] == 1].loc[non_diabetes_idx]
     pre_diabetes_pid = participant_groups[participant_groups['Prediabetes'] == 1].loc[pre_diabetes_idx]
-
     return diabetes_pid, non_diabetes_pid, pre_diabetes_pid
 
 
@@ -390,8 +386,8 @@ def _(participant_1):
 
 
 @app.cell
-def _(sns, temp_part_1):
-    sns.lineplot(x = "Timestamp",y="Libre GL",data = temp_part_1)
+def _():
+    # sns.lineplot(x = "Timestamp",y="Libre GL",data = temp_part_1)
     return
 
 
@@ -409,8 +405,8 @@ def _(temp_part_3):
 
 
 @app.cell
-def _(sns, temp_part_3):
-    sns.lineplot(x = "Timestamp",y="Libre GL",data = temp_part_3)
+def _():
+    # sns.lineplot(x = "Timestamp",y="Libre GL",data = temp_part_3)
     return
 
 
@@ -421,8 +417,8 @@ def _(temp_part_8):
 
 
 @app.cell
-def _(sns, temp_part_8):
-    sns.lineplot(x = "Timestamp",y="Libre GL",data = temp_part_8)
+def _():
+    # sns.lineplot(x = "Timestamp",y="Libre GL",data = temp_part_8)
     return
 
 
@@ -439,8 +435,8 @@ def _(temp_part_3):
 
 
 @app.cell
-def _(temp_part_8):
-    temp_part_8[["Timestamp","Libre GL"]].iloc[:1000]
+def _(np, temp_part_8):
+    np.unique(temp_part_8[["Timestamp","Libre GL"]].iloc[:1000])
     return
 
 
@@ -452,7 +448,7 @@ def _(indices):
 
 @app.cell
 def _(missing_files, np):
-    np.array(missing_files) 
+    np.array(missing_files)
     return
 
 
@@ -613,16 +609,15 @@ def _(final_df):
 
 
 @app.cell
-def _(final_df, sns):
-    df_melted = final_df.melt(id_vars='Timestamp', 
-                               value_vars=['Normal', 'Pre-Diabetic', 'Diabetic'],
-                               var_name='Condition', 
-                               value_name='GL')
+def _():
+    # df_melted = final_df.melt(id_vars='Timestamp', 
+    #                            value_vars=['Normal', 'Pre-Diabetic', 'Diabetic'],
+    #                            var_name='Condition', 
+    #                            value_name='GL')
 
     # Create the line plot using Seaborn
-    sns.lineplot(data=df_melted, x='Timestamp', y='GL', hue='Condition')
-
-    return (df_melted,)
+    # sns.lineplot(data=df_melted, x='Timestamp', y='GL', hue='Condition')
+    return
 
 
 @app.cell
