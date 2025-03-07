@@ -1,4 +1,4 @@
-/* Most of these styles could be removed but are for the demo to look better */
+@import url("https://fonts.googleapis.com/css2?family=Gluten:wght@600&family=Space+Mono&display=swap");
 
 html,
 body {
@@ -18,7 +18,7 @@ h2 {
 .full-screen {
   display: block;
   width: 100%;
-  height: 150vh;
+  height: 100vh;
   overflow: hidden;
   gap: 1em;
 }
@@ -63,7 +63,6 @@ h2 {
   text-align: left;
   align-items: center;
   justify-content: center;
-  border-right: 1px solid #f00;
 }
 #panels #panels-container .panel img {
   max-width: 100%;
@@ -355,4 +354,59 @@ input[type="range"]::-webkit-slider-thumb:hover {
   border-radius: 4px;
   pointer-events: none;
   opacity: 0;
+
+.bowl {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  grid-template-areas: "bowl";
+  aspect-ratio: 1;
+  width: 30%;
+  font-size: 8.5vmin;
+  font-family: "Gluten", monospace;
+  background: white; /* Ensure white background */
+  color:  hsl(32 100% 75%);
+  border-radius: 50%;
+  border: 9vmin solid white;
+  box-shadow: inset -2px -5px 10px rgba(0, 0, 0, 0.1), 
+              0px 5px 10px rgba(0, 0, 0, 0.1),
+              0px 0px 10px rgba(0, 0, 0, 0.5);
+  } 
+
+.bowl > * {
+  grid-area: bowl;
+}
+
+.text {
+  width: 100%;
+  text-align: center;
+  text-shadow: 2px 1px 2px rgba(139, 119, 90, 0.5);
+}
+
+.mat {
+  gap: 3%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  height: 75%;
+  background: hsl(32 100% 75%);
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 5%;
+  aspect-ratio: 5 / 4;
+  border-radius: 0.5vmin;
+  box-shadow: hsla(0, 0%, 0%, 0.1) 0 1vmin 1vmin -0.5vmin;
+
+  /* Checkered pattern using gradients */
+  background: 
+    repeating-linear-gradient(90deg, rgba(139, 119, 90, 0.5) 0 10%, transparent 10% 20%), /* Vertical Stripes */
+    repeating-linear-gradient(0deg, rgba(139, 119, 90, 0.5) 0 10%, transparent 10% 20%),  /* Horizontal Stripes */
+    rgba(245, 235, 220, 1); /* Base fabric color */
+  background-size: 60vmin 60vmin; /* Controls the size of the squares */
+}
+
+.fork, .knife{
+  width: 5%;
 }

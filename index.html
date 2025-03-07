@@ -10,6 +10,7 @@
     <script src="script.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="index.js", type="module"></script>
+    <link rel="icon" type="image/x-icon" href="assets/pics/bread.png">
 
      
 </head>
@@ -37,24 +38,18 @@
     <main id="content" class="site-content" role="main">
   
       <section id="intro" class="full-screen pt-5 gradient-orange">
-        <h1>Meal Frequency Impacts On Health</h1>
-        <p class="lead">A study on the eating habits of Diabetic, Pre-Diabetic, and Non-Diabetic individuals.</p>
-        <p class="write-up-q1">1. So far we have done a lot of exploratory data analysis to understand all the facets of the data from our study and isolate key takeaways we want to communicate to our audience.
-          Namely, we wish to use data to inform users on the importance of their diet in managing their blood glucose levels, which impacts their wellbeing from moment-to-moment in terms of their energy level, as well as their health in the long-run, such as in predicting the onset of Type II Diabetes.
-          We first looked at meal distributions over time, to see if Non-diabetic, Pre-diabetic, and Diabetic individuals differ in their meal-eating habits.
-          We also made visualizations to understand how glucose spikes look over time, and understand how their relationship with different macronutrients taken in every meal, such as fiber. We found that more fiber causes less of a glucose spike.
-          We then made an outline of the story we wanted to tell based on these findings, and will be working on adding interactive visualizations and polishing them in the next steps.
-        </p>
-
-        <p class="write-up-q2">The most challenging part is looking to be several small obstacles as opposed to anything major halting progress such as finding through EDA data anomalies presenting themselves right now for a subset of our diabetic participants who appear to eating into a strict regimen. 
-          Another issue that will present itself later is high data density pushing speedy data access to the foreground due to needing to have fast subsets of the data needing to be rendered. Although we may be able to solve the problem with JSON usage of only the data needed as opposed to what may 
-          be an API call to some cloud storage whether that's necessary yet 
-          isn't certain. One more typical issue that's arising is the quantity of NaN being found in some of our groups and will likely require some type of imputation more analysis of the data is still needed to find out whether that's most appropriate for where it's happening.</p>
-
-
-
+        <div class="mat">
+          <img  class = "fork"  src = "assets/pics/fork.png" alt = "fork">
+          
         
-  
+          <div class="bowl">
+          <div class="text">Meal <br> Frequency <br> Impacts On<br> Health</div>
+          </div>
+
+          <img class = "knife" src = "assets/pics/knife.png" alt = "knife">
+          
+        </div>
+        
         <div id="clouds-layer-1" class="clouds"></div>
         <div id="clouds-layer-2" class="clouds"></div>
       </section>
@@ -81,7 +76,7 @@
                     Here is our interactive prototype of the meal distributions of Diabetic, Pre-Diabetic, and Non-Diabetic individuals.
                     We added a zoom interaction so users can dive deep into when exactly individuals had meals across the 10-day period of the study.
 
-                  </p>
+                  </p>~
   
                   <div class="panels-navigation text-right">
                     <div class="nav-panel" data-sign="plus"><a href="#panel-2" class="anchor">Next</a></div>
