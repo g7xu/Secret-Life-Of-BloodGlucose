@@ -156,4 +156,7 @@ if __name__ == "__main__":
     # save the meal data in json file
     meal_data.to_json("assets/vis_data/meal_data.json", orient="records", indent=4)
 
+    cleaned_CGMarcros['Timestamp'] = cleaned_CGMarcros['Timestamp'].astype(str)
+    cleaned_CGMarcros.to_json("assets/vis_data/CGMacros.json", orient="records", indent=4)  
+
     print("Data cleaning is done")

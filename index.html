@@ -3,175 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Munch</title>
+    <title>Document</title>
 
     <script type="module" src="global.js"></script>
-    <script src="script.js" type="module"></script>
-    <script src="https://d3js.org/d3.v7.min.js" type="module"></script>
-    <script src="index.js" type="module"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js" type="module"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js" type="module"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollToPlugin.min.js" type="module"></script>
-
-    <link rel="icon" href="assets/pics/bread.png">
     <link rel="stylesheet" href="styles.css">
+    <script src="script.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="index.js", type="module"></script>
+    <link rel="icon" type="image/x-icon" href="assets/pics/bread.png">
+
+     
 </head>
 <body>
 
-    <div id="page" class="site">
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
 
-        <div id="feather" class="feather"></div>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollToPlugin.min.js"></script>
 
-        <div id="masthead-wrapper">
-            <header id="masthead" class="site-header" role="banner">
-                <nav class="anchor-nav" role="navigation">
-                    <a href="#intro" class="anchor">Home</a>
-                    <a href="#panel-1" class="anchor">Graph 1</a>
-                    <a href="#panel-3" class="anchor">Graph 3</a>
-                    <a href="#panel-5" class="anchor">Graph 5</a>
-                    <a href="#map" class="anchor">Take Away</a>
-                </nav>
-            </header>
+  <div id="page" class="site">
+
+    <div id="feather" class="feather"></div>
+  
+    <header id="masthead" class="site-header" role="banner">
+      <nav class="anchor-nav" role="navigation">
+        <a href="#intro" class="anchor">Home</a>
+        <a href="#panel-1" class="anchor">Graph 1</a>
+        <a href="#panel-3" class="anchor">Graph 3</a>
+        <a href="#panel-5" class="anchor">Graph 5</a>
+        <a href="#map" class="anchor">Take Away</a>
+      </nav>
+    </header>
+  
+    <main id="content" class="site-content" role="main">
+  
+      <section id="intro" class="full-screen pt-5 gradient-orange">
+        <div class="mat">
+          <img  class = "fork"  src = "assets/pics/fork.png" alt = "fork">
+          
+        
+          <div class="bowl">
+          <div class="text">Meal <br> Frequency <br> Impacts On<br> Health</div>
+          </div>
+
+          <img class = "knife" src = "assets/pics/knife.png" alt = "knife">
+          
         </div>
+        
+        <div id="clouds-layer-1" class="clouds"></div>
+        <div id="clouds-layer-2" class="clouds"></div>
+      </section>
+  
+      <section id="panels">
+  
+        <div id="panels-container" style="width: 500%;">
+          <article id="panel-1" class="panel full-screen gradient-green">
+            <div class="container">
+              <div class="row">
+                <div class="col-6">
+  
+                  <div id="graph-nondiabetic" class="graph-container"></div>
+                  <div id="graph-prediabetic" class="graph-container"></div>
+                  <div id="graph-diabetic" class="graph-container"></div>
 
-        <main id="content" class="site-content" role="main">
+  
+                </div>
+                <div class="col-6 d-flex flex-column">
+  
+    
+  
+                  <p class="step-description">
+                    Here is our interactive prototype of the meal distributions of Diabetic, Pre-Diabetic, and Non-Diabetic individuals.
+                    We added a zoom interaction so users can dive deep into when exactly individuals had meals across the 10-day period of the study.
 
-            <section id="intro" class="full-screen pt-5 gradient-orange">
-                <div class="mat">
-                    <img class="fork" src="assets/pics/fork.png" alt="fork">
-                    <div class="bowl">
-                        <div class="text">The Secret Life of Blood Glucose</div>
+                  </p>~
+  
+                  <div class="panels-navigation text-right">
+                    <div class="nav-panel" data-sign="plus"><a href="#panel-2" class="anchor">Next</a></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article id="panel-2" class="panel full-screen gradient-blue">
+            <div class="container-fluid">
+                <div id="panel-2-flex-container">
+                    <div class="control-panel-wrapper">
+                        <div class="control-panel">
+                            <div class="control-section">
+                                <h3>Participants</h3>
+                                <div id="participant-selector" class="selector-grid">
+                                    <!-- Participant buttons will be added here by D3 -->
+                                </div>
+                            </div>
+                            <div class="control-section">
+                                <h3>Time Range</h3>
+                                <div id="time-range-selector" class="time-controls">
+                                    <div class="time-preset">
+                                        <button class="time-btn active">All Time</button>
+                                        <button class="time-btn">24 Hours</button>
+                                        <button class="time-btn">3 Days</button>
+                                        <button class="time-btn">7 Days</button>
+                                    </div>
+                                    <div class="time-custom">
+                                        <input type="range" id="time-slider" min="0" max="100" value="100">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <img class="knife" src="assets/pics/knife.png" alt="knife">
+                    <div class="visualization-wrapper">
+                        <h2>Individual Glucose Trend</h2>
+                        <div class="graph-wrapper"></div>
+                        <div class="panels-navigation">
+                            <div class="nav-panel" data-sign="minus"><a href="#panel-1" class="anchor">Prev</a></div>
+                            <div class="nav-panel" data-sign="plus"><a href="#panel-3" class="anchor">Next</a></div>
+                        </div>
+                    </div>
                 </div>
-                <div id="clouds-layer-1" class="clouds"></div>
-                <div id="clouds-layer-2" class="clouds"></div>
-            </section>
-
-            <section id="panels">
-                <div id="panels-container">
-                    <article id="panel-1" class="panel full-screen gradient-green">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-6">
-                                    <div id="graph-nondiabetic" class="graph-container"></div>
-                                    <div id="graph-prediabetic" class="graph-container"></div>
-                                    <div id="graph-diabetic" class="graph-container"></div>
-                                </div>
-                                <div class="col-6 d-flex flex-column">
-                                    <p class="step-description">
-                                        Here is our interactive prototype of the meal distributions of Diabetic, Pre-Diabetic, and Non-Diabetic individuals.
-                                        We added a zoom interaction so users can dive deep into when exactly individuals had meals across the 10-day period of the study.
-                                    </p>
-                                    <div class="panels-navigation text-right">
-                                        <div class="nav-panel" data-sign="plus"><a href="#panel-2" class="anchor">Next</a></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-                    <article id="panel-2" class="panel full-screen gradient-blue">
-                        <div class="container-fluid">
-                            <div id="panel-2-flex-container">
-                                <div class="control-panel-wrapper">
-                                    <div class="control-panel">
-                                        <div class="control-section">
-                                            <h3>Participants</h3>
-                                            <div id="participant-selector" class="selector-grid">
-                                                <!-- Participant buttons will be added here by D3 -->
-                                            </div>
-                                        </div>
-                                        <div class="control-section">
-                                            <h3>Time Range</h3>
-                                            <div id="time-range-selector" class="time-controls">
-                                                <div class="time-preset">
-                                                    <button class="time-btn active">All Time</button>
-                                                    <button class="time-btn">24 Hours</button>
-                                                    <button class="time-btn">3 Days</button>
-                                                    <button class="time-btn">7 Days</button>
-                                                </div>
-                                                <div class="time-custom">
-                                                    <input type="range" id="time-slider" min="0" max="100" value="100">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="visualization-wrapper">
-                                    <h2>Individual Glucose Trend</h2>
-                                    <div class="graph-wrapper"></div>
-                                    <div class="panels-navigation">
-                                        <div class="nav-panel" data-sign="minus"><a href="#panel-1" class="anchor">Prev</a></div>
-                                        <div class="nav-panel" data-sign="plus"><a href="#panel-3" class="anchor">Next</a></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-                    <article id="panel-3" class="panel full-screen gradient-green">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-6">
-                                    <img src="" alt="">
-                                </div>
-                                <div class="col-6 d-flex flex-column">
-                                    <h2>Panel 3</h2>
-                                    <p class="step-description">
-                                        This is where only the one meal choice glucose will be shown.
-                                    </p>
-                                    <div class="panels-navigation">
-                                        <div class="nav-panel" data-sign="minus"><a href="#panel-2" class="anchor">Prev</a></div>
-                                        <div class="nav-panel" data-sign="plus"><a href="#panel-4" class="anchor">Next</a></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-                    <article id="panel-4" class="panel full-screen gradient-blue">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-6">
-                                    <img src="" alt="">
-                                </div>
-                                <div class="col-6 d-flex flex-column">
-                                    <h2>Panel 4</h2>
-                                    <p class="step-description">
-                                        These are the eventually glucose levels of the individuals in the study.
-                                    </p>
-                                    <div class="panels-navigation">
-                                        <div class="nav-panel" data-sign="minus"><a href="#panel-3" class="anchor">Prev</a></div>
-                                        <div class="nav-panel" data-sign="plus"><a href="#panel-5" class="anchor">Next</a></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-                    <article id="panel-5" class="panel full-screen gradient-green">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-6">
-                                    <img src="" alt="">
-                                </div>
-                                <div class="col-6 d-flex flex-column">
-                                    <h2>Panel 5</h2>
-                                    <p class="step-description">
-                                        This is where we'll give health guidance (dependent on previous panels?) for what the choices were in the time spectrum they made.
-                                    </p>
-                                    <div class="panels-navigation text-right">
-                                        <div class="nav-panel" data-sign="minus"><a href="#panel-4" class="anchor">Prev</a></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
+            </div>
+        </article>
+          <article id="panel-3" class="panel full-screen gradient-green">
+            <div class="container">
+              <div class="row">
+                <div class="col-6">
+  
+                  <img src="" alt="">
+  
                 </div>
-            </section>
-
-            <section id="map" class="full-screen gradient-orange"></section>
-
-        </main>
-
-    </div>
+                <div class="col-6 d-flex flex-column">
+  
+                  <h2>Panel 3</h2>
+  
+                  <p class="step-description">
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Including versions of Lorem Ipsum.
+                  </p>
+  
+                  <div class="panels-navigation">
+                    <div class="nav-panel" data-sign="minus"><a href="#panel-2" class="anchor">Prev</a></div>
+                    <div class="nav-panel" data-sign="plus"><a href="#panel-4" class="anchor">Next</a></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article id="panel-4" class="panel full-screen gradient-blue">
+            <div class="container">
+              <div class="row">
+                <div class="col-6">
+  
+                  <img src="" alt="">
+  
+                </div>
+                <div class="col-6 d-flex flex-column">
+  
+                  <h2>Panel 4</h2>
+                  <div class="graph-wrapper"></div>
+                  <p class="step-description">
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Including versions of Lorem Ipsum.
+                  </p>
+  
+                  <div class="panels-navigation">
+                    <div class="nav-panel" data-sign="minus"><a href="#panel-3" class="anchor">Prev</a></div>
+                    <div class="nav-panel" data-sign="plus"><a href="#panel-5" class="anchor">Next</a></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article id="panel-5" class="panel full-screen gradient-green">
+            <div class="container">
+              <div class="row">
+                <div class="col-6">
+  
+                  <img src="" alt="">
+  
+                </div>
+                <div class="col-6 d-flex flex-column">
+  
+                  <h2>Panel 5</h2>
+  
+                  <p class="step-description">
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Including versions of Lorem Ipsum.
+                  </p>
+  
+                  <div class="panels-navigation text-right">
+                    <div class="nav-panel" data-sign="minus"><a href="#panel-4" class="anchor">Prev</a></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+  
+      <section id="map" class="full-screen gradient-orange"></section>
+  
+    </main>
+  
+  </div>
 
 </body>
 </html>
