@@ -1,20 +1,12 @@
 import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7/+esm';
 
-const svgWidth = 720;
-const svgHeight = 400;
 const margin = { top: 40, right: 50, bottom: 50, left: 60 };
-const width = svgWidth - margin.left - margin.right;
-const height = svgHeight - margin.top - margin.bottom;
-
 let activeParticipants = new Set();
 let timeRange = 'all';
 let data, processedData, xScale, yScale, colorScale;
 
 const container = d3.select('.graph-wrapper');
-const svg = container.append('svg')
-  .attr('width', svgWidth)
-  .attr('height', svgHeight);
-
+const svg = container.append('svg');
 const g = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
@@ -87,9 +79,21 @@ function getTimeRangeExtent(range) {
 }
 
 function updateVisualization() {
+  const containerWidth = container.node().clientWidth;
+  const containerHeight = container.node().clientHeight;
+
+  console.log('Container size:', containerWidth, containerHeight);
+
+  const width = containerWidth - margin.left - margin.right;
+  const height = containerHeight - margin.top - margin.bottom;
+
+  svg.attr('width', containerWidth).attr('height', containerHeight);
+  g.attr("transform", `translate(${margin.left}, ${margin.top})`);
+
   const timeExtent = getTimeRangeExtent(timeRange);
   
-  xScale.domain(timeExtent);
+  xScale.domain(timeExtent).range([0, width]);
+  yScale.range([height, 0]);
   
   g.select(".x-axis")
     .transition()
@@ -150,7 +154,7 @@ function updateVisualization() {
   if (legendData.length > 0) {
     const legend = svg.append("g")
       .attr("class", "legend")
-      .attr("transform", `translate(${svgWidth - margin.right - 100}, ${margin.top})`);
+      .attr("transform", `translate(${containerWidth - margin.right - 100}, ${margin.top})`);
     
     legendData.forEach((d, i) => {
       const legendRow = legend.append("g")
@@ -184,12 +188,11 @@ function updateVisualization() {
     .text("Select participants to view their glucose data");
 }
 
-async function loadDataAndPlot() {
+async function loadData() {
   try {
     let data = await d3.json('assets/vis_data/CGMacros.json');
 
     const participants = [...new Set(data.map(d => d.PID))];
-    
 
     colorScale = d3.scaleOrdinal()
       .domain(participants)
@@ -198,7 +201,7 @@ async function loadDataAndPlot() {
     function parseTimestamp(timestamp) {
       const [days, time] = timestamp.split(' days ');
       const [hours, minutes, seconds] = time.split(':').map(Number);
-      return Number(days) * 24 * 60 + hours * 60 + minutes + seconds/60;
+      return Number(days) * 24 * 60 + hours * 60 + minutes + seconds / 60;
     }
 
     processedData = participants.map(pid => {
@@ -218,112 +221,76 @@ async function loadDataAndPlot() {
 
     console.log(processedData);
 
-    const timeExtent = [
-      d3.min(processedData, d => d3.min(d.values, v => v.time)),
-      d3.max(processedData, d => d3.max(d.values, v => v.time))
-    ];
-
-    const glucoseExtent = [
-      0,
-      d3.max(processedData, d => d3.max(d.values, v => v.glucose))
-    ];
-
-    xScale = d3.scaleLinear()
-      .domain(timeExtent)
-      .range([0, width]);
-
-    yScale = d3.scaleLinear()
-      .domain(glucoseExtent)
-      .range([height, 0]);
-
-    g.append("g")
-      .attr("class", "x-axis")
-      .attr("transform", `translate(0, ${height})`)
-      .call(d3.axisBottom(xScale)
-        .ticks(5)
-        .tickFormat(d => `${Math.floor(d)}`));
-
-    g.append("g")
-      .attr("class", "y-axis")
-      .call(d3.axisLeft(yScale));
-    
-    g.append("g")
-      .attr("class", "grid")
-      .selectAll("line")
-      .data(yScale.ticks(5))
-      .enter()
-      .append("line")
-      .attr("x1", 0)
-      .attr("x2", width)
-      .attr("y1", d => yScale(d))
-      .attr("y2", d => yScale(d))
-      .attr("stroke", "#e0e0e0")
-      .attr("stroke-width", 1)
-      .attr("stroke-dasharray", "3,3");
-
-    g.append("text")
-      .attr("class", "x-label")
-      .attr("text-anchor", "middle")
-      .attr("x", width/2)
-      .attr("y", height + 40)
-      .text("Time (minutes)");
-
-    g.append("text")
-      .attr("class", "y-label")
-      .attr("text-anchor", "middle")
-      .attr("transform", "rotate(-90)")
-      .attr("x", -height/2)
-      .attr("y", -45)
-      .text("Libre GL");
-
-    g.append("text")
-      .attr("class", "title")
-      .attr("text-anchor", "middle")
-      .attr("x", width/2)
-      .attr("y", -20)
-      .attr("font-size", "16px")
-      .attr("font-weight", "bold")
-      .text("Pre-diabetic Glucose Levels");
-
-    createParticipantButtons(participants);
-    setupTimeControls();
-
-    const tooltip = d3.select('body').append('div')
-      .attr('class', 'tooltip')
-      .style('opacity', 0);
-      
-    updateVisualization();
-
+    return participants;
   } catch (error) {
     console.error('Error loading or processing the data:', error);
+    return [];
   }
 }
 
-loadDataAndPlot();
+function plotData(participants) {
+  const containerWidth = container.node().clientWidth;
+  const containerHeight = container.node().clientHeight;
+  const width = containerWidth - margin.left - margin.right;
+  const height = containerHeight - margin.top - margin.bottom;
 
-/*
-  Comments:
-  - Increased height for better visibility
-  - Adjusted margins
-  - State management
-  - Remove existing text if needed
-  - Create a tooltip div that is hidden by default
-  - Create a simple legend in the top-right corner of the SVG
-  - Filter the data to include only the first 100 rows
-  - Combine all datasets to determine unified scales
-  - Set up the scales based on inner width and height
-  - Append the x-axis at the bottom of the graph
-  - Append the y-axis at the left of the graph
-  - Define the line generator
-  - Append the path for the line graph
-  - Append circles for each data point
-  - Create participant buttons
-  - Setup time controls
-  - Get time domain across all participants
-  - Get glucose domain across all participants
-  - Add axes
-  - Add grid lines
-  - Add axis labels
-  - Add title
-  - Initialize the visualization
-*/
+  const timeExtent = [
+    d3.min(processedData, d => d3.min(d.values, v => v.time)),
+    d3.max(processedData, d => d3.max(d.values, v => v.time))
+  ];
+
+  const glucoseExtent = [
+    0,
+    d3.max(processedData, d => d3.max(d.values, v => v.glucose))
+  ];
+
+  xScale = d3.scaleLinear()
+    .domain(timeExtent);
+
+  yScale = d3.scaleLinear()
+    .domain(glucoseExtent);
+
+  console.log('Time extent:', timeExtent);
+  console.log('Glucose extent:', glucoseExtent);
+
+  // g.append("g")
+  //   .attr("class", "x-axis");
+
+  // g.append("g")
+  //   .attr("class", "y-axis");
+
+  // g.append("g")
+  //   .attr("class", "grid");
+
+  // g.append("text")
+  //   .attr("class", "x-label")
+  //   .attr("text-anchor", "middle")
+  //   .attr("y", height + 40)
+  //   .text("Time (minutes)");
+
+  // g.append("text")
+  //   .attr("class", "y-label")
+  //   .attr("text-anchor", "middle")
+  //   .attr("transform", "rotate(-90)")
+  //   .attr("x", -height / 2)
+  //   .attr("y", -45)
+  //   .text("Libre GL");
+
+  // createParticipantButtons(participants);
+  // setupTimeControls();
+
+  // const tooltip = d3.select('body').append('div')
+  //   .attr('class', 'tooltip')
+  //   .style('opacity', 0);
+
+  updateVisualization();
+}
+
+async function loadDataAndPlot() {
+  const participants = await loadData();
+  plotData(participants);
+}
+
+window.addEventListener('resize', updateVisualization);
+
+loadDataAndPlot();
