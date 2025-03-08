@@ -14,6 +14,12 @@ def identify_diabetes(A1c):
         return "Pre-diabetic"
     else:
         return "Diabetic"
+    
+def resample_glucose(group):
+    temp =  group.set_index('Timestamp').resample('15T').mean().reset_index()
+    
+    return temp.dropna(subset=['PID'])
+
 
 
 def clean_geo_data(gemographic_data: pd.DataFrame):
@@ -82,6 +88,8 @@ def clean_CGMarcros(folder_path: str):
                 df["Timestamp"] = pd.to_datetime(df["Timestamp"])
                 df["Timestamp"] = df["Timestamp"] - df["Timestamp"].min()
 
+                df["Timestamp"] = df["Timestamp"] + pd.Timedelta(days=1)
+
                 # row the row if the timestamp go over 10 days
                 df = df[df["Timestamp"] < pd.Timedelta(days=10)]
 
@@ -100,9 +108,21 @@ def clean_CGMarcros(folder_path: str):
                 df["PID"] = int(file.split("-")[1].split(".")[0])
 
                 CGMacros.append(df)
+
     CGMacroDF = pd.concat(CGMacros).drop(
-        columns=["Sugar", "Intensity", "Steps", "RecordIndex"]
+        columns=["Sugar", "Intensity", "Steps", "RecordIndex", "Image path"]
     )
+
+    # aggregate the data by taking the average of every 15 mins
+    with_meal = CGMacroDF[~CGMacroDF['Meal Type'].isna()]
+    without_meal = CGMacroDF[CGMacroDF['Meal Type'].isna()]
+
+    without_meal = without_meal.groupby('PID', group_keys=False).apply(resample_glucose)
+    CGMacroDF = pd.concat([without_meal, with_meal]).sort_values(by=['PID', 'Timestamp'])
+
+    # Drop Participants 18
+    CGMacroDF = CGMacroDF[CGMacroDF['PID'] != 18]
+
     return CGMacroDF
 
 
