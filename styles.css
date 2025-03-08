@@ -419,3 +419,28 @@ input[type="range"]::-webkit-slider-thumb:hover {
   width: 10vmin;
 }
 
+/* Flex container for panel-2 */
+#panel-2-flex-container {
+    display: flex;
+    width: 95%;
+    height: 95%;
+    gap: 20px; /* Add margin between the two horizontal wrappers */
+    padding: 40px 0; /* Add gap between the top and bottom of the page */
+}
+
+/* Control panel wrapper takes 30% of the width */
+#panel-2-flex-container .control-panel-wrapper {
+    flex: 0 0 30%;
+    display: flex;
+    flex-direction: column;
+    padding-left: 20px; /* Add padding to the left side */
+}
+
+/* Visualization wrapper takes 70% of the width and 80% of the height */
+#panel-2-flex-container .visualization-wrapper {
+    flex: 0 0 70%;
+    display: flex;
+    flex-direction: column;
+    padding-right: 20px; /* Add padding to the right side */
+}
+
