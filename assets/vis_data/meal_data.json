@@ -10688,38 +10688,6 @@
         "diabetes level":"Non-diabetic"
     },
     {
-        "Timestamp":"0 days 05:03:00",
-        "Libre GL":73.8,
-        "HR":94.0,
-        "Calories (Activity)":5.777999878,
-        "METs":40.0,
-        "Meal Type":"lunch",
-        "Calories":1180.0,
-        "Carbs":81.0,
-        "Protein":88.0,
-        "Fat":54.5,
-        "Fiber":18.0,
-        "Amount Consumed":1.0,
-        "PID":18.0,
-        "diabetes level":"Non-diabetic"
-    },
-    {
-        "Timestamp":"0 days 10:16:00",
-        "Libre GL":84.1333333333,
-        "HR":86.0,
-        "Calories (Activity)":4.04460001,
-        "METs":28.0,
-        "Meal Type":"dinner",
-        "Calories":972.0,
-        "Carbs":122.0,
-        "Protein":39.0,
-        "Fat":64.0,
-        "Fiber":8.0,
-        "Amount Consumed":5.0,
-        "PID":18.0,
-        "diabetes level":"Non-diabetic"
-    },
-    {
         "Timestamp":"0 days 04:08:00",
         "Libre GL":73.3333333333,
         "HR":83.0,

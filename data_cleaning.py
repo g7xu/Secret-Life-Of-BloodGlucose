@@ -16,8 +16,9 @@ def identify_diabetes(A1c):
         return "Diabetic"
     
 def resample_glucose(group):
-    return group.set_index('Timestamp').resample('15T').mean().reset_index()
+    temp =  group.set_index('Timestamp').resample('15T').mean().reset_index()
     
+    return temp.dropna(subset=['PID'])
 
 
 
