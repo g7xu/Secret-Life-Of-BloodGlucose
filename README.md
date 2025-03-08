@@ -17,11 +17,13 @@ located the data from the [website](https://physionet.org/content/cgmacros/1.0.0
     ├── global.js                   # Manages state and interactions for visualizations, including participant selection and time range controls, using D3.js
 
 # Design Logistics
+...
 
 # acknowledgements
+...
 
 # Contact info
-
+...
 
 ## Prototype Write-up:
 1. So far we have done a lot of exploratory data analysis to understand all the facets of the data from our study and isolate key takeaways we want to communicate to our audience.
