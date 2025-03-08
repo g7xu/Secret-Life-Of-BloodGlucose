@@ -186,12 +186,11 @@ function updateVisualization() {
 
 async function loadDataAndPlot() {
   try {
-    data = await d3.json('assets/vis_data/meal_data.json');
+    let data = await d3.json('assets/vis_data/CGMacros.json');
+
+    const participants = [...new Set(data.map(d => d.PID))];
     
-    const preDiabeticData = data.filter(d => d['diabetes level'] === 'Pre-diabetic');
-    
-    const participants = [...new Set(preDiabeticData.map(d => d.PID))];
-    
+
     colorScale = d3.scaleOrdinal()
       .domain(participants)
       .range(d3.schemeCategory10);
@@ -203,7 +202,7 @@ async function loadDataAndPlot() {
     }
 
     processedData = participants.map(pid => {
-      const participantData = preDiabeticData
+      const participantData = data
         .filter(d => d.PID === pid)
         .map(d => ({
           time: parseTimestamp(d.Timestamp),
@@ -216,6 +215,8 @@ async function loadDataAndPlot() {
         values: participantData
       };
     });
+
+    console.log(processedData);
 
     const timeExtent = [
       d3.min(processedData, d => d3.min(d.values, v => v.time)),
