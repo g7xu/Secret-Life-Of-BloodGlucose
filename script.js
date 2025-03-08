@@ -9,7 +9,12 @@ document.addEventListener("DOMContentLoaded", function() {
     anchor.addEventListener("click", function(e) {
       e.preventDefault();
       let targetElem = document.querySelector(e.target.getAttribute("href")),
-        y = targetElem.offsetTop; // Adjust for vertical scrolling
+        y = targetElem;
+      if (targetElem && panelsContainer.isSameNode(targetElem.parentElement)) {
+        let totalScroll = tween.scrollTrigger.end - tween.scrollTrigger.start,
+          totalMovement = (panels.length - 1) * targetElem.offsetWidth;
+        y = Math.round(tween.scrollTrigger.start + (targetElem.offsetLeft / totalMovement) * totalScroll);
+      }
       gsap.to(window, {
         scrollTo: {
           y: y,
@@ -23,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function() {
   /* Panels */
   const panels = gsap.utils.toArray("#panels-container .panel");
   tween = gsap.to(panels, {
-    yPercent: -100 * ( panels.length - 1 ), // Adjust for vertical scrolling
+    xPercent: -100 * ( panels.length - 1 ),
     ease: "none",
     scrollTrigger: {
       trigger: "#panels-container",
@@ -49,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function() {
         inertia: true,
         duration: {min: 0.1, max: 0.1}
       },
-      end: () =>  "+=" + (panelsContainer.offsetHeight - innerHeight) // Adjust for vertical scrolling
+      end: () =>  "+=" + (panelsContainer.offsetWidth - innerWidth)
     }
   });
 
