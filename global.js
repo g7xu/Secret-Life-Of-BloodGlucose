@@ -39,7 +39,7 @@ function createParticipantButtons(participants) {
   });
 }
 
-function rendering_timeSlider() {
+function rendering_timeSlider(startDay, endDay) {
   const container = d3.select("#time-range-selector");
   container.selectAll("*").remove(); // Clear existing slider elements
 
@@ -74,11 +74,20 @@ function rendering_timeSlider() {
     .attr('stroke', '#d2d2d7')
     .attr('stroke-width', 4);
 
+  const trackFill = svg.append('line')
+    .attr('class', 'track-fill')
+    .attr('x1', xScale(startDay))
+    .attr('x2', xScale(endDay))
+    .attr('y1', height / 2)
+    .attr('y2', height / 2)
+    .attr('stroke', '#0071e3')
+    .attr('stroke-width', 4);
+
   const circle_size = 7;
 
   const handleStart = svg.append('circle')
     .attr('class', 'handle')
-    .attr('cx', xScale(1)) // Start from day 1
+    .attr('cx', xScale(startDay)) // Use the provided startDay
     .attr('cy', height / 2)
     .attr('r', circle_size)
     .attr('fill', '#0071e3')
@@ -88,13 +97,14 @@ function rendering_timeSlider() {
         const endDay = Math.round(xScale.invert(handleEnd.attr('cx') - margin.left));
         if (day < endDay) {
           handleStart.attr('cx', xScale(day));
+          trackFill.attr('x1', xScale(day));
           updateTimeRange(day, endDay);
         }
       }));
 
   const handleEnd = svg.append('circle')
     .attr('class', 'handle')
-    .attr('cx', xScale(daysExtent[1]))
+    .attr('cx', xScale(endDay)) // Use the provided endDay
     .attr('cy', height / 2)
     .attr('r', circle_size)
     .attr('fill', '#0071e3')
@@ -104,6 +114,7 @@ function rendering_timeSlider() {
         const startDay = Math.round(xScale.invert(handleStart.attr('cx') - margin.left));
         if (day > startDay) {
           handleEnd.attr('cx', xScale(day));
+          trackFill.attr('x2', xScale(day));
           updateTimeRange(startDay, day);
         }
       }));
@@ -366,7 +377,7 @@ function plotData(participants) {
     .attr("class", "grid");
 
   createParticipantButtons(participants);
-  rendering_timeSlider(); // Initial rendering of the slider
+  rendering_timeSlider(1, Math.ceil(timeExtent[1] / 1440)); // Initial rendering of the slider
 
   updateVisualization();
 }
@@ -377,8 +388,10 @@ async function loadDataAndPlot() {
 }
 
 window.addEventListener('resize', () => {
+  const startDay = Math.round(timeRange[0] / 1440);
+  const endDay = Math.round(timeRange[1] / 1440);
   updateVisualization();
-  rendering_timeSlider(); // Re-render the slider on window resize
+  rendering_timeSlider(startDay, endDay); // Re-render the slider with the current positions
 });
 
 loadDataAndPlot();
