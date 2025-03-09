@@ -7,12 +7,18 @@ let activeParticipants = new Set();
 let timeRange = [1440, 14385];
 let data, processedData, xScale, yScale, colorScale;
 let tooltip;
+let mealData;
 
 mealDataPromise.then(data => {
 
-  data.map(d => d.Timestamp)
+  // data.map(d => d.Timestamp)
   // console.log("Meal timestamps:", data.map(d => d.Timestamp));
-  // Additional logic using the timestamps…
+  mealData = data.filter(d => {
+    const hours = d.Timestamp.getHours();
+    return hours >= 6 && hours <= 10; // Filter for morning meals (6 AM to 10 AM)
+  });
+  updateVisualization();
+
 });
 // console.log("Meal timestamps:",mealDataPromise);
 // successfully resolved and available for use in global.js
