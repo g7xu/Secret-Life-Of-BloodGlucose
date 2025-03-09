@@ -2,7 +2,7 @@ import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7/+esm';
 
 const margin = { top: 40, right: 50, bottom: 50, left: 60 };
 let activeParticipants = new Set();
-let timeRange = 'all';
+let timeRange = [1440, 14385];
 let data, processedData, xScale, yScale, colorScale;
 
 const container = d3.select('.visualization-wrapper');
@@ -52,7 +52,7 @@ function rendering_timeSlider() {
   const margin = { left: 8, right: 8 };
   const sliderWidth = width - margin.left - margin.right;
 
-  const fullTimeExtent = getTimeRangeExtent('all');
+  const fullTimeExtent = [1440, 14385]; // Full time extent in minutes
   const daysExtent = [1, Math.ceil(fullTimeExtent[1] / 1440)]; // Convert minutes to days, starting from day 1
 
   const xScale = d3.scaleLinear()
@@ -116,31 +116,21 @@ function rendering_timeSlider() {
   xAxisGroup.select(".domain").remove(); // Remove the axis line
 
   function updateTimeRange(startDay, endDay) {
-    timeRange = [(startDay - 1) * 1440, endDay * 1440]; // Convert days to minutes, adjusting for day 1 start
-    console.log('Updated time range:', timeRange); // Debugging log
+    timeRange = [startDay * 1440, endDay * 1440]; // Convert days to minutes, adjusting for day 1 start
     updateVisualization();
   }
 }
 
 function getTimeRangeExtent(range) {
-  const fullTimeExtent = [
-    d3.min(processedData, d => d3.min(d.values, v => v.time)),
-    d3.max(processedData, d => d3.max(d.values, v => v.time))
-  ];
-
+  
   if (Array.isArray(range)) {
-    return range;
-  }
 
-  switch (range) {
-    case '24hours':
-      return [fullTimeExtent[1] - 1440, fullTimeExtent[1]];
-    case '3days':
-      return [fullTimeExtent[1] - 4320, fullTimeExtent[1]];
-    case '7days':
-      return [fullTimeExtent[1] - 10080, fullTimeExtent[1]];
-    default:
-      return fullTimeExtent;
+    // if the 0 index is larger than the 1 index, raise an error
+    if (range[0] > range[1]) {
+      throw new Error("Invalid time range: start time is greater than end time.");
+    } 
+
+    return range;
   }
 }
 
@@ -168,15 +158,38 @@ function updateVisualization() {
     d3.max(filteredData, d => d3.max(d.values, v => v.time))
   ];
 
+  console.log('Filtered Time Extent:', filteredTimeExtent); // Debugging: Check the filtered time extent values
+
   xScale.domain(filteredTimeExtent).range([0, width]);
   yScale.range([height, 0]);
+
+  // Determine the tick format based on the filtered time extent
+  let tickFormat;
+  let tickValues = [];
+  const timeRangeInMinutes = filteredTimeExtent[1] - filteredTimeExtent[0];
+
+  if (timeRangeInMinutes <= 1440) { // Less than or equal to 1 day
+    tickFormat = d => `${Math.floor(d / 60)}:${d % 60 < 10 ? '0' : ''}${d % 60}`; // Format as HH:MM
+    for (let i = filteredTimeExtent[0]; i <= filteredTimeExtent[1]; i += 60) { // 1-hour intervals
+      tickValues.push(i);
+    }
+  } else { // More than 3 days
+    tickFormat = d => `${Math.floor(d / 1440)}d`; // Format as days
+    for (let i = filteredTimeExtent[0]; i <= filteredTimeExtent[1]; i += 1440) { // 1-day intervals
+      tickValues.push(i);
+    }
+  }
+
+  console.log('Tick Format:', tickFormat); // Debugging: Check the tick format
+  console.log('Tick Values:', tickValues); // Debugging: Check the tick values
+  console.log('Filtered Data:', xScale.domain(filteredTimeExtent).range([0, width])); // Debugging: Check the filtered data
 
   g.select(".x-axis")
     .transition()
     .duration(750)
     .call(d3.axisBottom(xScale)
-      .ticks(5)
-      .tickFormat(d => `${Math.floor(d / 1440)}d`)); // Convert minutes to days
+      .tickValues(tickValues)
+      .tickFormat(tickFormat));
 
   g.select(".y-axis")
     .transition()
@@ -280,6 +293,7 @@ async function loadData() {
       return Number(days) * 24 * 60 + hours * 60 + minutes + seconds / 60;
     }
 
+    // converting the time
     processedData = participants.map(pid => {
       const participantData = data
         .filter(d => d.PID === pid)
@@ -294,6 +308,8 @@ async function loadData() {
         values: participantData
       };
     });
+
+    console.log('Processed data:', processedData);
 
     return participants;
   } catch (error) {
