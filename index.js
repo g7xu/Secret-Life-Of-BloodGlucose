@@ -8,7 +8,7 @@ d3.json("./assets/vis_data/meal_data.json").then(data => {
     const minTime = d3.min(data, d => d.Timestamp);
     const maxTime = new Date(minTime.getTime() + 10 * 24 * 60 * 60 * 1000);
 
-    const width = 700, height = 100;
+    const width = 700, height = 40;
     const margin = {top: 30, right: 30, bottom: 50, left: 50};
 
     function createGraph(group, graphId, title) {
