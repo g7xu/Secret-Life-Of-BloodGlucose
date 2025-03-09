@@ -85,8 +85,11 @@ function rendering_timeSlider() {
     .call(d3.drag()
       .on('start drag', function(event) {
         const day = Math.round(xScale.invert(event.x - margin.left)); // Snap to nearest day
-        handleStart.attr('cx', xScale(day));
-        updateTimeRange(day, Math.round(xScale.invert(handleEnd.attr('cx') - margin.left)));
+        const endDay = Math.round(xScale.invert(handleEnd.attr('cx') - margin.left));
+        if (day < endDay) {
+          handleStart.attr('cx', xScale(day));
+          updateTimeRange(day, endDay);
+        }
       }));
 
   const handleEnd = svg.append('circle')
@@ -98,8 +101,11 @@ function rendering_timeSlider() {
     .call(d3.drag()
       .on('start drag', function(event) {
         const day = Math.round(xScale.invert(event.x - margin.left)); // Snap to nearest day
-        handleEnd.attr('cx', xScale(day));
-        updateTimeRange(Math.round(xScale.invert(handleStart.attr('cx') - margin.left)), day);
+        const startDay = Math.round(xScale.invert(handleStart.attr('cx') - margin.left));
+        if (day > startDay) {
+          handleEnd.attr('cx', xScale(day));
+          updateTimeRange(startDay, day);
+        }
       }));
 
   // Add x-axis scale without the axis line
@@ -184,11 +190,7 @@ function updateVisualization() {
       tickValues.push(i);
     }
   } 
-
-  console.log('Tick Format:', tickFormat); // Debugging: Check the tick format
-  console.log('Tick Values:', tickValues); // Debugging: Check the tick values
-  console.log('Filtered Data:', xScale.domain(filteredTimeExtent).range([0, width])); // Debugging: Check the filtered data
-
+  
   g.select(".x-axis")
     .transition()
     .duration(750)
