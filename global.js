@@ -156,7 +156,19 @@ function updateVisualization() {
 
   const timeExtent = getTimeRangeExtent(timeRange);
 
-  xScale.domain(timeExtent).range([0, width]);
+  // Filter data within the selected time range
+  const filteredData = processedData.map(d => ({
+    pid: d.pid,
+    values: d.values.filter(v => v.time >= timeExtent[0] && v.time <= timeExtent[1])
+  })).filter(d => d.values.length > 0);
+
+  // Update xScale domain based on filtered data
+  const filteredTimeExtent = [
+    d3.min(filteredData, d => d3.min(d.values, v => v.time)),
+    d3.max(filteredData, d => d3.max(d.values, v => v.time))
+  ];
+
+  xScale.domain(filteredTimeExtent).range([0, width]);
   yScale.range([height, 0]);
 
   g.select(".x-axis")
@@ -186,7 +198,7 @@ function updateVisualization() {
     .attr("stroke-dasharray", "3,3");
 
   const lines = g.selectAll(".line")
-    .data(processedData.filter(d => activeParticipants.has(d.pid)));
+    .data(filteredData.filter(d => activeParticipants.has(d.pid)));
 
   lines.exit().remove();
 
@@ -211,7 +223,7 @@ function updateVisualization() {
     .duration(750)
     .style("opacity", 0.7);
 
-  const legendData = processedData.filter(d => activeParticipants.has(d.pid));
+  const legendData = filteredData.filter(d => activeParticipants.has(d.pid));
 
   svg.select(".legend").remove();
 
