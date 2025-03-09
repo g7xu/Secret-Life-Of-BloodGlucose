@@ -57,7 +57,7 @@ function createParticipantButtons(participants) {
   });
 }
 
-function setupTimeControls() {
+function render_timeSlider() {
   d3.selectAll('.time-btn').on('click', function() {
     const btn = d3.select(this);
     d3.selectAll('.time-btn').classed('active', false);
@@ -318,7 +318,7 @@ async function loadDataAndPlot() {
       .text("Pre-diabetic Glucose Levels");
 
     createParticipantButtons(participants);
-    setupTimeControls();
+    render_timeSlider();
 
     tooltip = d3.select('body').append('div')
       .attr('class', 'tooltip')
