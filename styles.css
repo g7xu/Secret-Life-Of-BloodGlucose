@@ -417,7 +417,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 
 #panel-2-flex-container .visualization-wrapper {
-  flex: 0 0 70%; /* Fixed width to 70% of the window */
+  flex: 1; /* Allow the visualization-wrapper to take the remaining space */
   display: flex;
   flex-direction: column;
   background: rgba(255, 255, 255, 0.95); /* Match control-panel background */
@@ -429,6 +429,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
   margin-right: 10px; /* Add space on the right */
   margin-top: 10px; /* Add space on the top */
   margin-bottom: 10px; /* Add space on the bottom */
+  overflow: hidden; /* Prevent overflow */
 }
 
 /* Panels Navigation */
