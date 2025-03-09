@@ -49,55 +49,74 @@ function rendering_timeSlider() {
 
   const width = container.node().clientWidth - paddingLeft - paddingRight;
   const height = 100;
-  const margin = { left: 50, right: 50 };
+  const margin = { left: 8, right: 8 };
   const sliderWidth = width - margin.left - margin.right;
 
+  const fullTimeExtent = getTimeRangeExtent('all');
+  const daysExtent = [1, Math.ceil(fullTimeExtent[1] / 1440)]; // Convert minutes to days, starting from day 1
+
   const xScale = d3.scaleLinear()
-    .domain([0, 100]) // Adjust range as needed
-    .range([margin.left, sliderWidth + margin.left]);
+    .domain(daysExtent) // Adjust range to match the actual time range in days
+    .range([margin.left, sliderWidth + margin.left])
+    .clamp(true);
 
   const svg = container.append("svg")
     .attr("width", width)
     .attr("height", height)
     .attr('class', 'range-slider');
 
-  // const track = svg.append('line')
-  //   .attr('class', 'track')
-  //   .attr('x1', margin.left)
-  //   .attr('x2', sliderWidth + margin.left)
-  //   .attr('y1', height / 2)
-  //   .attr('y2', height / 2)
-  //   .attr('stroke', '#d2d2d7')
-  //   .attr('stroke-width', 4);
+  const track = svg.append('line')
+    .attr('class', 'track')
+    .attr('x1', margin.left)
+    .attr('x2', sliderWidth + margin.left)
+    .attr('y1', height / 2)
+    .attr('y2', height / 2)
+    .attr('stroke', '#d2d2d7')
+    .attr('stroke-width', 4);
 
-  // const handleStart = svg.append('circle')
-  //   .attr('class', 'handle')
-  //   .attr('cx', xScale(0))
-  //   .attr('cy', height / 2)
-  //   .attr('r', 10)
-  //   .attr('fill', '#0071e3')
-  //   .call(d3.drag()
-  //     .on('start drag', function(event) {
-  //       const day = xScale.invert(event.x - margin.left);
-  //       handleStart.attr('cx', xScale(day));
-  //       updateTimeRange(day, xScale.invert(handleEnd.attr('cx') - margin.left));
-  //     }));
+  const circle_size = 7;
 
-  // const handleEnd = svg.append('circle')
-  //   .attr('class', 'handle')
-  //   .attr('cx', xScale(100))
-  //   .attr('cy', height / 2)
-  //   .attr('r', 10)
-  //   .attr('fill', '#0071e3')
-  //   .call(d3.drag()
-  //     .on('start drag', function(event) {
-  //       const day = xScale.invert(event.x - margin.left);
-  //       handleEnd.attr('cx', xScale(day));
-  //       updateTimeRange(xScale.invert(handleStart.attr('cx') - margin.left), day);
-  //     }));
+  const handleStart = svg.append('circle')
+    .attr('class', 'handle')
+    .attr('cx', xScale(1)) // Start from day 1
+    .attr('cy', height / 2)
+    .attr('r', circle_size)
+    .attr('fill', '#0071e3')
+    .call(d3.drag()
+      .on('start drag', function(event) {
+        const day = Math.round(xScale.invert(event.x - margin.left)); // Snap to nearest day
+        handleStart.attr('cx', xScale(day));
+        updateTimeRange(day, Math.round(xScale.invert(handleEnd.attr('cx') - margin.left)));
+      }));
+
+  const handleEnd = svg.append('circle')
+    .attr('class', 'handle')
+    .attr('cx', xScale(daysExtent[1]))
+    .attr('cy', height / 2)
+    .attr('r', circle_size)
+    .attr('fill', '#0071e3')
+    .call(d3.drag()
+      .on('start drag', function(event) {
+        const day = Math.round(xScale.invert(event.x - margin.left)); // Snap to nearest day
+        handleEnd.attr('cx', xScale(day));
+        updateTimeRange(Math.round(xScale.invert(handleStart.attr('cx') - margin.left)), day);
+      }));
+
+  // Add x-axis scale without the axis line
+  const xAxis = d3.axisBottom(xScale)
+    .ticks(daysExtent[1])
+    .tickFormat(d => `${d}d`)
+    .tickSize(0); // Remove the axis line
+
+  const xAxisGroup = svg.append("g")
+    .attr("class", "x-axis")
+    .attr("transform", `translate(0, ${height / 2 + circle_size + 5})`) // Position the x-axis scale below the slider
+    .call(xAxis);
+
+  xAxisGroup.select(".domain").remove(); // Remove the axis line
 
   function updateTimeRange(startDay, endDay) {
-    timeRange = [startDay * 1440, endDay * 1440]; // Convert days to minutes
+    timeRange = [(startDay - 1) * 1440, endDay * 1440]; // Convert days to minutes, adjusting for day 1 start
     console.log('Updated time range:', timeRange); // Debugging log
     updateVisualization();
   }
