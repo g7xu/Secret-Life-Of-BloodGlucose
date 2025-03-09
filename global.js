@@ -1,9 +1,24 @@
 import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7/+esm';
+import { mealDataPromise } from './index.js'; // adjust relative path if needed
+
 
 const margin = { top: 40, right: 50, bottom: 50, left: 60 };
 let activeParticipants = new Set();
 let timeRange = [1440, 14385];
 let data, processedData, xScale, yScale, colorScale;
+let tooltip;
+
+mealDataPromise.then(data => {
+
+  data.map(d => d.Timestamp)
+  // console.log("Meal timestamps:", data.map(d => d.Timestamp));
+  // Additional logic using the timestamps…
+});
+// console.log("Meal timestamps:",mealDataPromise);
+// successfully resolved and available for use in global.js
+
+
+
 
 // Select the container for the visualization
 const container = d3.select('.visualization-wrapper');
@@ -255,6 +270,23 @@ function updateVisualization() {
       .x(d => xScale(d.time))
       .y(d => yScale(d.glucose))
       .curve(d3.curveMonotoneX)(d.values))
+    .on('mouseover', function(event, d) {
+      tooltip.transition()
+        .duration(200)
+        .style('opacity', .9);
+      tooltip.html(`Participant: ${d.pid}<br>Glucose: ${d.values.map(v => v.glucose).join(', ')}`)
+        .style('left', (event.pageX + 5) + 'px')
+        .style('top', (event.pageY - 28) + 'px');
+    })
+    .on('mousemove', function(event) {
+      tooltip.style('left', (event.pageX + 5) + 'px')
+        .style('top', (event.pageY - 28) + 'px');
+    })
+    .on('mouseout', function() {
+      tooltip.transition()
+        .duration(500)
+        .style('opacity', 0);
+    })
     .transition()
     .duration(750)
     .style("opacity", 0.7);
@@ -377,6 +409,11 @@ function plotData(participants) {
 
   g.append("g")
     .attr("class", "grid");
+
+
+  tooltip = d3.select('body').append('div')
+    .attr('class', 'tooltip')
+    .style('opacity', 0);
 
   createParticipantButtons(participants);
   rendering_timeSlider(1, Math.ceil(timeExtent[1] / 1440)); // Initial rendering of the slider
