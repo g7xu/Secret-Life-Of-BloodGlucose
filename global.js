@@ -167,9 +167,14 @@ function updateVisualization() {
   let tickFormat;
   let tickValues = [];
   const timeRangeInMinutes = filteredTimeExtent[1] - filteredTimeExtent[0];
+  const startTime = filteredTimeExtent[0];
+
 
   if (timeRangeInMinutes <= 1440) { // Less than or equal to 1 day
-    tickFormat = d => `${Math.floor(d / 60)}:${d % 60 < 10 ? '0' : ''}${d % 60}`; // Format as HH:MM
+    tickFormat = d => {
+      const hour = Math.floor((d - startTime) / 60);
+      return hour === 12 ? 'noon' : `${hour}h`; // Format as HH or "noon"
+    };
     for (let i = filteredTimeExtent[0]; i <= filteredTimeExtent[1]; i += 60) { // 1-hour intervals
       tickValues.push(i);
     }
@@ -178,7 +183,7 @@ function updateVisualization() {
     for (let i = filteredTimeExtent[0]; i <= filteredTimeExtent[1]; i += 1440) { // 1-day intervals
       tickValues.push(i);
     }
-  }
+  } 
 
   console.log('Tick Format:', tickFormat); // Debugging: Check the tick format
   console.log('Tick Values:', tickValues); // Debugging: Check the tick values
@@ -190,6 +195,11 @@ function updateVisualization() {
     .call(d3.axisBottom(xScale)
       .tickValues(tickValues)
       .tickFormat(tickFormat));
+
+  // Make "noon" bold
+  g.selectAll(".x-axis .tick text")
+    .filter(function(d) { return Math.floor((d - startTime) / 60) === 12; })
+    .style("font-weight", "bold");
 
   g.select(".y-axis")
     .transition()
