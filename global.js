@@ -39,21 +39,68 @@ function createParticipantButtons(participants) {
   });
 }
 
-function setupTimeControls() {
-  d3.selectAll('.time-btn').on('click', function() {
-    const btn = d3.select(this);
-    d3.selectAll('.time-btn').classed('active', false);
-    btn.classed('active', true);
-    
-    timeRange = btn.text().toLowerCase().replace(' ', '');
+function rendering_timeSlider() {
+  const container = d3.select("#time-range-selector");
+  container.selectAll("*").remove(); // Clear existing slider elements
+
+  const style = window.getComputedStyle(container.node());
+  const paddingLeft = parseFloat(style.paddingLeft);
+  const paddingRight = parseFloat(style.paddingRight);
+
+  const width = container.node().clientWidth - paddingLeft - paddingRight;
+  const height = 100;
+  const margin = { left: 50, right: 50 };
+  const sliderWidth = width - margin.left - margin.right;
+
+  const xScale = d3.scaleLinear()
+    .domain([0, 100]) // Adjust range as needed
+    .range([margin.left, sliderWidth + margin.left]);
+
+  const svg = container.append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .attr('class', 'range-slider');
+
+  // const track = svg.append('line')
+  //   .attr('class', 'track')
+  //   .attr('x1', margin.left)
+  //   .attr('x2', sliderWidth + margin.left)
+  //   .attr('y1', height / 2)
+  //   .attr('y2', height / 2)
+  //   .attr('stroke', '#d2d2d7')
+  //   .attr('stroke-width', 4);
+
+  // const handleStart = svg.append('circle')
+  //   .attr('class', 'handle')
+  //   .attr('cx', xScale(0))
+  //   .attr('cy', height / 2)
+  //   .attr('r', 10)
+  //   .attr('fill', '#0071e3')
+  //   .call(d3.drag()
+  //     .on('start drag', function(event) {
+  //       const day = xScale.invert(event.x - margin.left);
+  //       handleStart.attr('cx', xScale(day));
+  //       updateTimeRange(day, xScale.invert(handleEnd.attr('cx') - margin.left));
+  //     }));
+
+  // const handleEnd = svg.append('circle')
+  //   .attr('class', 'handle')
+  //   .attr('cx', xScale(100))
+  //   .attr('cy', height / 2)
+  //   .attr('r', 10)
+  //   .attr('fill', '#0071e3')
+  //   .call(d3.drag()
+  //     .on('start drag', function(event) {
+  //       const day = xScale.invert(event.x - margin.left);
+  //       handleEnd.attr('cx', xScale(day));
+  //       updateTimeRange(xScale.invert(handleStart.attr('cx') - margin.left), day);
+  //     }));
+
+  function updateTimeRange(startDay, endDay) {
+    timeRange = [startDay * 1440, endDay * 1440]; // Convert days to minutes
+    console.log('Updated time range:', timeRange); // Debugging log
     updateVisualization();
-  });
-  
-  d3.select('#time-slider').on('input', function() {
-    const value = this.value;
-    timeRange = `custom-${value}`;
-    updateVisualization();
-  });
+  }
 }
 
 function getTimeRangeExtent(range) {
@@ -61,8 +108,12 @@ function getTimeRangeExtent(range) {
     d3.min(processedData, d => d3.min(d.values, v => v.time)),
     d3.max(processedData, d => d3.max(d.values, v => v.time))
   ];
-  
-  switch(range) {
+
+  if (Array.isArray(range)) {
+    return range;
+  }
+
+  switch (range) {
     case '24hours':
       return [fullTimeExtent[1] - 1440, fullTimeExtent[1]];
     case '3days':
@@ -70,14 +121,6 @@ function getTimeRangeExtent(range) {
     case '7days':
       return [fullTimeExtent[1] - 10080, fullTimeExtent[1]];
     default:
-      if (range.startsWith('custom-')) {
-        const percentage = parseInt(range.split('-')[1]) / 100;
-        const timeSpan = fullTimeExtent[1] - fullTimeExtent[0];
-        return [
-          fullTimeExtent[1] - timeSpan * percentage,
-          fullTimeExtent[1]
-        ];
-      }
       return fullTimeExtent;
   }
 }
@@ -86,8 +129,6 @@ function updateVisualization() {
   const containerWidth = container.node().clientWidth;
   const containerHeight = container.node().clientHeight;
 
-  console.log('Container size:', containerWidth, containerHeight);
-
   const width = containerWidth - margin.left - margin.right;
   const height = containerHeight - margin.top - margin.bottom;
 
@@ -95,22 +136,22 @@ function updateVisualization() {
   g.attr("transform", `translate(${margin.left}, ${margin.top})`);
 
   const timeExtent = getTimeRangeExtent(timeRange);
-  
+
   xScale.domain(timeExtent).range([0, width]);
   yScale.range([height, 0]);
-  
+
   g.select(".x-axis")
     .transition()
     .duration(750)
     .call(d3.axisBottom(xScale)
       .ticks(5)
-      .tickFormat(d => `${Math.floor(d)}`));
-      
+      .tickFormat(d => `${Math.floor(d / 1440)}d`)); // Convert minutes to days
+
   g.select(".y-axis")
     .transition()
     .duration(750)
     .call(d3.axisLeft(yScale));
-    
+
   g.select(".grid")
     .selectAll("line")
     .data(yScale.ticks(5))
@@ -124,12 +165,12 @@ function updateVisualization() {
     .attr("stroke", "#e0e0e0")
     .attr("stroke-width", 1)
     .attr("stroke-dasharray", "3,3");
-  
+
   const lines = g.selectAll(".line")
     .data(processedData.filter(d => activeParticipants.has(d.pid)));
-  
+
   lines.exit().remove();
-  
+
   lines
     .transition()
     .duration(750)
@@ -137,7 +178,7 @@ function updateVisualization() {
       .x(d => xScale(d.time))
       .y(d => yScale(d.glucose))
       .curve(d3.curveMonotoneX)(d.values));
-  
+
   lines.enter()
     .append("path")
     .attr("class", "line")
@@ -150,25 +191,25 @@ function updateVisualization() {
     .transition()
     .duration(750)
     .style("opacity", 0.7);
-    
+
   const legendData = processedData.filter(d => activeParticipants.has(d.pid));
-  
+
   svg.select(".legend").remove();
-  
+
   if (legendData.length > 0) {
     const legend = svg.append("g")
       .attr("class", "legend")
       .attr("transform", `translate(${containerWidth - margin.right - 100}, ${margin.top})`);
-    
+
     legendData.forEach((d, i) => {
       const legendRow = legend.append("g")
         .attr("transform", `translate(0, ${i * 20})`);
-      
+
       legendRow.append("rect")
         .attr("width", 15)
         .attr("height", 15)
         .attr("fill", colorScale(d.pid));
-      
+
       legendRow.append("text")
         .attr("x", 20)
         .attr("y", 12)
@@ -176,12 +217,12 @@ function updateVisualization() {
         .text(`Participant ${d.pid}`);
     });
   }
-    
+
   const noDataMessage = g.selectAll(".no-data-message")
     .data(activeParticipants.size === 0 ? [1] : []);
-    
+
   noDataMessage.exit().remove();
-  
+
   noDataMessage.enter()
     .append("text")
     .attr("class", "no-data-message")
@@ -222,8 +263,6 @@ async function loadData() {
         values: participantData
       };
     });
-
-    console.log(processedData);
 
     return participants;
   } catch (error) {
@@ -267,22 +306,8 @@ function plotData(participants) {
   g.append("g")
     .attr("class", "grid");
 
-  g.append("text")
-    .attr("class", "x-label")
-    .attr("text-anchor", "middle")
-    .attr("y", height + 40)
-    .text("Time (minutes)");
-
-  g.append("text")
-    .attr("class", "y-label")
-    .attr("text-anchor", "middle")
-    .attr("transform", "rotate(-90)")
-    .attr("x", -height / 2)
-    .attr("y", -45)
-    .text("Libre GL");
-
   createParticipantButtons(participants);
-  setupTimeControls();
+  rendering_timeSlider(); // Initial rendering of the slider
 
   updateVisualization();
 }
@@ -292,6 +317,10 @@ async function loadDataAndPlot() {
   plotData(participants);
 }
 
-window.addEventListener('resize', updateVisualization);
+window.addEventListener('resize', () => {
+  updateVisualization();
+  rendering_timeSlider(); // Re-render the slider on window resize
+});
 
 loadDataAndPlot();
+
