@@ -5,6 +5,7 @@ let activeParticipants = new Set();
 let timeRange = [1440, 14385];
 let data, processedData, xScale, yScale, colorScale;
 
+// Select the container for the visualization
 const container = d3.select('.visualization-wrapper');
 const svg = container.append('svg')
   .attr('width', '100%')
@@ -14,6 +15,7 @@ const svg = container.append('svg')
 const g = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
+// Function to create participant buttons
 function createParticipantButtons(participants) {
   const selector = d3.select('#participant-selector');
   
@@ -39,6 +41,7 @@ function createParticipantButtons(participants) {
   });
 }
 
+// Function to render the time slider
 function rendering_timeSlider(startDay, endDay) {
   const container = d3.select("#time-range-selector");
   container.selectAll("*").remove(); // Clear existing slider elements
@@ -138,19 +141,17 @@ function rendering_timeSlider(startDay, endDay) {
   }
 }
 
+// Function to get the time range extent
 function getTimeRangeExtent(range) {
-  
   if (Array.isArray(range)) {
-
-    // if the 0 index is larger than the 1 index, raise an error
     if (range[0] > range[1]) {
       throw new Error("Invalid time range: start time is greater than end time.");
     } 
-
     return range;
   }
 }
 
+// Function to update the visualization
 function updateVisualization() {
   const containerWidth = container.node().clientWidth;
   const containerHeight = container.node().clientHeight;
@@ -185,7 +186,6 @@ function updateVisualization() {
   let tickValues = [];
   const timeRangeInMinutes = filteredTimeExtent[1] - filteredTimeExtent[0];
   const startTime = filteredTimeExtent[0];
-
 
   if (timeRangeInMinutes <= 1440) { // Less than or equal to 1 day
     tickFormat = d => {
@@ -300,6 +300,7 @@ function updateVisualization() {
     .text("Select participants to view their glucose data");
 }
 
+// Function to load data from a JSON file
 async function loadData() {
   try {
     let data = await d3.json('assets/vis_data/CGMacros.json');
@@ -341,6 +342,7 @@ async function loadData() {
   }
 }
 
+// Function to plot the data
 function plotData(participants) {
   const containerWidth = container.node().clientWidth;
   const containerHeight = container.node().clientHeight;
@@ -382,11 +384,13 @@ function plotData(participants) {
   updateVisualization();
 }
 
+// Function to load data and plot it
 async function loadDataAndPlot() {
   const participants = await loadData();
   plotData(participants);
 }
 
+// Event listener for window resize to update the visualization and slider
 window.addEventListener('resize', () => {
   const startDay = Math.round(timeRange[0] / 1440);
   const endDay = Math.round(timeRange[1] / 1440);
@@ -394,5 +398,6 @@ window.addEventListener('resize', () => {
   rendering_timeSlider(startDay, endDay); // Re-render the slider with the current positions
 });
 
+// Initial call to load data and plot it
 loadDataAndPlot();
 
