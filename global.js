@@ -1,4 +1,6 @@
 import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7/+esm';
+import { mealDataPromise } from './index.js'; // adjust relative path if needed
+
 
 const svgWidth = 720;
 const svgHeight = 400;
@@ -9,6 +11,18 @@ const height = svgHeight - margin.top - margin.bottom;
 let activeParticipants = new Set();
 let timeRange = 'all';
 let data, processedData, xScale, yScale, colorScale;
+let tooltip;
+
+mealDataPromise.then(data => {
+
+  data.map(d => d.Timestamp)
+  // console.log("Meal timestamps:", data.map(d => d.Timestamp));
+  // Additional logic using the timestamps…
+});
+// console.log("Meal timestamps:",mealDataPromise);
+// successfully resolved and available for use in global.js
+
+
 
 const container = d3.select('.graph-wrapper');
 const svg = container.append('svg')
@@ -139,9 +153,27 @@ function updateVisualization() {
       .x(d => xScale(d.time))
       .y(d => yScale(d.glucose))
       .curve(d3.curveMonotoneX)(d.values))
+    .on('mouseover', function(event, d) {
+      tooltip.transition()
+        .duration(200)
+        .style('opacity', .9);
+      tooltip.html(`Participant: ${d.pid}<br>Glucose: ${d.values.map(v => v.glucose).join(', ')}`)
+        .style('left', (event.pageX + 5) + 'px')
+        .style('top', (event.pageY - 28) + 'px');
+    })
+    .on('mousemove', function(event) {
+      tooltip.style('left', (event.pageX + 5) + 'px')
+        .style('top', (event.pageY - 28) + 'px');
+    })
+    .on('mouseout', function() {
+      tooltip.transition()
+        .duration(500)
+        .style('opacity', 0);
+    })
     .transition()
     .duration(750)
     .style("opacity", 0.7);
+
     
   const legendData = processedData.filter(d => activeParticipants.has(d.pid));
   
@@ -288,7 +320,7 @@ async function loadDataAndPlot() {
     createParticipantButtons(participants);
     setupTimeControls();
 
-    const tooltip = d3.select('body').append('div')
+    tooltip = d3.select('body').append('div')
       .attr('class', 'tooltip')
       .style('opacity', 0);
       
