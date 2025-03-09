@@ -9,6 +9,7 @@ html, body {
   --color-text: oklch(85.82% 0.1342 86.38);
   --color-pastel: oklch(94.39% 0.0227 78.22);
 }
+
 body {
   overflow-x: hidden;
 }
@@ -21,6 +22,7 @@ a {
   color: var(--color-just-black);
 }
 
+/* Full Screen */
 .full-screen {
   display: block;
   width: 100%;
