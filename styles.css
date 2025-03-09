@@ -125,7 +125,7 @@ p {
 }
 
 .visualization-wrapper {
-  flex-grow: 1;
+  flex: 1;
   min-width: 0;
   width: 100%;
 }
@@ -404,19 +404,20 @@ input[type="range"]::-webkit-slider-thumb:hover {
 #panel-2-flex-container {
   display: flex;
   width: 100%;
-  height: 100%; /* Adjust height to leave space on top and bottom */
-  box-sizing: border-box;
+  height: 100%; /* Ensure it takes the full height of the parent */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
   gap: 20px; /* Add gap between control-panel-wrapper and visualization-wrapper */
+  overflow: hidden;
 }
 
 #panel-2-flex-container .control-panel-wrapper {
-  flex: 0 0 25%; /* Reduce width to make graph-wrapper larger */
+  flex: 0 0 30%; /* Fixed width to 30% of the window */
   display: flex;
   flex-direction: column;
 }
 
 #panel-2-flex-container .visualization-wrapper {
-  flex: 0 0 75%; /* Increase width to make graph-wrapper larger */
+  flex: 0 0 70%; /* Fixed width to 70% of the window */
   display: flex;
   flex-direction: column;
   background: rgba(255, 255, 255, 0.95); /* Match control-panel background */
@@ -443,6 +444,10 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 /* Panel 2 Specific Styles */
 #panel-2 {
+  height: 100vh; /* Ensure the article takes the full viewport height */
   margin-left: 10px; /* Adjust the value as needed */
   margin-right: 10px; /* Adjust the value as needed */
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }

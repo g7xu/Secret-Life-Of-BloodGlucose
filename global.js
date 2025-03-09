@@ -5,8 +5,12 @@ let activeParticipants = new Set();
 let timeRange = 'all';
 let data, processedData, xScale, yScale, colorScale;
 
-const container = d3.select('.graph-wrapper');
-const svg = container.append('svg');
+const container = d3.select('.visualization-wrapper');
+const svg = container.append('svg')
+  .attr('width', '100%')
+  .attr('height', '100%')
+  .attr('viewBox', `0 0 ${container.node().clientWidth} ${container.node().clientHeight}`)
+  .attr('preserveAspectRatio', 'xMidYMid meet');
 const g = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
@@ -87,7 +91,7 @@ function updateVisualization() {
   const width = containerWidth - margin.left - margin.right;
   const height = containerHeight - margin.top - margin.bottom;
 
-  svg.attr('width', containerWidth).attr('height', containerHeight);
+  svg.attr('viewBox', `0 0 ${containerWidth} ${containerHeight}`);
   g.attr("transform", `translate(${margin.left}, ${margin.top})`);
 
   const timeExtent = getTimeRangeExtent(timeRange);
@@ -182,8 +186,8 @@ function updateVisualization() {
     .append("text")
     .attr("class", "no-data-message")
     .attr("text-anchor", "middle")
-    .attr("x", width/2)
-    .attr("y", height/2)
+    .attr("x", width / 2)
+    .attr("y", height / 2)
     .attr("font-size", "14px")
     .text("Select participants to view their glucose data");
 }
@@ -253,35 +257,32 @@ function plotData(participants) {
   console.log('Time extent:', timeExtent);
   console.log('Glucose extent:', glucoseExtent);
 
-  // g.append("g")
-  //   .attr("class", "x-axis");
+  g.append("g")
+    .attr("class", "x-axis")
+    .attr("transform", `translate(0, ${height})`);
 
-  // g.append("g")
-  //   .attr("class", "y-axis");
+  g.append("g")
+    .attr("class", "y-axis");
 
-  // g.append("g")
-  //   .attr("class", "grid");
+  g.append("g")
+    .attr("class", "grid");
 
-  // g.append("text")
-  //   .attr("class", "x-label")
-  //   .attr("text-anchor", "middle")
-  //   .attr("y", height + 40)
-  //   .text("Time (minutes)");
+  g.append("text")
+    .attr("class", "x-label")
+    .attr("text-anchor", "middle")
+    .attr("y", height + 40)
+    .text("Time (minutes)");
 
-  // g.append("text")
-  //   .attr("class", "y-label")
-  //   .attr("text-anchor", "middle")
-  //   .attr("transform", "rotate(-90)")
-  //   .attr("x", -height / 2)
-  //   .attr("y", -45)
-  //   .text("Libre GL");
+  g.append("text")
+    .attr("class", "y-label")
+    .attr("text-anchor", "middle")
+    .attr("transform", "rotate(-90)")
+    .attr("x", -height / 2)
+    .attr("y", -45)
+    .text("Libre GL");
 
-  // createParticipantButtons(participants);
-  // setupTimeControls();
-
-  // const tooltip = d3.select('body').append('div')
-  //   .attr('class', 'tooltip')
-  //   .style('opacity', 0);
+  createParticipantButtons(participants);
+  setupTimeControls();
 
   updateVisualization();
 }
