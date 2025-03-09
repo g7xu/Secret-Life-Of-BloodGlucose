@@ -26,64 +26,54 @@
     <div id="feather" class="feather"></div>
   
     <header id="masthead" class="site-header" role="banner">
-      <nav class="anchor-nav" role="navigation">
-        <a href="#intro" class="anchor">Home</a>
-        <a href="#panel-1" class="anchor">Graph 1</a>
-        <a href="#panel-3" class="anchor">Graph 3</a>
-        <a href="#panel-5" class="anchor">Graph 5</a>
-        <a href="#map" class="anchor">Take Away</a>
-      </nav>
+        <nav class="navbar">
+            <div class="nav-links">
+                <a href="#intro" id = "home" class="anchor">Home</a>
+                <a href="#panel-1" class="anchor">Graph 1</a>
+                <a href="#panel-3" class="anchor">Graph 3</a>
+                <a href="#panel-5" class="anchor">Graph 5</a>
+                <a href="#map" class="anchor">Take Away</a>
+            </div>
+            <div class="progress-container">
+                <progress max="100" value="0"></progress>
+            </div>
+        </nav>
     </header>
   
     <main id="content" class="site-content" role="main">
-  
-      <section id="intro" class="full-screen pt-5 gradient-orange">
+      <section id="intro" class="full-screen">
         <div class="mat">
           <img  class = "fork"  src = "assets/pics/fork.png" alt = "fork">
-          
         
-          <div class="bowl">
+          <div class="plate">
           <div class="text">Meal <br> Frequency <br> Impacts On<br> Health</div>
           </div>
 
           <img class = "knife" src = "assets/pics/knife.png" alt = "knife">
           
         </div>
-        
-        <div id="clouds-layer-1" class="clouds"></div>
-        <div id="clouds-layer-2" class="clouds"></div>
+    
       </section>
   
-      <section id="panels">
-  
-        <div id="panels-container">
-          <article id="panel-1" class="panel full-screen gradient-green">
+   
+        <Section id="panel-1">
             <div class="container">
-              <div class="row">
-                <div class="col-6">
-  
+    
                   <div id="graph-nondiabetic" class="graph-container"></div>
                   <div id="graph-prediabetic" class="graph-container"></div>
                   <div id="graph-diabetic" class="graph-container"></div>
-
-  
-                </div>
-                <div class="col-6 d-flex flex-column">
-  
-    
   
                   <p class="step-description">
-                    Here is our interactive prototype of the meal distributions of Diabetic, Pre-Diabetic, and Non-Diabetic individuals.
-                    We added a zoom interaction so users can dive deep into when exactly individuals had meals across the 10-day period of the study.
+                    Here is our interactive prototype of the meal distributions of Diabetic, Pre-Diabetic, and Non-Diabetic individuals.<br>
 
-                  </p>~
-  
-                  </div>
-                </div>
+                    We added a zoom interaction so users can dive deep into when exactly individuals had meals across the 10-day period of the study.
+                  </p>
+
               </div>
-            </div>
-          </article>
-          <article id="panel-2" class="panel full-screen gradient-blue">
+          </Section>
+
+
+          <section id="panel-2">
             <div class="container-fluid">
                 <div id="panel-2-flex-container">
                     <div class="control-panel-wrapper">
@@ -117,8 +107,9 @@
                     </div>
                 </div>
             </div>
-        </article>
-          <article id="panel-3" class="panel full-screen gradient-green">
+          </section>
+
+          <section id="panel-3">
             <div class="container">
               <div class="row">
                 <div class="col-6">
@@ -133,12 +124,13 @@
                   <p class="step-description">
                     Lorem Ipsum is simply dummy text of the printing and typesetting industry. Including versions of Lorem Ipsum.
                   </p>
-
                 </div>
               </div>
             </div>
-          </article>
-          <article id="panel-4" class="panel full-screen gradient-blue">
+        </section>
+
+
+          <section id="panel-4">
             <div class="container">
               <div class="row">
                 <div class="col-6">
@@ -153,13 +145,13 @@
                   <p class="step-description">
                     Lorem Ipsum is simply dummy text of the printing and typesetting industry. Including versions of Lorem Ipsum.
                   </p>
-  
-             
                 </div>
               </div>
             </div>
-          </article>
-          <article id="panel-5" class="panel full-screen gradient-green">
+        </section>
+
+
+          <section id="panel-5">
             <div class="container">
               <div class="row">
                 <div class="col-6">
@@ -178,11 +170,11 @@
                 </div>
               </div>
             </div>
-          </article>
-        </div>
-      </section>
+        </section>
+
+
   
-      <section id="map" class="full-screen gradient-orange"></section>
+      <section id="map" class="conclusion"></section>
   
     </main>
   

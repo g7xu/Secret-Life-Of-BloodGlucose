@@ -5,7 +5,9 @@ body {
   margin: 0;
   height: 100%;
   font-weight: 300;
-  --color-placemat:  #c2b48d;
+  --color-placemat: oklch(58.04% 0.0486 76.76 / 50%);
+  --color-text: oklch(85.82% 0.1342 86.38);
+  --color-pastel: oklch(94.39% 0.0227 78.22);
 }
 body {
   overflow-x: hidden;
@@ -28,7 +30,6 @@ h2 {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  color: var(--color-just-black);
 }
 
 #masthead {
@@ -45,17 +46,17 @@ h2 {
 
 
 a {
-  color: var(--color-just-black)
+  color: var(--color-placemat)
 }
 
 .graph-container {
   margin: 10px 0;
   width: 700;
-  height: 100;
+  height: 50%;
 }
 
 p {
-  width: 600px;
+  width: 100%;
   margin: 0 auto;
   word-wrap: break-word;
 }
@@ -310,7 +311,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 
 
-.bowl {
+.plate {
   position: relative;
   overflow: hidden;
   display: grid;
@@ -330,7 +331,6 @@ input[type="range"]::-webkit-slider-thumb:hover {
     rgba(139, 119, 90, 0.5) 0 0 0 3.5vmin,
     white 0 0 0 5vmin,
     hsl(0deg 0% 0% / 60%) 5vmin 5vmin 5vmin;
-  
 }
 
 .bowl > * {
@@ -340,9 +340,9 @@ input[type="range"]::-webkit-slider-thumb:hover {
 .text {
   width: 100%;
 
-  text-shadow: 2px 1px 2px rgba(139, 119, 90, 0.5);
+  text-shadow: 2px 1px 2px var(--color-placemat);
   text-align: center;
-  color: hsl(32 100% 75%);
+  color: var(--color-text);
   font-family: "Gluten", monospace;
 }
 
@@ -361,14 +361,15 @@ input[type="range"]::-webkit-slider-thumb:hover {
   gap: 8%;
   border-radius: 0.5vmin;
   box-shadow: hsla(0, 0%, 0%, 0.1) 0 1vmin 1vmin -0.5vmin;
+  
 
   /* Checkered pattern using gradients */
   background: 
-    repeating-linear-gradient(90deg, rgba(139, 119, 90, 0.5) 0 10%, transparent 10% 20%), /* Vertical Stripes */
-    repeating-linear-gradient(0deg, rgba(139, 119, 90, 0.5) 0 10%, transparent 10% 20%),  /* Horizontal Stripes */
-    rgba(245, 235, 220, 1); /* Base fabric color */
+    repeating-linear-gradient(90deg, var(--color-placemat) 0 10%, transparent 10% 20%), /* Vertical Stripes */
+    repeating-linear-gradient(0deg, var(--color-placemat) 0 10%, transparent 10% 20%),  /* Horizontal Stripes */
+    var(--color-pastel); /* Base fabric color */
+    background-size: 50vmin 50vmin; 
 
-  background-size: 50vmin 50vmin; /* Controls the size of the squares */
 }
 
 .fork, .knife{
@@ -401,4 +402,107 @@ input[type="range"]::-webkit-slider-thumb:hover {
   display: flex;
   flex-direction: column;
   padding-right: 20px; /* Add padding to the right side */
+}
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+/* Navigation Links */
+.nav-links {
+  display: flex;
+  gap: 20px;
+  padding-left: 20px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+  padding: 10px 15px;
+  transition: color 0.3s;
+}
+
+.nav-links a:hover {
+  color: #d5a55d;
+}
+
+/* Progress Bar Container */
+.progress-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+progress {
+  position: fixed;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 5px;
+  border: none;
+  background: transparent;
+}
+
+progress::-webkit-progress-bar {
+  background: transparent;
+}
+
+/* Brown Gradient for WebKit Browsers (Chrome, Safari) */
+progress::-webkit-progress-value {
+  background: linear-gradient(to left, 
+  #8B5A2B,
+  #c19650,
+  #d5a55d,
+  #ddb475,
+  #e3cb9c,	
+  #efeacb
+  );
+  background-attachment: fixed;
+}
+
+/* Brown Gradient for Firefox */
+progress::-moz-progress-bar {
+  background: linear-gradient(to left, 
+  #8B5A2B,
+  #c19650,
+  #d5a55d,
+  #ddb475,
+  #e3cb9c,	
+  #efeacb
+  );
+  background-attachment: fixed;
+}
+
+section {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 2rem;
+  opacity: 0;  /* Initially hidden */
+  transform: translateY(50px); /* Starts slightly lower */
+}
+
+.section-visible {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+#intro {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
 }
