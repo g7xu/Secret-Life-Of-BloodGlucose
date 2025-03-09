@@ -403,6 +403,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
   flex-direction: column;
   padding-right: 20px; /* Add padding to the right side */
 }
+
 .navbar {
   position: fixed;
   top: 0;
@@ -410,7 +411,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
   height: 60px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-evenly;
   background: white;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   z-index: 1000;
@@ -419,8 +420,6 @@ input[type="range"]::-webkit-slider-thumb:hover {
 /* Navigation Links */
 .nav-links {
   display: flex;
-  gap: 20px;
-  padding-left: 20px;
 }
 
 .nav-links a {
@@ -506,3 +505,5 @@ section {
   opacity: 1 !important;
   transform: translateY(0) !important;
 }
+
+

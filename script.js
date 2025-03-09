@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function() {
 window.onload = playAnimation;
 
 if (homeButton) {
-    homeButton.addEventListener("click", function (e) {
+    homeButton.addEventListener("click", function () {
         playAnimation();
     });
 }
