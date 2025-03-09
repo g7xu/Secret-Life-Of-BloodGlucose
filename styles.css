@@ -506,4 +506,7 @@ section {
   transform: translateY(0) !important;
 }
 
-
+.meal-dot {
+  stroke-width: 1px;
+  stroke: #000; /* Optional: Add a stroke color */
+}
