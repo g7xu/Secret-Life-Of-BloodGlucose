@@ -83,41 +83,41 @@
               </div>
             </div>
           </article>
+
           <article id="panel-2" class="panel full-screen gradient-blue">
-            <div class="container-fluid">
-                <div id="panel-2-flex-container">
-                    <div class="control-panel-wrapper">
-                        <div class="control-panel">
-                            <div class="control-section">
-                                <h3>Participants</h3>
-                                <div id="participant-selector" class="selector-grid">
-                                    <!-- Participant buttons will be added here by D3 -->
-                                </div>
-                            </div>
-                            <div class="control-section">
-                                <h3>Time Range</h3>
-                                <div id="time-range-selector" class="time-controls">
-                                    <div class="time-preset">
-                                        <button class="time-btn active">All Time</button>
-                                        <button class="time-btn">24 Hours</button>
-                                        <button class="time-btn">3 Days</button>
-                                        <button class="time-btn">7 Days</button>
-                                    </div>
-                                    <div class="time-custom">
-                                        <input type="range" id="time-slider" min="0" max="100" value="100">
-                                    </div>
-                                </div>
-                            </div>
+              <div id="panel-2-flex-container">
+                <div class="control-panel-wrapper">
+                  <div class="control-panel">
+                    <div class="control-section">
+                      <h3>Participants</h3>
+                      <div id="participant-selector" class="selector-grid">
+                        <!-- Participant buttons will be added here by D3 -->
+                      </div>
+                    </div>
+                    <div class="control-section">
+                      <h3>Time Range</h3>
+                      <div id="time-range-selector" class="time-controls">
+                        <div class="time-preset">
+                          <button class="time-btn active">All Time</button>
+                          <button class="time-btn">24 Hours</button>
+                          <button class="time-btn">3 Days</button>
+                          <button class="time-btn">7 Days</button>
                         </div>
+                        <div class="time-custom">
+                          <input type="range" id="time-slider" min="0" max="100" value="100">
+                        </div>
+                      </div>
                     </div>
-                    <div class="visualization-wrapper">
-                        <h2>Individual Glucose Trend</h2>
-                        <div class="graph-wrapper"></div>
-                       
-                    </div>
+                  </div>
                 </div>
-            </div>
-        </article>
+                <div class="visualization-wrapper"></div>
+                <div class="panels-navigation">
+                  <div class="nav-panel" data-sign="minus"><a href="#panel-1" class="anchor">Prev</a></div>
+                  <div class="nav-panel" data-sign="plus"><a href="#panel-3" class="anchor">Next</a></div>
+                </div>
+              </div>
+          </article>
+
           <article id="panel-3" class="panel full-screen gradient-green">
             <div class="container">
               <div class="row">
@@ -138,6 +138,7 @@
               </div>
             </div>
           </article>
+
           <article id="panel-4" class="panel full-screen gradient-blue">
             <div class="container">
               <div class="row">

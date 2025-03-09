@@ -1,21 +1,26 @@
 @import url("https://fonts.googleapis.com/css2?family=Gluten:wght@600&family=Space+Mono&display=swap");
 
-html,
-body {
+/* Global Styles */
+html, body {
   margin: 0;
   height: 100%;
   font-weight: 300;
-  --color-placemat:  #c2b48d;
+  --color-placemat: #c2b48d;
 }
+
 body {
   overflow-x: hidden;
 }
 
-h1,
-h2 {
+h1, h2 {
   text-align: center;
 }
 
+a {
+  color: var(--color-just-black);
+}
+
+/* Full Screen */
 .full-screen {
   display: block;
   width: 100%;
@@ -24,6 +29,7 @@ h2 {
   gap: 1em;
 }
 
+/* Intro Section */
 #intro {
   display: flex;
   flex-direction: column;
@@ -31,43 +37,79 @@ h2 {
   color: var(--color-just-black);
 }
 
+/* Masthead */
 #masthead {
   position: fixed;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
   z-index: 9999;
 }
+
 #masthead a {
   padding: 1rem 2rem;
 }
 
-
-
-a {
-  color: var(--color-just-black)
+/* Panels */
+#panels #panels-container {
+  height: 100vh;
+  display: flex;
+  flex-wrap: nowrap;
+  padding: 0;
+  overflow: hidden;
+  background-color: #ddd;
 }
 
+
+
+#panels #panels-container .panel img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+#panels #panels-container .panel .panels-navigation {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+#panels #panels-container .panel .anchor-panel,
+#panels #panels-container .panel .nav-panel {
+  text-transform: uppercase;
+  margin-right: 2rem;
+}
+
+#panels #panels-container .panels-navigation {
+  position: absolute;
+  width: 100%;
+  bottom: 2rem;
+  right: 2rem;
+}
+
+/* Graph Container */
 .graph-container {
   margin: 10px 0;
   width: 700;
   height: 100;
 }
 
+/* Paragraph */
 p {
   width: 600px;
   margin: 0 auto;
   word-wrap: break-word;
 }
 
+/* Container Fluid */
 .container-fluid {
-  width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-right: auto;
-  margin-left: auto;
+  width: calc(100% - 30px); /* Adjust width to leave gap on both sides */
+  height: calc(100% - 10px); /* Adjust height to leave gap on top and bottom */
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  margin: 15px auto; /* Add margin to leave gap around the edges */
 }
 
+/* Visualization Container */
 .visualization-container {
   display: flex;
   align-items: flex-start;
@@ -83,10 +125,12 @@ p {
 }
 
 .visualization-wrapper {
-  flex-grow: 1;
-  min-width: 0; /* Prevents flex item from overflowing */
+  flex: 1;
+  min-width: 0;
+  width: 100%;
 }
 
+/* Control Panel */
 .control-panel {
   background: rgba(255, 255, 255, 0.95);
   border-radius: 16px;
@@ -98,6 +142,7 @@ p {
   top: 20px;
 }
 
+/* Selector Grid */
 .selector-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -105,6 +150,7 @@ p {
   margin-bottom: 20px;
 }
 
+/* Participant Button */
 .participant-btn {
   background: #f5f5f7;
   border: none;
@@ -127,15 +173,16 @@ p {
   color: white;
 }
 
+/* Graph Wrapper */
 .graph-wrapper {
   background: white;
   border-radius: 16px;
   padding: 24px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
-  margin-bottom: 24px;
-  width: 100%;
+  width: auto;
 }
 
+/* Time Controls */
 .time-controls {
   background: #f5f5f7;
   border-radius: 12px;
@@ -163,6 +210,7 @@ p {
   text-align: center;
 }
 
+/* Line */
 .line {
   fill: none;
   stroke-width: 2;
@@ -174,6 +222,7 @@ p {
   filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.2));
 }
 
+/* Dot */
 .dot {
   stroke: white;
   stroke-width: 1;
@@ -184,6 +233,7 @@ p {
   transition: r 0.2s;
 }
 
+/* Tooltip */
 .tooltip {
   background: rgba(255, 255, 255, 0.95);
   padding: 12px;
@@ -195,26 +245,40 @@ p {
   pointer-events: none;
 }
 
+.tooltip {
+  position: absolute;
+  background: white;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  pointer-events: none;
+  opacity: 0;
+}
+
+/* Axis Label */
 .axis-label {
   font-size: 12px;
   font-weight: 500;
 }
 
+/* Title */
 .title {
   font-size: 16px;
   font-weight: bold;
 }
 
+/* Participant Selector */
 #participant-selector {
   background: white;
   border-radius: 4px;
   padding: 20px;
   margin: 20px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   max-height: 400px;
   overflow-y: auto;
 }
 
+/* Legend */
 .legend g {
   cursor: pointer;
   transition: opacity 0.2s;
@@ -224,6 +288,7 @@ p {
   opacity: 0.8;
 }
 
+/* Control Section */
 .control-section {
   margin-bottom: 24px;
 }
@@ -235,10 +300,12 @@ p {
   color: #1d1d1f;
 }
 
+/* Time Custom */
 .time-custom {
   padding: 0 8px;
 }
 
+/* Range Input */
 input[type="range"] {
   width: 100%;
   height: 4px;
@@ -263,53 +330,15 @@ input[type="range"]::-webkit-slider-thumb:hover {
   transform: scale(1.1);
 }
 
+/* Step Description */
 .step-description {
   font-size: 16px;
   line-height: 1.5;
   color: #1d1d1f;
   margin-top: 24px;
 }
-.participant-btn {
-  margin: 5px;
-  padding: 5px 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background: white;
-  cursor: pointer;
-}
 
-.participant-btn.active {
-  background: #007bff;
-  color: white;
-  border-color: #0056b3;
-}
-
-.time-btn {
-  margin: 5px;
-  padding: 5px 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background: white;
-  cursor: pointer;
-}
-
-.time-btn.active {
-  background: #28a745;
-  color: white;
-  border-color: #1e7e34;
-}
-
-.tooltip {
-  position: absolute;
-  background: white;
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  pointer-events: none;
-  opacity: 0;
-}
-
-
+/* Bowl */
 .bowl {
   position: relative;
   overflow: hidden;
@@ -317,10 +346,9 @@ input[type="range"]::-webkit-slider-thumb:hover {
   place-items: center;
   grid-template-areas: "bowl";
   aspect-ratio: 1;
-
   width: 50vmin;
   font-size: 8vmin;
-  background:white;
+  background: white;
   border-radius: 50%;
   border: 1vmin 50% rgb(151, 145, 145);
   box-shadow: 
@@ -330,75 +358,97 @@ input[type="range"]::-webkit-slider-thumb:hover {
     rgba(139, 119, 90, 0.5) 0 0 0 3.5vmin,
     white 0 0 0 5vmin,
     hsl(0deg 0% 0% / 60%) 5vmin 5vmin 5vmin;
-  
 }
 
 .bowl > * {
   grid-area: bowl;
 }
 
+/* Text */
 .text {
   width: 100%;
-
   text-shadow: 2px 1px 2px rgba(139, 119, 90, 0.5);
   text-align: center;
   color: hsl(32 100% 75%);
   font-family: "Gluten", monospace;
 }
 
-
+/* Mat */
 .mat {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 90%;
   height: 75%;
-
-  margin-left:auto;
-  margin-right:auto;
+  margin-left: auto;
+  margin-right: auto;
   margin-top: 5%;
   aspect-ratio: 5 / 4;
   gap: 8%;
   border-radius: 0.5vmin;
   box-shadow: hsla(0, 0%, 0%, 0.1) 0 1vmin 1vmin -0.5vmin;
-
-  /* Checkered pattern using gradients */
   background: 
-    repeating-linear-gradient(90deg, rgba(139, 119, 90, 0.5) 0 10%, transparent 10% 20%), /* Vertical Stripes */
-    repeating-linear-gradient(0deg, rgba(139, 119, 90, 0.5) 0 10%, transparent 10% 20%),  /* Horizontal Stripes */
-    rgba(245, 235, 220, 1); /* Base fabric color */
-
-  background-size: 50vmin 50vmin; /* Controls the size of the squares */
+    repeating-linear-gradient(90deg, rgba(139, 119, 90, 0.5) 0 10%, transparent 10% 20%),
+    repeating-linear-gradient(0deg, rgba(139, 119, 90, 0.5) 0 10%, transparent 10% 20%),
+    rgba(245, 235, 220, 1);
+  background-size: 50vmin 50vmin;
 }
 
-.fork, .knife{
-  height: 55%;  
+/* Fork and Knife */
+.fork, .knife {
+  height: 55%;
   width: 10vmin;
 }
 
-
-
-/* Flex container for panel-2 */
+/* Panel 2 Flex Container */
 #panel-2-flex-container {
   display: flex;
-  width: 95%;
-  height: 95%;
-  gap: 20px; /* Add margin between the two horizontal wrappers */
-  padding: 40px 0; /* Add gap between the top and bottom of the page */
+  width: 100%;
+  height: 100%; /* Ensure it takes the full height of the parent */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  gap: 20px; /* Add gap between control-panel-wrapper and visualization-wrapper */
+  overflow: hidden;
 }
 
-/* Control panel wrapper takes 30% of the width */
 #panel-2-flex-container .control-panel-wrapper {
-  flex: 0 0 30%;
+  flex: 0 0 30%; /* Fixed width to 30% of the window */
   display: flex;
   flex-direction: column;
-  padding-left: 20px; /* Add padding to the left side */
 }
 
-/* Visualization wrapper takes 70% of the width and 80% of the height */
 #panel-2-flex-container .visualization-wrapper {
-  flex: 0 0 70%;
+  flex: 1; /* Allow the visualization-wrapper to take the remaining space */
   display: flex;
   flex-direction: column;
-  padding-right: 20px; /* Add padding to the right side */
+  background: rgba(255, 255, 255, 0.95); /* Match control-panel background */
+  border-radius: 16px; /* Match control-panel border radius */
+  padding: 24px; /* Match control-panel padding */
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1); /* Match control-panel box shadow */
+  backdrop-filter: blur(20px); /* Match control-panel backdrop filter */
+  -webkit-backdrop-filter: blur(20px); /* Match control-panel backdrop filter */
+  margin-right: 10px; /* Add space on the right */
+  margin-top: 10px; /* Add space on the top */
+  margin-bottom: 10px; /* Add space on the bottom */
+  overflow: hidden; /* Prevent overflow */
+}
+
+/* Panels Navigation */
+.panels-navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.nav-panel {
+  text-transform: uppercase;
+}
+
+/* Panel 2 Specific Styles */
+#panel-2 {
+  height: 100vh; /* Ensure the article takes the full viewport height */
+  margin-left: 10px; /* Adjust the value as needed */
+  margin-right: 10px; /* Adjust the value as needed */
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
