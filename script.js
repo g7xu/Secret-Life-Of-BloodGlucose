@@ -1,84 +1,90 @@
 document.addEventListener("DOMContentLoaded", function() {
-  gsap.registerPlugin(ScrollToPlugin, ScrollTrigger);
+  gsap.registerPlugin(ScrollToPlugin, Observer, ScrollTrigger);
 
-  /* Main navigation */
-  let panelsSection = document.querySelector("#panels"),
-    panelsContainer = document.querySelector("#panels-container"),
-    tween;
-  document.querySelectorAll(".anchor").forEach(anchor => {
-    anchor.addEventListener("click", function(e) {
-      e.preventDefault();
-      let targetElem = document.querySelector(e.target.getAttribute("href")),
-        y = targetElem;
-      if (targetElem && panelsContainer.isSameNode(targetElem.parentElement)) {
-        let totalScroll = tween.scrollTrigger.end - tween.scrollTrigger.start,
-          totalMovement = (panels.length - 1) * targetElem.offsetWidth;
-        y = Math.round(tween.scrollTrigger.start + (targetElem.offsetLeft / totalMovement) * totalScroll);
-      }
-      gsap.to(window, {
-        scrollTo: {
-          y: y,
-          autoKill: false
-        },
-        duration: 1
-      });
-    });
-  });
-  
-  /* Panels */
-  const panels = gsap.utils.toArray("#panels-container .panel");
-  tween = gsap.to(panels, {
-    xPercent: -100 * ( panels.length - 1 ),
-    ease: "none",
-    scrollTrigger: {
-      trigger: "#panels-container",
-      pin: true,
-      start: "top top",
-      scrub: 1,
-      snap: {
-        snapTo: (progress) => {
-          const panelCount = panels.length - 1;
-          const snapPoints = Array.from({ length: panels.length }, (_, i) => i / panelCount);
-
-          let closest = snapPoints.reduce((prev, curr) => 
-            Math.abs(curr - progress) < Math.abs(prev - progress) ? curr : prev
-          );
-
-          let index = snapPoints.indexOf(closest);
-          if (index < panelCount && progress > closest + (0.5 / panelCount)) {
-            return snapPoints[index + 1]; // Move to next panel only if at least 50% scrolled
-          } else {
-            return closest; // Stay in the current panel
-          }
-        },
-        inertia: true,
-        duration: {min: 0.1, max: 0.1}
-      },
-      end: () =>  "+=" + (panelsContainer.offsetWidth - innerWidth)
-    }
-  });
-
+ 
   let $path = document.querySelector(".mat"),
-
-  $logo = document.querySelector(".bowl"),
+  $plate = document.querySelector(".plate"),
   $fork = document.querySelector(".fork"),
-  $knife = document.querySelector(".knife");
+  $knife = document.querySelector(".knife"),
+  homeButton = document.querySelector("#home"),
+  introSection = document.querySelector("#intro");
 
-  let tl = gsap.timeline({ repeat: 0, repeatDelay: 0.5 });
-const start = "M 0 100 V 50 Q 50 0 100 50 V 100 z";
-const end = "M 0 100 V 0 Q 50 0 100 0 V 100 z";
+  function playAnimation() {
+    let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
+    const start = "M 0 100 V 50 Q 50 0 100 50 V 100 z";
+    const end = "M 0 100 V 0 Q 50 0 100 0 V 100 z";
 
-// Set initial positions (move fork left and knife right)
-gsap.set($fork, { x: "-100%" });
-gsap.set($knife, { x: "100%" });
+    // Set initial positions (move fork left and knife right)
+    gsap.set($fork, { x: "-100%", opacity: 0 });
+    gsap.set($knife, { x: "100%", opacity: 0 });
 
-tl.to($path, { duration: 0.8, attr: { d: start }, ease: "power2.in" })
-  .to($path, { duration: 0.4, attr: { d: end }, ease: "power2.out" })
-  .from($logo, { duration: 0.8, y: 75 }, "-=0.8") 
-  .to([$fork, $knife], { duration: 0.8, x: 0 }, "-=0.3"); // Move fork & knife to center
+    tl.to($path, { duration: 0.8, attr: { d: start }, ease: "power2.in" })
+      .to($path, { duration: 0.4, attr: { d: end }, ease: "power2.out" })
+      .from($plate, { duration: 0.8, y: 75, opacity: 1 }, "-=0.8") 
+      .to([$fork, $knife], { duration: 0.8, x: 0, opacity: 1 }, "-=0.3");
 
-// Starts the animation
-tl.play();
+    tl.play();
+}
+
+window.onload = playAnimation;
+
+if (homeButton) {
+    homeButton.addEventListener("click", function () {
+        playAnimation();
+    });
+}
+
+ScrollTrigger.create({
+  trigger: introSection,
+  start: "top 70%",  // Animation runs when the intro section is halfway visible
+  onEnterBack: () => {
+    playAnimation();
+  },
 });
+
+
+
+gsap.to('progress', {
+  value: 100,
+  ease: 'none',
+  scrollTrigger: { scrub: 0.3 }
+});
+
+let sections = gsap.utils.toArray("section:not(#intro)");
+sections.forEach((section) => {
+  ScrollTrigger.create({
+      trigger: section,
+      start: "top 80%",
+      end: "bottom 20%",
+      onEnter: () => section.classList.add("section-visible"),
+      onLeaveBack: () => section.classList.remove("section-visible"),
+  });
+});
+
+
+gsap.to(sections, {
+  scrollTrigger: {
+      trigger: "body",
+      start: "top top",
+      end: "bottom bottom",
+      snap: {
+          snapTo: (progress, self) => {
+              let snapPoints = sections.map(section => section.offsetTop / document.body.scrollHeight);
+              let closest = snapPoints.reduce((prev, curr) =>
+                  Math.abs(curr - progress) < Math.abs(prev - progress) ? curr : prev
+              );
+              return closest;
+          },
+          duration: 0.5,
+          ease: "power1.inOut",
+      },
+      scrub: 1
+  }
+});
+
+
+});
+
+
 
 
