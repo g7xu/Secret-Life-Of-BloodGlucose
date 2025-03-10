@@ -310,6 +310,16 @@ input[type="range"]::-webkit-slider-thumb:hover {
   opacity: 0;
 }
 
+.tooltip {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 5px;
+  border-radius: 3px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  font-size: 12px;
+}
 
 .plate {
   position: relative;
@@ -506,4 +516,7 @@ section {
   transform: translateY(0) !important;
 }
 
-
+.meal-dot {
+  stroke-width: 1px;
+  stroke: #000; /* Optional: Add a stroke color */
+}

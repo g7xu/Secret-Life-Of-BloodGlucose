@@ -26,6 +26,13 @@ mealDataPromise.then(data => {
 
 
 
+const mealIcons = {
+  breakfast: 'assets/pics/breakfast.png',
+  lunch: 'assets/pics/lunch.png',
+  dinner: 'assets/pics/dinner.png',
+  snack: 'assets/pics/snack.png'
+};
+
 // Select the container for the visualization
 const container = d3.select('.visualization-wrapper');
 const svg = container.append('svg')
@@ -197,8 +204,6 @@ function updateVisualization() {
     d3.max(filteredData, d => d3.max(d.values, v => v.time))
   ];
 
-  console.log('Filtered Time Extent:', filteredTimeExtent); // Debugging: Check the filtered time extent values
-
   xScale.domain(filteredTimeExtent).range([0, width]);
   yScale.range([height, 0]);
 
@@ -297,6 +302,53 @@ function updateVisualization() {
     .duration(750)
     .style("opacity", 0.7);
 
+  // Remove existing meal dots
+  g.selectAll('.meal-dot').remove();
+
+  // Add meal dots for each participant if they are active
+  filteredData.forEach(participant => {
+    if (activeParticipants.has(participant.pid)) {
+      participant.values.forEach(d => {
+        if (d.mealType) {
+          const mealIcon = g.append('image')
+            .attr('class', 'meal-dot')
+            .attr('xlink:href', mealIcons[d.mealType])
+            .attr('x', xScale(d.time) - 8) // Adjust the position to center the image
+            .attr('y', yScale(d.glucose) - 8) // Adjust the position to center the image
+            .attr('width', 20) // Set the width of the image
+            .attr('height', 20) // Set the height of the image
+            .style('opacity', 0)
+            .transition()
+            .duration(750)
+            .style('opacity', 1);
+
+          // Add hover event listeners using D3's on method
+          mealIcon.on('mouseover', function(event) {
+            console.log('mouseover event triggered'); // Debugging statement
+            d3.select(this).transition()
+              .duration(50)
+              .attr('opacity', 0.85);
+
+            const tooltip = d3.select('#tooltip');
+            tooltip.style('display', 'block')
+              .html(`Meal Type: ${d.mealType}<br>Calories: ${d.calories}<br>Carbs: ${d.carbs}<br>Protein: ${d.protein}<br>Fat: ${d.fat}<br>Fiber: ${d.fiber}`)
+              .style('left', `${event.pageX + 10}px`)
+              .style('top', `${event.pageY + 10}px`);
+          });
+
+          mealIcon.on('mouseout', function() {
+            console.log('mouseout event triggered'); // Debugging statement
+            d3.select(this).transition()
+              .duration(50)
+              .attr('opacity', 1);
+
+            d3.select('#tooltip').style('display', 'none');
+          });
+        }
+      });
+    }
+  });
+
   const legendData = filteredData.filter(d => activeParticipants.has(d.pid));
 
   svg.select(".legend").remove();
@@ -354,14 +406,20 @@ async function loadData() {
       const [hours, minutes, seconds] = time.split(':').map(Number);
       return Number(days) * 24 * 60 + hours * 60 + minutes + seconds / 60;
     }
-
-    // converting the time
+      
+    // converting the time and include the relevant nutrients data
     processedData = participants.map(pid => {
       const participantData = data
         .filter(d => d.PID === pid)
         .map(d => ({
           time: parseTimestamp(d.Timestamp),
           glucose: d['Libre GL'],
+          mealType: d['Meal Type'],
+          calories: d['Calories'],
+          carbs: d['Carbs'],
+          protein: d['Protein'],
+          fat: d['Fat'],
+          fiber: d['Fiber'],
           pid: d.PID
         }))
         .sort((a, b) => a.time - b.time);
@@ -370,8 +428,6 @@ async function loadData() {
         values: participantData
       };
     });
-
-    console.log('Processed data:', processedData);
 
     return participants;
   } catch (error) {
