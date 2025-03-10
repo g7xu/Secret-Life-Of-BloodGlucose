@@ -507,3 +507,21 @@ section {
 }
 
 
+.tooltip {
+  position: absolute;
+  visibility: hidden;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  font-size: 14px;
+  pointer-events: none;
+  max-width: 200px;  /* Ensure it doesn't overflow */
+  white-space: nowrap; /* Prevent text wrapping */
+}
+
+.tooltip img {
+  width: 100px;
+  height: auto;
+  margin-top: 5px;
+}
