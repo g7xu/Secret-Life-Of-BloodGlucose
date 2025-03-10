@@ -8,11 +8,19 @@ d3.json("./assets/vis_data/meal_data.json").then(data => {
     const minTime = d3.min(data, d => d.Timestamp);
     const maxTime = new Date(minTime.getTime() + 10 * 24 * 60 * 60 * 1000);
 
-    const width = 700, height = 40;
+    const width = 700, height = 100;
     const margin = {top: 30, right: 30, bottom: 50, left: 50};
 
     function createGraph(group, graphId, title) {
-        const svg = d3.select(`#${graphId}`).append("svg")
+        const container = d3.select(`#${graphId}`);
+        
+        container.append("button")
+            .text("Reset Zoom")
+            .on("click", () => {
+                svg.transition().duration(750).call(zoom.transform, d3.zoomIdentity);
+            });
+
+        const svg = container.append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
@@ -22,9 +30,13 @@ d3.json("./assets/vis_data/meal_data.json").then(data => {
             .domain([minTime, maxTime])
             .range([0, width]);
 
-        const yScale = d3.scaleLinear()
-            .domain([0, 600])
-            .range([height, 0]);
+        const simulation = d3.forceSimulation(group)
+            .force("x", d3.forceX(d => xScale(d.Timestamp)).strength(1))
+            .force("y", d3.forceY(height / 2))
+            .force("collide", d3.forceCollide(4))
+            .stop();
+
+        for (let i = 0; i < 120; i++) simulation.tick();
 
         svg.append("g")
             .attr("transform", `translate(0,${height})`)
@@ -33,21 +45,14 @@ d3.json("./assets/vis_data/meal_data.json").then(data => {
                 .ticks(d3.timeDay.every(1))
                 .tickFormat((d, i) => `Day ${i}`));
 
-        svg.append("g")
-            .attr("class", "y-axis")
-            .text("Meals")
-            //.call(d3.axisLeft(yScale).ticks(5));
-
-        svg.selectAll("line")
+        svg.selectAll("circle")
             .data(group)
             .enter()
-            .append("line")
-            .attr("x1", d => xScale(d.Timestamp))
-            .attr("x2", d => xScale(d.Timestamp))
-            .attr("y1", 0)
-            .attr("y2", height)
-            .attr("stroke", "red")
-            .attr("stroke-width", 1);
+            .append("circle")
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y)
+            .attr("r", 3)
+            .attr("fill", "red");
 
         svg.append("text")
             .attr("x", width / 2)
@@ -65,14 +70,12 @@ d3.json("./assets/vis_data/meal_data.json").then(data => {
                     .call(d3.axisBottom(newX)
                         .ticks(d3.timeDay.every(1))
                         .tickFormat(d3.timeFormat("Day %d")));
-        
-                svg.selectAll("line")
-                    .attr("x1", d => newX(d.Timestamp))
-                    .attr("x2", d => newX(d.Timestamp));
+                
+                svg.selectAll("circle")
+                    .attr("cx", d => newX(d.Timestamp));
             });
         
         svg.call(zoom);
-        
     }
 
     createGraph(data.filter(d => d['diabetes level'] === 'Non-diabetic'), "graph-nondiabetic", "Non-Diabetic Group");
