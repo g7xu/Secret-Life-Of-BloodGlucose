@@ -5,3 +5,5 @@ cleaned_data
 .ipynb_checkpoints
 /__pycache__
 __pycache__
+Final-Project.code-workspace
+.gitignore
