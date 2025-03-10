@@ -261,7 +261,7 @@ function updateVisualization() {
       .x(d => xScale(d.time))
       .y(d => yScale(d.glucose))
       .curve(d3.curveMonotoneX)(d.values))
-    .style("stroke-width", 4) // Adjust the stroke-width to make the line thicker
+    .style("stroke-width", 2) // Adjust the stroke-width to make the line thicker
     .transition()
     .duration(750)
     .style("opacity", 0.7);
@@ -269,6 +269,8 @@ function updateVisualization() {
   // Remove existing meal dots and dashed lines
   g.selectAll('.meal-group').remove();
   g.selectAll('.meal-time-line').remove();
+  g.selectAll('.meal-time-dot').remove();
+  g.selectAll('.meal-dot').remove();
 
   // Add meal dots for each participant if they are active
   filteredData.forEach(participant => {
@@ -324,6 +326,14 @@ function updateVisualization() {
             .transition()
             .duration(750)
             .style('opacity', 1);
+
+          // Add a small dot on the y-axis at the meal time
+          g.append('circle')
+            .attr('class', 'meal-time-dot')
+            .attr('cx', xScale(d.time))
+            .attr('cy', yScale(d.glucose)) // Position the dot at the glucose level
+            .attr('r', 3) // Radius of the dot
+            .attr('fill', 'gray');
         }
       });
     }
