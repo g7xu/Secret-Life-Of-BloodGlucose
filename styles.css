@@ -100,10 +100,21 @@ p {
 }
 
 .selector-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.participant-category {
+  display: flex;
+  flex-direction: column;
   gap: 8px;
-  margin-bottom: 20px;
+}
+
+.participant-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .participant-btn {
