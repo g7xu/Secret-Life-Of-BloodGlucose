@@ -31,7 +31,11 @@ const mealIcons = {
   breakfast: 'assets/pics/breakfast.png',
   lunch: 'assets/pics/lunch.png',
   dinner: 'assets/pics/dinner.png',
-  snack: 'assets/pics/snack.png'
+  snack: 'assets/pics/snack.png',
+  breakfastblod: 'assets/pics/breakfastbold.png',
+  lunchbold: 'assets/pics/lunchbold.png',
+  dinnerbold: 'assets/pics/dinnerbold.png',
+  snackbold: 'assets/pics/snackbold.png'
 };
 
 // Select the container for the visualization
@@ -271,7 +275,8 @@ function updateVisualization() {
     .attr("d", d => d3.line()
       .x(d => xScale(d.time))
       .y(d => yScale(d.glucose))
-      .curve(d3.curveMonotoneX)(d.values));
+      .curve(d3.curveMonotoneX)(d.values))
+    .style("stroke-width", 3); // Adjust the stroke-width to make the line thicker
 
   lines.enter()
     .append("path")
@@ -328,7 +333,10 @@ function updateVisualization() {
     .duration(750)
     .style("opacity", 0.7);
 
-  // Remove existing meal dots
+  // Remove existing meal dots and dashed lines
+  g.selectAll('.meal-group').remove();
+  g.selectAll('.meal-time-line').remove();
+  g.selectAll('.meal-time-dot').remove();
   g.selectAll('.meal-dot').remove();
 
   // Add meal dots for each participant if they are active
@@ -336,40 +344,76 @@ function updateVisualization() {
     if (activeParticipants.has(participant.pid)) {
       participant.values.forEach(d => {
         if (d.mealType) {
-          const mealIcon = g.append('image')
+          console.log(`Adding meal dot for participant ${participant.pid} at time ${d.time} with glucose level ${d.glucose}`);
+          const group = g.append('g') // Group to hold both image and interactive rect
+            .attr('class', 'meal-group')
+            .attr('transform', `translate(${xScale(d.time)}, ${yScale(d.glucose) * 0.7 - 30})`); // Move up by 30%
+
+          // Vertical dashed line for meal time
+          const line = g.append('line')
+            .attr('class', 'meal-time-line')
+            .attr('x1', xScale(d.time))
+            .attr('x2', xScale(d.time))
+            .attr('y1', yScale(d.glucose)) // Start at the top of the rectangle
+            .attr('y2', yScale(d.glucose) * 0.7) // Stop at the glucose level
+            .attr('stroke', 'gray')
+            .attr('stroke-width', 1)
+            .attr('stroke-dasharray', '4,4');
+
+          // Meal image
+          const image = group.append('image')
             .attr('class', 'meal-dot')
             .attr('xlink:href', mealIcons[d.mealType])
-            .attr('x', xScale(d.time) - 8) // Adjust the position to center the image
-            .attr('y', yScale(d.glucose) - 8) // Adjust the position to center the image
-            .attr('width', 20) // Set the width of the image
-            .attr('height', 20) // Set the height of the image
+            .attr('width', 20)
+            .attr('height', 20)
+            .attr('x', -10) // Center the image horizontally
+            .attr('y', -10) // Center the image vertically
             .style('opacity', 0)
             .transition()
             .duration(750)
             .style('opacity', 1);
 
-          // Add hover event listeners using D3's on method
-          mealIcon.on('mouseover', function(event) {
-            console.log('mouseover event triggered'); // Debugging statement
-            d3.select(this).transition()
-              .duration(50)
-              .attr('opacity', 0.85);
+          // Add a small dot on the y-axis at the meal time
+          const dot = g.append('circle')
+            .attr('class', 'meal-time-dot')
+            .attr('cx', xScale(d.time))
+            .attr('cy', yScale(d.glucose)) // Position the dot at the glucose level
+            .attr('r', 3) // Radius of the dot
+            .attr('fill', 'gray');
 
-            const tooltip = d3.select('#tooltip');
-            tooltip.style('display', 'block')
-              .html(`Meal Type: ${d.mealType}<br>Calories: ${d.calories}<br>Carbs: ${d.carbs}<br>Protein: ${d.protein}<br>Fat: ${d.fat}<br>Fiber: ${d.fiber}`)
-              .style('left', `${event.pageX + 10}px`)
-              .style('top', `${event.pageY + 10}px`);
-          });
+          // Transparent square for better event detection
+          group.append('rect')
+            .attr('width', 20)
+            .attr('height', yScale(d.glucose) - (yScale(d.glucose) * 0.7 - 30)) // Height to span the area between the line plot and the icon
+            .attr('x', -10) // Center the rectangle horizontally
+            .attr('y', -10) // Position the rectangle at the top middle
+            .attr('fill', 'transparent') // Invisible but captures events
+            .style('pointer-events', 'all') // Ensure the rect captures all events
+            .on('mouseover', function (event) {
+              const [x, y] = d3.pointer(event, this);
+              d3.select('#tooltip')
+                .style('display', 'block')
+                .html(`Calories: ${d.calories}`)
+                .style('left', `${x + 10}px`)
+                .style('top', `${y - 10}px`);
 
-          mealIcon.on('mouseout', function() {
-            console.log('mouseout event triggered'); // Debugging statement
-            d3.select(this).transition()
-              .duration(50)
-              .attr('opacity', 1);
+              // Make line and dot bold
+              line.attr('stroke-width', 3);
+              dot.attr('r', 5);
 
-            d3.select('#tooltip').style('display', 'none');
-          });
+              // Replace image with bold version
+              image.attr('xlink:href', mealIcons[d.mealType + 'bold']);
+            })
+            .on('mouseout', function () {
+              d3.select('#tooltip').style('display', 'none');
+
+              // Revert line and dot to original
+              line.attr('stroke-width', 1);
+              dot.attr('r', 3);
+
+              // Revert image to original version
+              image.attr('xlink:href', mealIcons[d.mealType]);
+            });
         }
       });
     }
