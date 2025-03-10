@@ -435,31 +435,7 @@ function updateVisualization() {
     }
   });
 
-  const legendData = filteredData.filter(d => activeParticipants.has(d.pid));
-
-  svg.select(".legend").remove();
-
-  if (legendData.length > 0) {
-    const legend = svg.append("g")
-      .attr("class", "legend")
-      .attr("transform", `translate(${containerWidth - margin.right - 100}, ${margin.top})`);
-
-    legendData.forEach((d, i) => {
-      const legendRow = legend.append("g")
-        .attr("transform", `translate(0, ${i * 20})`);
-
-      legendRow.append("rect")
-        .attr("width", 15)
-        .attr("height", 15)
-        .attr("fill", colorScale(d.pid));
-
-      legendRow.append("text")
-        .attr("x", 20)
-        .attr("y", 12)
-        .attr("font-size", "12px")
-        .text(`Participant ${d.pid}`);
-    });
-  }
+  // adding a legend on the top right corner of the line plot 
 
   const noDataMessage = g.selectAll(".no-data-message")
     .data(activeParticipants.size === 0 ? [1] : []);
