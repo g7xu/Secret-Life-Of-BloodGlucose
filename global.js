@@ -1,9 +1,42 @@
 import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7/+esm';
+import { mealDataPromise } from './index.js'; // adjust relative path if needed
+
 
 const margin = { top: 40, right: 50, bottom: 50, left: 60 };
 let activeParticipants = new Set();
 let timeRange = [1440, 14385];
 let data, processedData, xScale, yScale, colorScale;
+let tooltip;
+let mealData;
+// const baseDate = new Date(1900, 0, 1); // Jan 1, 1900
+
+
+mealDataPromise.then(data => {
+  mealData = data.map(d => ({
+    Timestamp: d.Timestamp,
+    glucose: d['Libre GL'],  // Map 'Libre GL' to glucose for consistency
+    diabetes_level: d['diabetes level'],  // Keep the diabetes level for coloring
+    time: d.Timestamp.getTime() / 60000  // Convert to minutes for x-scale
+  }));
+
+  console.log("Processed meal data:", mealData);
+  updateVisualization();
+});
+
+
+
+
+
+const mealIcons = {
+  breakfast: 'assets/pics/breakfast.png',
+  lunch: 'assets/pics/lunch.png',
+  dinner: 'assets/pics/dinner.png',
+  snack: 'assets/pics/snack.png',
+  breakfastblod: 'assets/pics/breakfastbold.png',
+  lunchbold: 'assets/pics/lunchbold.png',
+  dinnerbold: 'assets/pics/dinnerbold.png',
+  snackbold: 'assets/pics/snackbold.png'
+};
 
 // Select the container for the visualization
 const container = d3.select('.visualization-wrapper');
@@ -176,8 +209,6 @@ function updateVisualization() {
     d3.max(filteredData, d => d3.max(d.values, v => v.time))
   ];
 
-  console.log('Filtered Time Extent:', filteredTimeExtent); // Debugging: Check the filtered time extent values
-
   xScale.domain(filteredTimeExtent).range([0, width]);
   yScale.range([height, 0]);
 
@@ -244,7 +275,8 @@ function updateVisualization() {
     .attr("d", d => d3.line()
       .x(d => xScale(d.time))
       .y(d => yScale(d.glucose))
-      .curve(d3.curveMonotoneX)(d.values));
+      .curve(d3.curveMonotoneX)(d.values))
+    .style("stroke-width", 3); // Adjust the stroke-width to make the line thicker
 
   lines.enter()
     .append("path")
@@ -255,9 +287,137 @@ function updateVisualization() {
       .x(d => xScale(d.time))
       .y(d => yScale(d.glucose))
       .curve(d3.curveMonotoneX)(d.values))
+    .on('mouseover', function(event, d) {
+      tooltip.transition()
+        .duration(200)
+        .style('opacity', .9);
+      
+      // Get mouse x position in data coordinates
+      const [mouseX] = d3.pointer(event, this);
+      const hoveredTime = xScale.invert(mouseX);
+      
+      // Find the closest data point to the mouse position
+      const bisect = d3.bisector(d => d.time).left;
+      const index = bisect(d.values, hoveredTime);
+      const dataPoint = index > 0 ? d.values[index - 1] : d.values[0];
+      
+      // Display the specific glucose value at this position
+      tooltip.html(`Participant: ${d.pid}<br>Time: ${Math.round(dataPoint.time)} min<br>Glucose: ${dataPoint.glucose}`)
+        .style('left', (event.pageX + 5) + 'px')
+        .style('top', (event.pageY - 28) + 'px');
+    })
+    .on('mousemove', function(event, d) {
+      // Get mouse x position in data coordinates
+      const [mouseX] = d3.pointer(event, this);
+      const hoveredTime = xScale.invert(mouseX);
+      
+      // Find the closest data point to the mouse position
+      const bisect = d3.bisector(d => d.time).left;
+      const index = bisect(d.values, hoveredTime);
+      const dataPoint = index > 0 && index < d.values.length ? 
+                        (hoveredTime - d.values[index-1].time < d.values[index].time - hoveredTime ? 
+                         d.values[index-1] : d.values[index]) : 
+                        (index > 0 ? d.values[index-1] : d.values[0]);
+      
+      // Display the specific glucose value at this position
+      tooltip.html(`Participant: ${d.pid}<br>Time: ${Math.round(dataPoint.time)} min<br>Glucose: ${dataPoint.glucose}`)
+        .style('left', (event.pageX + 5) + 'px')
+        .style('top', (event.pageY - 28) + 'px');
+    })
+    .on('mouseout', function() {
+      tooltip.transition()
+        .duration(500)
+        .style('opacity', 0);
+    })
     .transition()
     .duration(750)
     .style("opacity", 0.7);
+
+  // Remove existing meal dots and dashed lines
+  g.selectAll('.meal-group').remove();
+  g.selectAll('.meal-time-line').remove();
+  g.selectAll('.meal-time-dot').remove();
+  g.selectAll('.meal-dot').remove();
+
+  // Add meal dots for each participant if they are active
+  filteredData.forEach(participant => {
+    if (activeParticipants.has(participant.pid)) {
+      participant.values.forEach(d => {
+        if (d.mealType) {
+          console.log(`Adding meal dot for participant ${participant.pid} at time ${d.time} with glucose level ${d.glucose}`);
+          const group = g.append('g') // Group to hold both image and interactive rect
+            .attr('class', 'meal-group')
+            .attr('transform', `translate(${xScale(d.time)}, ${yScale(d.glucose) * 0.7 - 30})`); // Move up by 30%
+
+          // Vertical dashed line for meal time
+          const line = g.append('line')
+            .attr('class', 'meal-time-line')
+            .attr('x1', xScale(d.time))
+            .attr('x2', xScale(d.time))
+            .attr('y1', yScale(d.glucose)) // Start at the top of the rectangle
+            .attr('y2', yScale(d.glucose) * 0.7) // Stop at the glucose level
+            .attr('stroke', 'gray')
+            .attr('stroke-width', 1)
+            .attr('stroke-dasharray', '4,4');
+
+          // Meal image
+          const image = group.append('image')
+            .attr('class', 'meal-dot')
+            .attr('xlink:href', mealIcons[d.mealType])
+            .attr('width', 20)
+            .attr('height', 20)
+            .attr('x', -10) // Center the image horizontally
+            .attr('y', -10) // Center the image vertically
+            .style('opacity', 0)
+            .transition()
+            .duration(750)
+            .style('opacity', 1);
+
+          // Add a small dot on the y-axis at the meal time
+          const dot = g.append('circle')
+            .attr('class', 'meal-time-dot')
+            .attr('cx', xScale(d.time))
+            .attr('cy', yScale(d.glucose)) // Position the dot at the glucose level
+            .attr('r', 3) // Radius of the dot
+            .attr('fill', 'gray');
+
+          // Transparent square for better event detection
+          group.append('rect')
+            .attr('width', 20)
+            .attr('height', yScale(d.glucose) - (yScale(d.glucose) * 0.7 - 30)) // Height to span the area between the line plot and the icon
+            .attr('x', -10) // Center the rectangle horizontally
+            .attr('y', -10) // Position the rectangle at the top middle
+            .attr('fill', 'transparent') // Invisible but captures events
+            .style('pointer-events', 'all') // Ensure the rect captures all events
+            .on('mouseover', function (event) {
+              const [x, y] = d3.pointer(event, this);
+              d3.select('#tooltip')
+                .style('display', 'block')
+                .html(`Calories: ${d.calories}`)
+                .style('left', `${x + 10}px`)
+                .style('top', `${y - 10}px`);
+
+              // Make line and dot bold
+              line.attr('stroke-width', 3);
+              dot.attr('r', 5);
+
+              // Replace image with bold version
+              image.attr('xlink:href', mealIcons[d.mealType + 'bold']);
+            })
+            .on('mouseout', function () {
+              d3.select('#tooltip').style('display', 'none');
+
+              // Revert line and dot to original
+              line.attr('stroke-width', 1);
+              dot.attr('r', 3);
+
+              // Revert image to original version
+              image.attr('xlink:href', mealIcons[d.mealType]);
+            });
+        }
+      });
+    }
+  });
 
   const legendData = filteredData.filter(d => activeParticipants.has(d.pid));
 
@@ -298,6 +458,55 @@ function updateVisualization() {
     .attr("y", height / 2)
     .attr("font-size", "14px")
     .text("Select participants to view their glucose data");
+
+
+    const mealColorScale = d3.scaleOrdinal()
+    .domain(['Non-diabetic', 'Pre-diabetic', 'Diabetic'])
+    .range(['#2ecc71', '#f1c40f', '#e74c3c']); // Green, Yellow, Red
+
+    const mealCircles = g.selectAll(".meal-circle")
+        .data(mealData.filter(d => d.time >= timeExtent[0] && d.time <= timeExtent[1]));
+
+    mealCircles.exit().remove();
+
+    mealCircles.enter()
+        .append("circle")
+        .attr("class", "meal-circle")
+        .attr("cx", d => xScale(d.time))  // Use the converted time
+        .attr("cy", d => yScale(d.glucose))  // Use the mapped glucose value
+        .attr("r", 5)
+        .style("fill", d => mealColorScale(d.diabetes_level))  // Use diabetes level for color
+        .style("opacity", 0.7)
+        .style("stroke", "white")
+        .style("stroke-width", 1)
+        .on('mouseover', function(event, d) {
+          tooltip.transition()
+            .duration(200)
+            .style('opacity', .9);
+          tooltip.html(`
+            Time: ${d.Timestamp.toLocaleTimeString()}<br>
+            Glucose: ${d.glucose}<br>
+            Type: ${d.diabetes_level}
+          `)
+            .style('left', (event.pageX + 5) + 'px')
+            .style('top', (event.pageY - 28) + 'px');
+        })
+        .on('mousemove', function(event) {
+          tooltip.style('left', (event.pageX + 5) + 'px')
+            .style('top', (event.pageY - 28) + 'px');
+        })
+        .on('mouseout', function() {
+          tooltip.transition()
+            .duration(500)
+            .style('opacity', 0);
+        });
+
+  mealCircles
+      .transition()
+      .duration(750)
+      .attr("cx", d => xScale(d.time))
+      .attr("cy", d => yScale(d.glucose))
+      .style("fill", d => mealColorScale(d.diabetes_level));
 }
 
 // Function to load data from a JSON file
@@ -316,24 +525,36 @@ async function loadData() {
       const [hours, minutes, seconds] = time.split(':').map(Number);
       return Number(days) * 24 * 60 + hours * 60 + minutes + seconds / 60;
     }
-
-    // converting the time
+      
+    // converting the time and include the relevant nutrients data
     processedData = participants.map(pid => {
       const participantData = data
         .filter(d => d.PID === pid)
         .map(d => ({
           time: parseTimestamp(d.Timestamp),
           glucose: d['Libre GL'],
+          mealType: d['Meal Type'],
+          calories: d['Calories'],
+          carbs: d['Carbs'],
+          protein: d['Protein'],
+          fat: d['Fat'],
+          fiber: d['Fiber'],
           pid: d.PID
         }))
         .sort((a, b) => a.time - b.time);
+
+      const glucoseMap = {};
+      participantData.forEach(d => {
+        glucoseMap[d.time] = d.glucose;
+      });
+
+
       return {
         pid,
-        values: participantData
+        values: participantData,
+        glucoseMap: glucoseMap
       };
     });
-
-    console.log('Processed data:', processedData);
 
     return participants;
   } catch (error) {
@@ -377,6 +598,11 @@ function plotData(participants) {
 
   g.append("g")
     .attr("class", "grid");
+
+
+  tooltip = d3.select('body').append('div')
+    .attr('class', 'tooltip')
+    .style('opacity', 0);
 
   createParticipantButtons(participants);
   rendering_timeSlider(1, Math.ceil(timeExtent[1] / 1440)); // Initial rendering of the slider

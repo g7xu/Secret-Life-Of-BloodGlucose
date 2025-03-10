@@ -149,3 +149,13 @@ d3.json("./assets/vis_data/meal_data_photos.json").then(data => {
     createGraph(data.filter(d => d['diabetes level'] === 'Diabetic'), "graph-diabetic", "Diabetic Group");
 
 }).catch(error => console.error("Error loading the JSON data:", error));
+
+export const mealDataPromise = d3.json("./assets/vis_data/meal_data.json").then(data => {
+    const parseTime = d3.timeParse("%d days %H:%M:%S");
+    data.forEach(d => {
+        d.Timestamp = parseTime(d.Timestamp);
+    });
+    return data;
+}).catch(error => {
+    console.error("Error loading the JSON data:", error);
+});
