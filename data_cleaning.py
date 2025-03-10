@@ -5,6 +5,9 @@ import os
 import numpy as np
 import pandas as pd
 
+NON_DIABETIC_CANIDATES = [1, 6, 31, 48, 34]
+PRE_DIABETIC_CANIDATES = [8, 29, 26, 9, 10]
+DIABETIC_CANIDATES = [12, 14, 49, 42, 30]
 
 # helper functions
 def identify_diabetes(A1c):
@@ -161,10 +164,22 @@ if __name__ == "__main__":
         cleaned_geo_data[["PID", "diabetes level"]], on="PID", how="left"
     )
 
+    # filter out the participants who are not in the list
+    meal_data = meal_data[
+        meal_data["PID"].isin(NON_DIABETIC_CANIDATES + PRE_DIABETIC_CANIDATES + DIABETIC_CANIDATES)
+    ]
+
+    cleaned_CGMarcros = cleaned_CGMarcros[
+        cleaned_CGMarcros["PID"].isin(NON_DIABETIC_CANIDATES + PRE_DIABETIC_CANIDATES + DIABETIC_CANIDATES)
+    ]
+
     # save the meal data in json file
     meal_data.to_json("assets/vis_data/meal_data.json", orient="records", indent=4)
 
     cleaned_CGMarcros['Timestamp'] = cleaned_CGMarcros['Timestamp'].astype(str)
+
+
     cleaned_CGMarcros.to_json("assets/vis_data/CGMacros.json", orient="records", indent=4)  
 
     print("Data cleaning is done")
+
