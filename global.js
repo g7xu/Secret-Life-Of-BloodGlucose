@@ -299,32 +299,40 @@ function updateVisualization() {
 
           // Meal image
           const image = group.append('image')
-          .attr('class', 'meal-dot')
-          .attr('xlink:href', mealIcons[d.mealType])
-          .attr('width', 20)
-          .attr('height', 20)
-          .attr('x', -10) // Center the image horizontally
-          .attr('y', -10) // Center the image vertically
-          .style('opacity', 0)
-          .transition()
-          .duration(750)
-          .style('opacity', 1);
+            .attr('class', 'meal-dot')
+            .attr('xlink:href', mealIcons[d.mealType])
+            .attr('width', 20)
+            .attr('height', 20)
+            .attr('x', -10) // Center the image horizontally
+            .attr('y', -10) // Center the image vertically
+            .style('opacity', 0)
+            .transition()
+            .duration(750)
+            .style('opacity', 1);
+
+          // Add a small dot on the y-axis at the meal time
+          const dot = g.append('circle')
+            .attr('class', 'meal-time-dot')
+            .attr('cx', xScale(d.time))
+            .attr('cy', yScale(d.glucose)) // Position the dot at the glucose level
+            .attr('r', 3) // Radius of the dot
+            .attr('fill', 'gray');
 
           // Transparent square for better event detection
           group.append('rect')
-            .attr('width', 30)
-            .attr('height', 30)
-            .attr('x', -15)
-            .attr('y', -15) // Center the rectangle vertically
+            .attr('width', 20)
+            .attr('height', yScale(d.glucose) - (yScale(d.glucose) * 0.7 - 30)) // Height to span the area between the line plot and the icon
+            .attr('x', -10) // Center the rectangle horizontally
+            .attr('y', -10) // Position the rectangle at the top middle
             .attr('fill', 'transparent') // Invisible but captures events
             .style('pointer-events', 'all') // Ensure the rect captures all events
             .on('mouseover', function (event) {
-              console.log(`Mouse over meal dot for participant ${participant.pid} at time ${d.time}`);
+              const [x, y] = d3.pointer(event, this);
               d3.select('#tooltip')
                 .style('display', 'block')
-                .html(`Meal Type: ${d.mealType}<br>Calories: ${d.calories}<br>Carbs: ${d.carbs}<br>Protein: ${d.protein}<br>Fat: ${d.fat}<br>Fiber: ${d.fiber}`)
-                .style('left', `${event.pageX + 10}px`)
-                .style('top', `${event.pageY + 10}px`);
+                .html(`Calories: ${d.calories}`)
+                .style('left', `${x + 10}px`)
+                .style('top', `${y - 10}px`);
 
               // Make line and dot bold
               line.attr('stroke-width', 3);
@@ -334,7 +342,6 @@ function updateVisualization() {
               image.attr('xlink:href', mealIcons[d.mealType + 'bold']);
             })
             .on('mouseout', function () {
-              console.log(`Mouse out from meal dot for participant ${participant.pid} at time ${d.time}`);
               d3.select('#tooltip').style('display', 'none');
 
               // Revert line and dot to original
@@ -344,16 +351,6 @@ function updateVisualization() {
               // Revert image to original version
               image.attr('xlink:href', mealIcons[d.mealType]);
             });
-
-
-
-          // Add a small dot on the y-axis at the meal time
-          const dot = g.append('circle')
-            .attr('class', 'meal-time-dot')
-            .attr('cx', xScale(d.time))
-            .attr('cy', yScale(d.glucose)) // Position the dot at the glucose level
-            .attr('r', 3) // Radius of the dot
-            .attr('fill', 'gray');
         }
       });
     }
