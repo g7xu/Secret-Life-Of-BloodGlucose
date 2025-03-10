@@ -278,15 +278,15 @@ function updateVisualization() {
           console.log(`Adding meal dot for participant ${participant.pid} at time ${d.time} with glucose level ${d.glucose}`);
           const group = g.append('g') // Group to hold both image and interactive rect
             .attr('class', 'meal-group')
-            .attr('transform', `translate(${xScale(d.time)}, ${yScale(d.glucose) - 20})`); // Move up by 20 units
+            .attr('transform', `translate(${xScale(d.time)}, ${yScale(d.glucose) * 0.7 - 30})`); // Move up by 30%
 
           // Vertical dashed line for meal time
           g.append('line')
             .attr('class', 'meal-time-line')
             .attr('x1', xScale(d.time))
             .attr('x2', xScale(d.time))
-            .attr('y1', 0)
-            .attr('y2', yScale(d.glucose)) // Stop at the glucose level
+            .attr('y1', yScale(d.glucose)) // Start at the top of the rectangle
+            .attr('y2', yScale(d.glucose) * 0.7) // Stop at the glucose level
             .attr('stroke', 'gray')
             .attr('stroke-width', 1)
             .attr('stroke-dasharray', '4,4');
