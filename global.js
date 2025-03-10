@@ -9,7 +9,11 @@ const mealIcons = {
   breakfast: 'assets/pics/breakfast.png',
   lunch: 'assets/pics/lunch.png',
   dinner: 'assets/pics/dinner.png',
-  snack: 'assets/pics/snack.png'
+  snack: 'assets/pics/snack.png',
+  breakfastblod: 'assets/pics/breakfastbold.png',
+  lunchbold: 'assets/pics/lunchbold.png',
+  dinnerbold: 'assets/pics/dinnerbold.png',
+  snackbold: 'assets/pics/snackbold.png'
 };
 
 // Select the container for the visualization
@@ -283,7 +287,7 @@ function updateVisualization() {
             .attr('transform', `translate(${xScale(d.time)}, ${yScale(d.glucose) * 0.7 - 30})`); // Move up by 30%
 
           // Vertical dashed line for meal time
-          g.append('line')
+          const line = g.append('line')
             .attr('class', 'meal-time-line')
             .attr('x1', xScale(d.time))
             .attr('x2', xScale(d.time))
@@ -292,6 +296,19 @@ function updateVisualization() {
             .attr('stroke', 'gray')
             .attr('stroke-width', 1)
             .attr('stroke-dasharray', '4,4');
+
+          // Meal image
+          const image = group.append('image')
+          .attr('class', 'meal-dot')
+          .attr('xlink:href', mealIcons[d.mealType])
+          .attr('width', 20)
+          .attr('height', 20)
+          .attr('x', -10) // Center the image horizontally
+          .attr('y', -10) // Center the image vertically
+          .style('opacity', 0)
+          .transition()
+          .duration(750)
+          .style('opacity', 1);
 
           // Transparent square for better event detection
           group.append('rect')
@@ -308,27 +325,30 @@ function updateVisualization() {
                 .html(`Meal Type: ${d.mealType}<br>Calories: ${d.calories}<br>Carbs: ${d.carbs}<br>Protein: ${d.protein}<br>Fat: ${d.fat}<br>Fiber: ${d.fiber}`)
                 .style('left', `${event.pageX + 10}px`)
                 .style('top', `${event.pageY + 10}px`);
+
+              // Make line and dot bold
+              line.attr('stroke-width', 3);
+              dot.attr('r', 5);
+
+              // Replace image with bold version
+              image.attr('xlink:href', mealIcons[d.mealType + 'bold']);
             })
             .on('mouseout', function () {
               console.log(`Mouse out from meal dot for participant ${participant.pid} at time ${d.time}`);
               d3.select('#tooltip').style('display', 'none');
+
+              // Revert line and dot to original
+              line.attr('stroke-width', 1);
+              dot.attr('r', 3);
+
+              // Revert image to original version
+              image.attr('xlink:href', mealIcons[d.mealType]);
             });
 
-          // Meal image
-          group.append('image')
-            .attr('class', 'meal-dot')
-            .attr('xlink:href', mealIcons[d.mealType])
-            .attr('width', 20)
-            .attr('height', 20)
-            .attr('x', -10) // Center the image horizontally
-            .attr('y', -10) // Center the image vertically
-            .style('opacity', 0)
-            .transition()
-            .duration(750)
-            .style('opacity', 1);
+
 
           // Add a small dot on the y-axis at the meal time
-          g.append('circle')
+          const dot = g.append('circle')
             .attr('class', 'meal-time-dot')
             .attr('cx', xScale(d.time))
             .attr('cy', yScale(d.glucose)) // Position the dot at the glucose level
