@@ -19,7 +19,6 @@ mealDataPromise.then(data => {
     time: d.Timestamp.getTime() / 60000  // Convert to minutes for x-scale
   }));
 
-  console.log("Processed meal data:", mealData);
   updateVisualization();
 });
 
@@ -56,7 +55,7 @@ function createParticipantButtons(participants) {
     selector.append('button')
       .attr('class', 'participant-btn')
       .attr('data-pid', pid)
-      .text(`Participant ${pid}`)
+      .text(pid) // Display the participant number
       .on('click', function() {
         const btn = d3.select(this);
         const isActive = btn.classed('active');
@@ -344,7 +343,6 @@ function updateVisualization() {
     if (activeParticipants.has(participant.pid)) {
       participant.values.forEach(d => {
         if (d.mealType) {
-          console.log(`Adding meal dot for participant ${participant.pid} at time ${d.time} with glucose level ${d.glucose}`);
           const group = g.append('g') // Group to hold both image and interactive rect
             .attr('class', 'meal-group')
             .attr('transform', `translate(${xScale(d.time)}, ${yScale(d.glucose) * 0.7 - 30})`); // Move up by 30%
@@ -585,10 +583,7 @@ function plotData(participants) {
 
   yScale = d3.scaleLinear()
     .domain(glucoseExtent);
-
-  console.log('Time extent:', timeExtent);
-  console.log('Glucose extent:', glucoseExtent);
-
+  
   g.append("g")
     .attr("class", "x-axis")
     .attr("transform", `translate(0, ${height})`);
