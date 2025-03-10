@@ -272,7 +272,7 @@ function updateVisualization() {
     if (activeParticipants.has(participant.pid)) {
       participant.values.forEach(d => {
         if (d.mealType) {
-          g.append('image')
+          const mealIcon = g.append('image')
             .attr('class', 'meal-dot')
             .attr('xlink:href', mealIcons[d.mealType])
             .attr('x', xScale(d.time) - 8) // Adjust the position to center the image
@@ -283,6 +283,29 @@ function updateVisualization() {
             .transition()
             .duration(750)
             .style('opacity', 1);
+
+          // Add hover event listeners using D3's on method
+          mealIcon.on('mouseover', function(event) {
+            console.log('mouseover event triggered'); // Debugging statement
+            d3.select(this).transition()
+              .duration(50)
+              .attr('opacity', 0.85);
+
+            const tooltip = d3.select('#tooltip');
+            tooltip.style('display', 'block')
+              .html(`Meal Type: ${d.mealType}<br>Calories: ${d.calories}<br>Carbs: ${d.carbs}<br>Protein: ${d.protein}<br>Fat: ${d.fat}<br>Fiber: ${d.fiber}`)
+              .style('left', `${event.pageX + 10}px`)
+              .style('top', `${event.pageY + 10}px`);
+          });
+
+          mealIcon.on('mouseout', function() {
+            console.log('mouseout event triggered'); // Debugging statement
+            d3.select(this).transition()
+              .duration(50)
+              .attr('opacity', 1);
+
+            d3.select('#tooltip').style('display', 'none');
+          });
         }
       });
     }
