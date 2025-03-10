@@ -210,6 +210,7 @@ function updateVisualization() {
   // Filter data within the selected time range
   const filteredData = processedData.map(d => ({
     pid: d.pid,
+    diabetic_level: d.diabetic_level,
     values: d.values.filter(v => v.time >= timeExtent[0] && v.time <= timeExtent[1])
   })).filter(d => d.values.length > 0);
 
@@ -274,6 +275,11 @@ function updateVisualization() {
     .attr("stroke-width", 1)
     .attr("stroke-dasharray", "3,3");
 
+  // Define a color scale for diabetic levels
+  const diabeticLevelColorScale = d3.scaleOrdinal()
+    .domain(['Non-diabetic', 'Pre-diabetic', 'Diabetic'])
+    .range(['#2ecc71', '#f1c40f', '#e74c3c']); // Green, Yellow, Red
+
   const lines = g.selectAll(".line")
     .data(filteredData.filter(d => activeParticipants.has(d.pid)));
 
@@ -286,12 +292,13 @@ function updateVisualization() {
       .x(d => xScale(d.time))
       .y(d => yScale(d.glucose))
       .curve(d3.curveMonotoneX)(d.values))
-    .style("stroke-width", 3); // Adjust the stroke-width to make the line thicker
+    .style("stroke-width", 3)
+    .style("stroke", d => diabeticLevelColorScale(d.diabetic_level)); // Ensure color is set here as well
 
   lines.enter()
     .append("path")
     .attr("class", "line")
-    .style("stroke", d => colorScale(d.pid))
+    .style("stroke", d => diabeticLevelColorScale(d.diabetic_level)) // Use diabetic level color scale
     .style("opacity", 0)
     .attr("d", d => d3.line()
       .x(d => xScale(d.time))
