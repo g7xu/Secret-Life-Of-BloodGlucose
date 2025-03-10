@@ -6,10 +6,10 @@ let timeRange = [1440, 14385];
 let data, processedData, xScale, yScale, colorScale;
 
 const mealIcons = {
-  breakfast: d3.symbolCircle,
-  lunch: d3.symbolSquare,
-  dinner: d3.symbolTriangle,
-  snack: d3.symbolDiamond
+  breakfast: 'assets/pics/breakfast.png',
+  lunch: 'assets/pics/lunch.png',
+  dinner: 'assets/pics/dinner.png',
+  snack: 'assets/pics/snack.png'
 };
 
 // Select the container for the visualization
@@ -272,12 +272,13 @@ function updateVisualization() {
     if (activeParticipants.has(participant.pid)) {
       participant.values.forEach(d => {
         if (d.mealType) {
-          console.log(d.mealType);
-          g.append('path')
+          g.append('image')
             .attr('class', 'meal-dot')
-            .attr('d', d3.symbol().type(mealIcons[d.mealType]))
-            .attr('transform', `translate(${xScale(d.time)}, ${yScale(d.glucose)})`)
-            .style('fill', colorScale(participant.pid))
+            .attr('xlink:href', mealIcons[d.mealType])
+            .attr('x', xScale(d.time) - 8) // Adjust the position to center the image
+            .attr('y', yScale(d.glucose) - 8) // Adjust the position to center the image
+            .attr('width', 20) // Set the width of the image
+            .attr('height', 20) // Set the height of the image
             .style('opacity', 0)
             .transition()
             .duration(750)
