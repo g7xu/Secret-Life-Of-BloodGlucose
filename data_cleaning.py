@@ -88,8 +88,16 @@ def clean_CGMarcros(folder_path: str):
                 df["Timestamp"] = pd.to_datetime(df["Timestamp"])
                 df["Timestamp"] = df["Timestamp"] - df["Timestamp"].min()
 
+                # remove the row in the first 18 hours
+                df = df[df["Timestamp"] > pd.Timedelta(hours=15)]
+
+                # reset the timestamp again
+                df['Timestamp'] = df['Timestamp'] - df["Timestamp"].min()
+
+
                 df["Timestamp"] = df["Timestamp"] + pd.Timedelta(days=1)
 
+                
                 # row the row if the timestamp go over 10 days
                 df = df[df["Timestamp"] < pd.Timedelta(days=10)]
 
