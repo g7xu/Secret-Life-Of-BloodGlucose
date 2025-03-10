@@ -22,10 +22,6 @@ d3.json("./assets/vis_data/meal_data.json").then(data => {
             .domain([minTime, maxTime])
             .range([0, width]);
 
-        const yScale = d3.scaleLinear()
-            .domain([0, 600])
-            .range([height, 0]);
-
         svg.append("g")
             .attr("transform", `translate(0,${height})`)
             .attr("class", "x-axis")
@@ -33,21 +29,14 @@ d3.json("./assets/vis_data/meal_data.json").then(data => {
                 .ticks(d3.timeDay.every(1))
                 .tickFormat((d, i) => `Day ${i}`));
 
-        svg.append("g")
-            .attr("class", "y-axis")
-            .text("Meals")
-            //.call(d3.axisLeft(yScale).ticks(5));
-
-        svg.selectAll("line")
+        svg.selectAll("circle")
             .data(group)
             .enter()
-            .append("line")
-            .attr("x1", d => xScale(d.Timestamp))
-            .attr("x2", d => xScale(d.Timestamp))
-            .attr("y1", 0)
-            .attr("y2", height)
-            .attr("stroke", "red")
-            .attr("stroke-width", 1);
+            .append("circle")
+            .attr("cx", d => xScale(d.Timestamp))
+            .attr("cy", height / 2)
+            .attr("r", 3)
+            .attr("fill", "red");
 
         svg.append("text")
             .attr("x", width / 2)
@@ -65,14 +54,12 @@ d3.json("./assets/vis_data/meal_data.json").then(data => {
                     .call(d3.axisBottom(newX)
                         .ticks(d3.timeDay.every(1))
                         .tickFormat(d3.timeFormat("Day %d")));
-        
-                svg.selectAll("line")
-                    .attr("x1", d => newX(d.Timestamp))
-                    .attr("x2", d => newX(d.Timestamp));
+                
+                svg.selectAll("circle")
+                    .attr("cx", d => newX(d.Timestamp));
             });
         
         svg.call(zoom);
-        
     }
 
     createGraph(data.filter(d => d['diabetes level'] === 'Non-diabetic'), "graph-nondiabetic", "Non-Diabetic Group");
