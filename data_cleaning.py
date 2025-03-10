@@ -181,5 +181,7 @@ if __name__ == "__main__":
 
     cleaned_CGMarcros.to_json("assets/vis_data/CGMacros.json", orient="records", indent=4)  
 
+    cleaned_geo_data.to_json("assets/vis_data/bio.json", orient="records", indent=4)
+
     print("Data cleaning is done")
 
