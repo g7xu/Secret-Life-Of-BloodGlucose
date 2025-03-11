@@ -4,6 +4,7 @@ import { mealDataPromise } from './index.js'; // adjust relative path if needed
 
 const margin = { top: 40, right: 50, bottom: 50, left: 60 };
 let activeParticipants = new Set();
+let activeMealTypes = new Set(['breakfast', 'lunch', 'dinner', 'snack']); // Initialize with all meal types active
 let timeRange = [1440, 14385];
 let data, processedData, xScale, yScale, colorScale;
 let tooltip;
@@ -360,18 +361,18 @@ function updateVisualization() {
   filteredData.forEach(participant => {
     if (activeParticipants.has(participant.pid)) {
       participant.values.forEach(d => {
-        if (d.mealType) {
-          const group = g.append('g') // Group to hold both image and interactive rect
+        if (d.mealType && activeMealTypes.has(d.mealType.toLowerCase())) {  // Check if meal type is active
+          const group = g.append('g')
             .attr('class', 'meal-group')
-            .attr('transform', `translate(${xScale(d.time)}, ${yScale(d.glucose) * 0.7 - 30})`); // Move up by 30%
+            .attr('transform', `translate(${xScale(d.time)}, ${yScale(d.glucose) * 0.7 - 30})`);
 
           // Vertical dashed line for meal time
           const line = g.append('line')
             .attr('class', 'meal-time-line')
             .attr('x1', xScale(d.time))
             .attr('x2', xScale(d.time))
-            .attr('y1', yScale(d.glucose)) // Start at the top of the rectangle
-            .attr('y2', yScale(d.glucose) * 0.7) // Stop at the glucose level
+            .attr('y1', yScale(d.glucose))
+            .attr('y2', yScale(d.glucose) * 0.7)
             .attr('stroke', 'gray')
             .attr('stroke-width', 1)
             .attr('stroke-dasharray', '4,4');
@@ -379,11 +380,11 @@ function updateVisualization() {
           // Meal image
           const image = group.append('image')
             .attr('class', 'meal-dot')
-            .attr('xlink:href', mealIcons[d.mealType])
+            .attr('xlink:href', mealIcons[d.mealType.toLowerCase()])
             .attr('width', 20)
             .attr('height', 20)
-            .attr('x', -10) // Center the image horizontally
-            .attr('y', -10) // Center the image vertically
+            .attr('x', -10)
+            .attr('y', -10)
             .style('opacity', 0)
             .transition()
             .duration(750)
@@ -393,8 +394,8 @@ function updateVisualization() {
           const dot = g.append('circle')
             .attr('class', 'meal-time-dot')
             .attr('cx', xScale(d.time))
-            .attr('cy', yScale(d.glucose)) // Position the dot at the glucose level
-            .attr('r', 3) // Radius of the dot
+            .attr('cy', yScale(d.glucose))
+            .attr('r', 3)
             .attr('fill', 'gray');
 
           // Transparent square for better event detection
@@ -592,13 +593,13 @@ function plotData(participants) {
   g.append("g")
     .attr("class", "grid");
 
-
   tooltip = d3.select('body').append('div')
     .attr('class', 'tooltip')
     .style('opacity', 0);
 
   createParticipantButtons(participants);
-  rendering_timeSlider(1, Math.ceil(timeExtent[1] / 1440)); // Initial rendering of the slider
+  createMealTypeLegend();
+  rendering_timeSlider(1, Math.ceil(timeExtent[1] / 1440));
 
   updateVisualization();
 }
@@ -619,4 +620,40 @@ window.addEventListener('resize', () => {
 
 // Initial call to load data and plot it
 loadDataAndPlot();
+
+// Function to create the meal type legend
+function createMealTypeLegend() {
+  const legendContainer = d3.select('#meal-type-legend .legend-items');
+  legendContainer.selectAll('*').remove();
+
+  const mealTypes = ['breakfast', 'lunch', 'dinner', 'snack'];
+  
+  const legendItems = legendContainer.selectAll('.legend-item')
+    .data(mealTypes)
+    .enter()
+    .append('div')
+    .attr('class', 'legend-item')
+    .style('cursor', 'pointer')
+    .style('opacity', d => activeMealTypes.has(d) ? 1 : 0.3);
+
+  legendItems.append('img')
+    .attr('src', d => mealIcons[d])
+    .attr('width', '20')
+    .attr('height', '20')
+    .style('vertical-align', 'middle');
+
+  legendItems.append('span')
+    .text(d => d.charAt(0).toUpperCase() + d.slice(1))
+    .style('margin-left', '5px');
+
+  legendItems.on('click', function(event, d) {
+    if (activeMealTypes.has(d)) {
+      activeMealTypes.delete(d);
+    } else {
+      activeMealTypes.add(d);
+    }
+    d3.select(this).style('opacity', activeMealTypes.has(d) ? 1 : 0.3);
+    updateVisualization();
+  });
+}
 
