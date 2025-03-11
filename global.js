@@ -248,6 +248,7 @@ function updateVisualization() {
   g.select(".x-axis")
     .transition()
     .duration(750)
+    .attr("transform", `translate(0, ${height})`)
     .call(d3.axisBottom(xScale)
       .tickValues(tickValues)
       .tickFormat(tickFormat));
@@ -260,7 +261,24 @@ function updateVisualization() {
   g.select(".y-axis")
     .transition()
     .duration(750)
+    .attr("transform", "translate(0,0)")  // Ensure y-axis is at a fixed position
     .call(d3.axisLeft(yScale));
+
+  // Add a horizontal line at y=0 to serve as a baseline
+  const zeroLine = g.selectAll(".zero-line").data([0]);
+  
+  zeroLine.enter()
+    .append("line")
+    .attr("class", "zero-line")
+    .merge(zeroLine)
+    .transition()
+    .duration(750)
+    .attr("x1", 0)
+    .attr("x2", width)
+    .attr("y1", yScale(0))
+    .attr("y2", yScale(0))
+    .attr("stroke", "#000")
+    .attr("stroke-width", 1);
 
   g.select(".grid")
     .selectAll("line")
@@ -588,7 +606,18 @@ function plotData(participants) {
     .attr("transform", `translate(0, ${height})`);
 
   g.append("g")
-    .attr("class", "y-axis");
+    .attr("class", "y-axis")
+    .attr("transform", "translate(0,0)");  // Ensure y-axis is at a fixed position
+
+  // Add a zero line
+  g.append("line")
+    .attr("class", "zero-line")
+    .attr("x1", 0)
+    .attr("x2", width)
+    .attr("y1", yScale(0))
+    .attr("y2", yScale(0))
+    .attr("stroke", "#000")
+    .attr("stroke-width", 1);
 
   g.append("g")
     .attr("class", "grid");
