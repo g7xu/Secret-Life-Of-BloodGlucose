@@ -217,7 +217,7 @@ d3.json("./assets/vis_data/meal_data_photos.json").then(data => {
 
 // animated dot graph
 document.addEventListener("DOMContentLoaded", function () {
-    d3.json("./assets/vis_data/data.json").then(data => {
+    d3.json("./assets/vis_data/data_clipped.json").then(data => {
         if (!data || data.length === 0) {
             console.error("No glucose data loaded!");
             return;
