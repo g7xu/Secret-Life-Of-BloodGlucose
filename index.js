@@ -212,3 +212,129 @@ d3.json("./assets/vis_data/meal_data_photos.json").then(data => {
 
 }).catch(error => console.error("Error loading the JSON data:", error));
 
+
+
+
+// animated dot graph
+document.addEventListener("DOMContentLoaded", function () {
+    d3.json("./assets/vis_data/data.json").then(data => {
+        if (!data || data.length === 0) {
+            console.error("No glucose data loaded!");
+            return;
+        }
+
+        const groups = {
+            "Non-diabetic": {},
+            "Pre-diabetic": {},
+            "Diabetic": {}
+        };
+
+        data.forEach(entry => {
+            const category = entry["diabetes level"];
+            const participantID = entry["Participant_ID"];
+            if (!groups[category][participantID]) {
+                groups[category][participantID] = [];
+            }
+            groups[category][participantID].push(entry);
+        });
+
+        Object.entries(groups).forEach(([group, participants]) => {
+            const container = d3.select(`#${group.replace(" ", "-").toLowerCase()}-container`);
+            if (container.empty()) {
+                console.error(`Container #${group.replace(" ", "-").toLowerCase()}-container not found!`);
+                return;
+            }
+
+            container.append("h2").text(group);
+
+            const groupRow = container.append("div").attr("class", "group-row");
+
+            Object.entries(participants).forEach(([pid, entries]) => {
+                const participantDiv = groupRow.append("div")
+                    .attr("class", "participant-section");
+
+                participantDiv.append("h4").text(`P${pid}`);
+
+                const color = getColorForGroup(group);
+
+                createGlucoseLineChart(participantDiv, entries, color);
+            });
+        });
+    }).catch(error => console.error("Error loading data:", error));
+});
+
+function createGlucoseLineChart(container, data, groupColor) {
+    const width = 100, height = 100, margin = { top: 5, right: 5, bottom: 5, left: 5 };
+    const dotX = width / 2; 
+
+    const svg = container.append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+    const yScale = d3.scaleLinear()
+        .domain([d3.min(data, d => d["Libre GL"]), d3.max(data, d => d["Libre GL"])])
+        .range([height - margin.bottom, margin.top]);
+
+    const xScale = d3.scaleLinear()
+        .domain([0, 1000]) 
+        .range([margin.left, width - margin.right]);
+
+    const line = d3.line()
+        .x((d, i) => xScale(i))
+        .y(d => yScale(d["Libre GL"]));
+
+    const clip = svg.append("defs").append("clipPath")
+        .attr("id", `clip-${container.attr("id")}`)
+        .append("rect")
+        .attr("width", width - margin.left - margin.right)
+        .attr("height", height)
+        .attr("x", margin.left)
+        .attr("y", margin.top);
+
+    const graphGroup = svg.append("g").attr("clip-path", `url(#clip-${container.attr("id")})`);
+
+    const path = graphGroup.append("path")
+        .datum(data.slice(0, 1000))
+        .attr("class", "glucose-line")
+        .attr("d", line)
+        .attr("stroke", groupColor)
+        .attr("fill", "none")
+        .attr("stroke-width", 2);
+
+    const dot = svg.append("circle")
+        .attr("r", 5)
+        .attr("fill", "red")
+        .attr("cx", dotX)
+        .attr("cy", yScale(data[0]["Libre GL"]));
+
+    let index = 0;
+    function animate() {
+        if (index + 1000 >= data.length) index = 0;
+
+        const subData = data.slice(index, index + 1000);
+        path.datum(subData).attr("d", line);
+
+        const midPoint = Math.floor(subData.length / 2);
+        dot.transition()
+            .duration(200)
+            .ease(d3.easeLinear)
+            .attr("cy", yScale(subData[midPoint]["Libre GL"]));
+
+        index += 10;
+        setTimeout(animate, 50);
+    }
+
+    animate();
+}
+
+
+
+// Helper function to get color based on the diabetes level
+function getColorForGroup(group) {
+    const colors = {
+        "Non-diabetic": "#00bfae",  // Teal
+        "Pre-diabetic": "#fac127",  // Yellow
+        "Diabetic": "#ff9800"       // Orange
+    };
+    return colors[group] || "#000000"; // Default to black if no match
+}
