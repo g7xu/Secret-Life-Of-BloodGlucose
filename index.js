@@ -1,6 +1,41 @@
 // Place this at the beginning of your script, outside any functions
 let tooltipDiv = null;
 
+async function loadData() {
+    try {
+        const [cgMacrosData, bioData] = await Promise.all([
+            d3.json('assets/vis_data/CGMacros.json'),
+            d3.json('assets/vis_data/bio.json')
+        ]);
+
+        const bioMap = new Map(bioData.map(d => [d.PID, d['diabetes level']]));
+        
+        function parseTimestamp(timestamp) {
+            const match = timestamp.match(/(\d+) days (\d+):(\d+):(\d+)/);
+            if (!match) return null;
+            const [, days, hours, minutes, seconds] = match.map(Number);
+            return days * 24 * 60 + hours * 60 + minutes + seconds / 60;
+        }
+
+        return [...new Set(cgMacrosData.map(d => d.PID))].map(pid => {
+            const values = cgMacrosData
+                .filter(d => d.PID === pid)
+                .map(d => ({
+                    time: parseTimestamp(d.Timestamp),
+                    glucose: +d['Libre GL'],
+                    pid: d.PID
+                }))
+                .filter(d => d.time !== null)
+                .sort((a, b) => a.time - b.time);
+
+            return { pid, values, diabetic_level: bioMap.get(pid) };
+        });
+    } catch (error) {
+        console.error('Error loading data:', error);
+        return [];
+    }
+}
+
 d3.json("./assets/vis_data/meal_data_photos.json").then(data => {
     const parseTime = d3.timeParse("%d days %H:%M:%S");
 
@@ -216,52 +251,48 @@ d3.json("./assets/vis_data/meal_data_photos.json").then(data => {
 
 
 // animated dot graph
-document.addEventListener("DOMContentLoaded", function () {
-    d3.json("./assets/vis_data/data_clipped.json").then(data => {
-        if (!data || data.length === 0) {
-            console.error("No glucose data loaded!");
+document.addEventListener("DOMContentLoaded", async function () {
+    const data = await loadData();
+    if (!data || data.length === 0) {
+        console.error("No glucose data loaded!");
+        return;
+    }
+
+    const groups = {
+        "Non-diabetic": {},
+        "Pre-diabetic": {},
+        "Diabetic": {}
+    };
+
+    data.forEach(({ pid, values, diabetic_level }) => {
+        if (!groups[diabetic_level][pid]) {
+            groups[diabetic_level][pid] = [];
+        }
+        groups[diabetic_level][pid] = values;
+    });
+
+    Object.entries(groups).forEach(([group, participants]) => {
+        const container = d3.select(`#${group.replace(" ", "-").toLowerCase()}-container`);
+        if (container.empty()) {
+            console.error(`Container #${group.replace(" ", "-").toLowerCase()}-container not found!`);
             return;
         }
 
-        const groups = {
-            "Non-diabetic": {},
-            "Pre-diabetic": {},
-            "Diabetic": {}
-        };
+        container.append("h2").text(group);
+        const groupRow = container.append("div").attr("class", "group-row");
 
-        data.forEach(entry => {
-            const category = entry["diabetes level"];
-            const participantID = entry["Participant_ID"];
-            if (!groups[category][participantID]) {
-                groups[category][participantID] = [];
-            }
-            groups[category][participantID].push(entry);
+        Object.entries(participants).forEach(([pid, entries]) => {
+            const participantDiv = groupRow.append("div")
+                .attr("class", "participant-section");
+
+            participantDiv.append("h4").text(`P${pid}`);
+            const color = getColorForGroup(group);
+            createGlucoseLineChart(participantDiv, entries, color);
         });
-
-        Object.entries(groups).forEach(([group, participants]) => {
-            const container = d3.select(`#${group.replace(" ", "-").toLowerCase()}-container`);
-            if (container.empty()) {
-                console.error(`Container #${group.replace(" ", "-").toLowerCase()}-container not found!`);
-                return;
-            }
-
-            container.append("h2").text(group);
-
-            const groupRow = container.append("div").attr("class", "group-row");
-
-            Object.entries(participants).forEach(([pid, entries]) => {
-                const participantDiv = groupRow.append("div")
-                    .attr("class", "participant-section");
-
-                participantDiv.append("h4").text(`P${pid}`);
-
-                const color = getColorForGroup(group);
-
-                createGlucoseLineChart(participantDiv, entries, color);
-            });
-        });
-    }).catch(error => console.error("Error loading data:", error));
+    });
 });
+
+
 
 function createGlucoseLineChart(container, data, groupColor) {
     const width = 100, height = 100, margin = { top: 5, right: 5, bottom: 5, left: 5 };
@@ -272,7 +303,7 @@ function createGlucoseLineChart(container, data, groupColor) {
         .attr("height", height);
 
     const yScale = d3.scaleLinear()
-        .domain([d3.min(data, d => d["Libre GL"]), d3.max(data, d => d["Libre GL"])])
+        .domain([d3.min(data, d => d.glucose), d3.max(data, d => d.glucose)])
         .range([height - margin.bottom, margin.top]);
 
     const xScale = d3.scaleLinear()
@@ -281,7 +312,7 @@ function createGlucoseLineChart(container, data, groupColor) {
 
     const line = d3.line()
         .x((d, i) => xScale(i))
-        .y(d => yScale(d["Libre GL"]));
+        .y(d => yScale(d.glucose));
 
     const clip = svg.append("defs").append("clipPath")
         .attr("id", `clip-${container.attr("id")}`)
@@ -305,7 +336,7 @@ function createGlucoseLineChart(container, data, groupColor) {
         .attr("r", 5)
         .attr("fill", "red")
         .attr("cx", dotX)
-        .attr("cy", yScale(data[0]["Libre GL"]));
+        .attr("cy", yScale(data[0].glucose));
 
     let index = 0;
     function animate() {
@@ -318,10 +349,10 @@ function createGlucoseLineChart(container, data, groupColor) {
         dot.transition()
             .duration(200)
             .ease(d3.easeLinear)
-            .attr("cy", yScale(subData[midPoint]["Libre GL"]));
+            .attr("cy", yScale(subData[midPoint].glucose));
 
         index += 10;
-        setTimeout(animate, 50);
+        setTimeout(animate, 0);
     }
 
     animate();
