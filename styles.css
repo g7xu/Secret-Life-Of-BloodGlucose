@@ -59,6 +59,8 @@ p {
   width: 100%;
   margin: 0 auto;
   word-wrap: break-word;
+  font-size: medium;
+  margin-bottom: 30px;
 }
 
 .container-fluid {
@@ -528,16 +530,12 @@ section {
 }
 
 .tooltip {
-  position: absolute;
-  visibility: hidden;
-  background-color: rgba(255, 255, 255, 0.8);
-  padding: 10px;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  font-size: 14px;
-  pointer-events: none;
-  max-width: 200px;  /* Ensure it doesn't overflow */
-  white-space: nowrap; /* Prevent text wrapping */
+  position: absolute !important;
+  z-index: 9999 !important;
+  background-color: white !important;
+  border: 1px solid black !important;
+  padding: 10px !important;
+  pointer-events: none !important;
 }
 
 .tooltip img {
@@ -589,4 +587,95 @@ section {
 .legend-item span {
   font-size: 12px;
   color: #333;
+}
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 12px;
+  background-color: #f8f9fa;
+}
+
+h1 {
+  text-align: center;
+}
+
+.glucose-section {
+  margin-bottom: 30px;
+}
+
+.section-title {
+  font-size: 12px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.glucose-container {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding: 10px;
+  justify-content: center;
+}
+
+.graph-container {
+  background: white;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+svg {
+  background: white;
+  border-radius: 10px;
+}
+
+.group-container {
+  margin-bottom: 30px;
+}
+
+
+h4 {
+  margin: 0;
+  font-size: 12px;
+}
+
+svg {
+  background-color: #f0f0f0;
+  border-radius: 5px;
+}
+
+h2 {
+  text-align: center;
+}
+
+.chart-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  overflow-x: auto;
+  padding: 20px;
+}
+
+svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: auto;
+}
+
+.group-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+}
+
+.participant-section {
+  text-align: center;
+  padding: 10px;
+  background-color: #f8f8f8;
+  border-radius: 10px;
 }
