@@ -7,3 +7,6 @@ cleaned_data
 __pycache__
 Final-Project.code-workspace
 .gitignore
+assets/vis_data/CGMacros.json
+assets/vis_data/bio.json
+assets/vis_data/meal_data.json
