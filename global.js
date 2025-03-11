@@ -607,17 +607,17 @@ function plotData(participants) {
 
   g.append("g")
     .attr("class", "y-axis")
-    .attr("transform", "translate(0,0)");  // Ensure y-axis is at a fixed position
+  //   .attr("transform", "translate(0,0)");  // Ensure y-axis is at a fixed position
 
-  // Add a zero line
-  g.append("line")
-    .attr("class", "zero-line")
-    .attr("x1", 0)
-    .attr("x2", width)
-    .attr("y1", yScale(0))
-    .attr("y2", yScale(0))
-    .attr("stroke", "#000")
-    .attr("stroke-width", 1);
+  // // Add a zero line
+  // g.append("line")
+  //   .attr("class", "zero-line")
+  //   .attr("x1", 0)
+  //   .attr("x2", width)
+  //   .attr("y1", yScale(0))
+  //   .attr("y2", yScale(0))
+  //   .attr("stroke", "#000")
+  //   .attr("stroke-width", 1);
 
   g.append("g")
     .attr("class", "grid");
