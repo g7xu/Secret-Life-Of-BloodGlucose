@@ -340,23 +340,51 @@ async function loadDataAndCreateCharts() {
 }
 
 function createGlucoseLineChart(container, data, groupColor, yScale) {
-    const width = 100, height = 175, margin = { top: 20, right: 20, bottom: 20, left: 80 };
+    const width = 100, height = 100, margin = { top: 20, right: 20, bottom: 40, left: 80 };
     const dotX = width / 2;
-
+    
     const svg = container.append("svg")
         .attr("width", width + margin.left + margin.right)
-        .attr("height", height)
+        .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", `translate(${margin.left}, ${margin.top})`);
-
+    
     const xScale = d3.scaleLinear()
-        .domain([0, 100]) // Ensuring correct domain based on the data length
+        .domain([0, 100])
         .range([0, width]);
 
+    // Gridlines for x-axis
+    svg.append("g")
+        .attr("class", "x-grid")
+        .selectAll("line")
+        .data(xScale.ticks(5))
+        .enter()
+        .append("line")
+        .attr("x1", d => xScale(d))
+        .attr("x2", d => xScale(d))
+        .attr("y1", 0)
+        .attr("y2", height)
+        .attr("stroke", "#ccc")
+        .attr("stroke-dasharray", "2,2");
+    
+    // Gridlines for y-axis
+    svg.append("g")
+        .attr("class", "y-grid")
+        .selectAll("line")
+        .data(yScale.ticks(5))
+        .enter()
+        .append("line")
+        .attr("x1", 0)
+        .attr("x2", width)
+        .attr("y1", d => yScale(d))
+        .attr("y2", d => yScale(d))
+        .attr("stroke", "#ccc")
+        .attr("stroke-dasharray", "2,2");
+    
     const line = d3.line()
         .x((d, i) => xScale(i))
         .y(d => yScale(d.glucose));
-
+    
     // Create the graph path
     const path = svg.append("path")
         .datum(data.slice(0, 100))
@@ -365,69 +393,74 @@ function createGlucoseLineChart(container, data, groupColor, yScale) {
         .attr("stroke", groupColor)
         .attr("fill", "none")
         .attr("stroke-width", 2);
-
+    
     const dot = svg.append("circle")
         .attr("r", 5)
         .attr("fill", "red")
-        .attr("cx", xScale(0)) // Start at the first x value
+        .attr("cx", xScale(0))
         .attr("cy", yScale(data[0].glucose));
-
+    
     let index = 0;
     function animate() {
         if (index + 100 >= data.length) index = 0;
-
+        
         const subData = data.slice(index, index + 100);
         path.datum(subData).attr("d", line);
-
+        
         const midPoint = Math.floor(subData.length / 2);
         dot.transition()
             .duration(1)
             .ease(d3.easeLinear)
-            .attr("cx", xScale(midPoint)) // Move the dot along the x-axis
-            .attr("cy", yScale(subData[midPoint].glucose)); // Move the dot vertically based on glucose
-
+            .attr("cx", xScale(midPoint))
+            .attr("cy", yScale(subData[midPoint].glucose));
+        
         index += 1;
         setTimeout(animate, 50);
     }
-
+    
     animate();
-
+    
     // Create the x-axis with time/index labels
     const xAxis = d3.axisBottom(xScale)
         .ticks(5)
-        .tickFormat(d => `${d}`); // Time or index label
-
+        .tickFormat(d => `${d}`);
+    
     svg.append("g")
         .attr("class", "x-axis")
-        .attr("transform", `translate(0, ${height/2 + margin.bottom/2.7})`)
+        .attr("transform", `translate(0, ${height})`)
         .call(xAxis);
-
+    
     // Create the y-axis with glucose labels
     const yAxis = d3.axisLeft(yScale)
         .ticks(5)
-        .tickFormat(d => `${d} mg/dL`); // Glucose values in mg/dL
-
+        .tickFormat(d => `${d} mg/dL`);
+    
     svg.append("g")
         .attr("class", "y-axis")
         .call(yAxis);
-
+    
+    
+    
+    // x-axis
     svg.append("text")
         .attr("x", width / 2)
-        .attr("y", height/2 + margin.bottom*2)
+        .attr("y", height + 30)
         .attr("text-anchor", "middle")
-        .attr("font-size", 12)
-        .text("Time (minutes)"); // x-axis unit
-
+        .attr("font-size", 10)
+        .text("Time (minutes)");
+    
+    // y-axis
     svg.append("text")
         .attr("transform", "rotate(-90)")
-        .attr("x", -height / 2 + margin.bottom*2)
+        .attr("x", -height / 2)
         .attr("y", -margin.left + 15)
         .attr("text-anchor", "middle")
-        .attr("font-size", 12)
-        .text("Glucose (mg/dL)"); // y-axis unit
+        .attr("font-size", 10)
+        .text("Glucose (mg/dL)");
 }
 
 loadDataAndCreateCharts();
+
 
 
 

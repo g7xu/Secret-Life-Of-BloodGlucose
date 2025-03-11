@@ -27,7 +27,7 @@ h2 {
 }
 
 #panel-1 {
-  height: 150vh;
+  height: 170vh;
 }
 
 #intro {
@@ -596,7 +596,7 @@ svg {
 
 
 h4 {
-  margin: 0;
+  margin-bottom: 10px;
   font-size: 12px;
 }
 
