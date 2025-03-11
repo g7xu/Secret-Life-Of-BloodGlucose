@@ -19,11 +19,7 @@ mealDataPromise.then(data => {
     time: d.Timestamp.getTime() / 60000  // Convert to minutes for x-scale
   }));
 
-  console.log("Processed meal data:", mealData);
-  updateVisualization();
 });
-
-
 
 
 
@@ -50,27 +46,41 @@ const g = svg.append("g")
 
 // Function to create participant buttons
 function createParticipantButtons(participants) {
-  const selector = d3.select('#participant-selector');
-  
+  // Clear existing buttons
+  d3.selectAll('.participant-buttons').selectAll('*').remove();
+
   participants.forEach(pid => {
-    selector.append('button')
-      .attr('class', 'participant-btn')
-      .attr('data-pid', pid)
-      .text(`Participant ${pid}`)
-      .on('click', function() {
-        const btn = d3.select(this);
-        const isActive = btn.classed('active');
-        
-        if (isActive) {
-          activeParticipants.delete(pid);
-          btn.classed('active', false);
-        } else {
-          activeParticipants.add(pid);
-          btn.classed('active', true);
-        }
-        
-        updateVisualization();
-      });
+    const participant = processedData.find(d => d.pid === pid);
+    if (participant) {
+      const button = document.createElement('button');
+      button.textContent = `${pid}`;
+      button.classList.add('participant-btn');
+      button.dataset.pid = pid;
+
+      console.log(button);
+      console.log(participant.diabetic_level);
+      const categoryDiv = document.getElementById(participant.diabetic_level);
+
+      console.log(categoryDiv);
+      if (categoryDiv) {
+        const buttonsDiv = categoryDiv.querySelector('.participant-buttons');
+        buttonsDiv.appendChild(button);
+
+        button.addEventListener('click', function() {
+          const isActive = button.classList.contains('active');
+          
+          if (isActive) {
+            activeParticipants.delete(pid);
+            button.classList.remove('active');
+          } else {
+            activeParticipants.add(pid);
+            button.classList.add('active');
+          }
+          
+          updateVisualization();
+        });
+      }
+    }
   });
 }
 
@@ -200,6 +210,7 @@ function updateVisualization() {
   // Filter data within the selected time range
   const filteredData = processedData.map(d => ({
     pid: d.pid,
+    diabetic_level: d.diabetic_level,
     values: d.values.filter(v => v.time >= timeExtent[0] && v.time <= timeExtent[1])
   })).filter(d => d.values.length > 0);
 
@@ -264,6 +275,11 @@ function updateVisualization() {
     .attr("stroke-width", 1)
     .attr("stroke-dasharray", "3,3");
 
+  // Define a color scale for diabetic levels
+  const diabeticLevelColorScale = d3.scaleOrdinal()
+    .domain(['Non-diabetic', 'Pre-diabetic', 'Diabetic'])
+    .range(['#2ecc71', '#f1c40f', '#e74c3c']); // Green, Yellow, Red
+
   const lines = g.selectAll(".line")
     .data(filteredData.filter(d => activeParticipants.has(d.pid)));
 
@@ -276,12 +292,13 @@ function updateVisualization() {
       .x(d => xScale(d.time))
       .y(d => yScale(d.glucose))
       .curve(d3.curveMonotoneX)(d.values))
-    .style("stroke-width", 3); // Adjust the stroke-width to make the line thicker
+    .style("stroke-width", 3)
+    .style("stroke", d => diabeticLevelColorScale(d.diabetic_level)); // Ensure color is set here as well
 
   lines.enter()
     .append("path")
     .attr("class", "line")
-    .style("stroke", d => colorScale(d.pid))
+    .style("stroke", d => diabeticLevelColorScale(d.diabetic_level)) // Use diabetic level color scale
     .style("opacity", 0)
     .attr("d", d => d3.line()
       .x(d => xScale(d.time))
@@ -344,7 +361,6 @@ function updateVisualization() {
     if (activeParticipants.has(participant.pid)) {
       participant.values.forEach(d => {
         if (d.mealType) {
-          console.log(`Adding meal dot for participant ${participant.pid} at time ${d.time} with glucose level ${d.glucose}`);
           const group = g.append('g') // Group to hold both image and interactive rect
             .attr('class', 'meal-group')
             .attr('transform', `translate(${xScale(d.time)}, ${yScale(d.glucose) * 0.7 - 30})`); // Move up by 30%
@@ -402,7 +418,7 @@ function updateVisualization() {
               dot.attr('r', 5);
 
               // Replace image with bold version
-              image.attr('xlink:href', mealIcons[d.mealType + 'bold']);
+              // image.attr('xlink:href', mealIcons[d.mealType + 'bold']);
             })
             .on('mouseout', function () {
               d3.select('#tooltip').style('display', 'none');
@@ -412,38 +428,14 @@ function updateVisualization() {
               dot.attr('r', 3);
 
               // Revert image to original version
-              image.attr('xlink:href', mealIcons[d.mealType]);
+              // image.attr('xlink:href', mealIcons[d.mealType]);
             });
         }
       });
     }
   });
 
-  const legendData = filteredData.filter(d => activeParticipants.has(d.pid));
-
-  svg.select(".legend").remove();
-
-  if (legendData.length > 0) {
-    const legend = svg.append("g")
-      .attr("class", "legend")
-      .attr("transform", `translate(${containerWidth - margin.right - 100}, ${margin.top})`);
-
-    legendData.forEach((d, i) => {
-      const legendRow = legend.append("g")
-        .attr("transform", `translate(0, ${i * 20})`);
-
-      legendRow.append("rect")
-        .attr("width", 15)
-        .attr("height", 15)
-        .attr("fill", colorScale(d.pid));
-
-      legendRow.append("text")
-        .attr("x", 20)
-        .attr("y", 12)
-        .attr("font-size", "12px")
-        .text(`Participant ${d.pid}`);
-    });
-  }
+  // adding a legend on the top right corner of the line plot 
 
   const noDataMessage = g.selectAll(".no-data-message")
     .data(activeParticipants.size === 0 ? [1] : []);
@@ -512,9 +504,13 @@ function updateVisualization() {
 // Function to load data from a JSON file
 async function loadData() {
   try {
-    let data = await d3.json('assets/vis_data/CGMacros.json');
+    let [cgMacrosData, bioData] = await Promise.all([
+      d3.json('assets/vis_data/CGMacros.json'),
+      d3.json('assets/vis_data/bio.json')
+    ]);
 
-    const participants = [...new Set(data.map(d => d.PID))];
+    const bioMap = new Map(bioData.map(d => [d.PID, d['diabetes level']]));
+    const participants = [...new Set(cgMacrosData.map(d => d.PID))];
 
     colorScale = d3.scaleOrdinal()
       .domain(participants)
@@ -525,10 +521,10 @@ async function loadData() {
       const [hours, minutes, seconds] = time.split(':').map(Number);
       return Number(days) * 24 * 60 + hours * 60 + minutes + seconds / 60;
     }
-      
+
     // converting the time and include the relevant nutrients data
     processedData = participants.map(pid => {
-      const participantData = data
+      const participantData = cgMacrosData
         .filter(d => d.PID === pid)
         .map(d => ({
           time: parseTimestamp(d.Timestamp),
@@ -539,7 +535,7 @@ async function loadData() {
           protein: d['Protein'],
           fat: d['Fat'],
           fiber: d['Fiber'],
-          pid: d.PID
+          pid: d.PID,
         }))
         .sort((a, b) => a.time - b.time);
 
@@ -548,11 +544,11 @@ async function loadData() {
         glucoseMap[d.time] = d.glucose;
       });
 
-
       return {
         pid,
         values: participantData,
-        glucoseMap: glucoseMap
+        glucoseMap: glucoseMap,
+        diabetic_level: bioMap.get(pid) // Add diabetic_level to the return object
       };
     });
 
@@ -585,10 +581,7 @@ function plotData(participants) {
 
   yScale = d3.scaleLinear()
     .domain(glucoseExtent);
-
-  console.log('Time extent:', timeExtent);
-  console.log('Glucose extent:', glucoseExtent);
-
+  
   g.append("g")
     .attr("class", "x-axis")
     .attr("transform", `translate(0, ${height})`);
