@@ -285,17 +285,17 @@ async function loadDataAndCreateCharts() {
         return;
     }
 
-    // Initialize groups to store participants by diabetic level
+    // Initialize groups
     const groups = {
         "Non-diabetic": {},
         "Pre-diabetic": {},
         "Diabetic": {}
     };
 
-    // Organize the data into groups by diabetic level
+    // Populate groups
     data.forEach(({ pid, values, diabetic_level }) => {
-        if (!groups[diabetic_level]) {
-            groups[diabetic_level] = {};
+        if (!groups[diabetic_level][pid]) {
+            groups[diabetic_level][pid] = [];
         }
         groups[diabetic_level][pid] = values;
     });
@@ -330,26 +330,27 @@ async function loadDataAndCreateCharts() {
             const participantDiv = groupRow.append("div")
                 .attr("class", "participant-section");
 
+            // Only append the label once per participant
             participantDiv.append("h4").text(`P${pid}`);
             const color = getColorForGroup(group);
 
-            createGlucoseLineChart(participantDiv, entries, color, globalYScale); // Pass yScale here
+            createGlucoseLineChart(participantDiv, entries, color, globalYScale); // Pass globalYScale
         });
     });
 }
 
 function createGlucoseLineChart(container, data, groupColor, yScale) {
-    const width = 100, height = 100, margin = { top: 20, right: 20, bottom: 30, left: 40 };
+    const width = 100, height = 175, margin = { top: 20, right: 20, bottom: 20, left: 80 };
     const dotX = width / 2;
 
     const svg = container.append("svg")
         .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
+        .attr("height", height)
         .append("g")
         .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
     const xScale = d3.scaleLinear()
-        .domain([0, 100]) 
+        .domain([0, 100]) // Ensuring correct domain based on the data length
         .range([0, width]);
 
     const line = d3.line()
@@ -368,7 +369,7 @@ function createGlucoseLineChart(container, data, groupColor, yScale) {
     const dot = svg.append("circle")
         .attr("r", 5)
         .attr("fill", "red")
-        .attr("cx", dotX)
+        .attr("cx", xScale(0)) // Start at the first x value
         .attr("cy", yScale(data[0].glucose));
 
     let index = 0;
@@ -382,7 +383,8 @@ function createGlucoseLineChart(container, data, groupColor, yScale) {
         dot.transition()
             .duration(1)
             .ease(d3.easeLinear)
-            .attr("cy", yScale(subData[midPoint].glucose));
+            .attr("cx", xScale(midPoint)) // Move the dot along the x-axis
+            .attr("cy", yScale(subData[midPoint].glucose)); // Move the dot vertically based on glucose
 
         index += 1;
         setTimeout(animate, 50);
@@ -390,21 +392,43 @@ function createGlucoseLineChart(container, data, groupColor, yScale) {
 
     animate();
 
-    // Create the x-axis
-    const xAxis = d3.axisBottom(xScale).ticks(5);
+    // Create the x-axis with time/index labels
+    const xAxis = d3.axisBottom(xScale)
+        .ticks(5)
+        .tickFormat(d => `${d}`); // Time or index label
+
     svg.append("g")
         .attr("class", "x-axis")
-        .attr("transform", `translate(0, ${height})`)
+        .attr("transform", `translate(0, ${height/2 + margin.bottom/2.7})`)
         .call(xAxis);
 
-    // Create the y-axis
-    const yAxis = d3.axisLeft(yScale).ticks(5);
+    // Create the y-axis with glucose labels
+    const yAxis = d3.axisLeft(yScale)
+        .ticks(5)
+        .tickFormat(d => `${d} mg/dL`); // Glucose values in mg/dL
+
     svg.append("g")
         .attr("class", "y-axis")
         .call(yAxis);
+
+    svg.append("text")
+        .attr("x", width / 2)
+        .attr("y", height/2 + margin.bottom*2)
+        .attr("text-anchor", "middle")
+        .attr("font-size", 12)
+        .text("Time (minutes)"); // x-axis unit
+
+    svg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("x", -height / 2 + margin.bottom*2)
+        .attr("y", -margin.left + 15)
+        .attr("text-anchor", "middle")
+        .attr("font-size", 12)
+        .text("Glucose (mg/dL)"); // y-axis unit
 }
 
 loadDataAndCreateCharts();
+
 
 
 
