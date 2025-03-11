@@ -271,6 +271,52 @@ document.addEventListener("DOMContentLoaded", async function () {
         groups[diabetic_level][pid] = values;
     });
 
+    const groupContainer = d3.select("#group-labels");
+    Object.keys(groups).forEach(group => {
+        groupContainer.append("h2").text(group);
+    });
+
+});
+
+async function loadDataAndCreateCharts() {
+    const data = await loadData();
+    if (!data || data.length === 0) {
+        console.error("No glucose data loaded!");
+        return;
+    }
+
+    // Initialize groups to store participants by diabetic level
+    const groups = {
+        "Non-diabetic": {},
+        "Pre-diabetic": {},
+        "Diabetic": {}
+    };
+
+    // Organize the data into groups by diabetic level
+    data.forEach(({ pid, values, diabetic_level }) => {
+        if (!groups[diabetic_level]) {
+            groups[diabetic_level] = {};
+        }
+        groups[diabetic_level][pid] = values;
+    });
+
+    // Find the global min and max glucose values for y-axis scaling
+    let globalMin = Infinity;
+    let globalMax = -Infinity;
+
+    data.forEach(({ values }) => {
+        values.forEach(({ glucose }) => {
+            globalMin = Math.min(globalMin, glucose);
+            globalMax = Math.max(globalMax, glucose);
+        });
+    });
+
+    // Define a global yScale based on the global min and max values
+    const globalYScale = d3.scaleLinear()
+        .domain([globalMin, globalMax])
+        .range([100 - 5, 5]); // Set the range according to your graph size
+
+    // Create the graphs for each group
     Object.entries(groups).forEach(([group, participants]) => {
         const container = d3.select(`#${group.replace(" ", "-").toLowerCase()}-container`);
         if (container.empty()) {
@@ -278,7 +324,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             return;
         }
 
-        container.append("h2").text(group);
         const groupRow = container.append("div").attr("class", "group-row");
 
         Object.entries(participants).forEach(([pid, entries]) => {
@@ -287,45 +332,33 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             participantDiv.append("h4").text(`P${pid}`);
             const color = getColorForGroup(group);
-            createGlucoseLineChart(participantDiv, entries, color);
+
+            createGlucoseLineChart(participantDiv, entries, color, globalYScale); // Pass yScale here
         });
     });
-});
+}
 
-
-
-function createGlucoseLineChart(container, data, groupColor) {
-    const width = 100, height = 100, margin = { top: 5, right: 5, bottom: 5, left: 5 };
-    const dotX = width / 2; 
+function createGlucoseLineChart(container, data, groupColor, yScale) {
+    const width = 100, height = 100, margin = { top: 20, right: 20, bottom: 30, left: 40 };
+    const dotX = width / 2;
 
     const svg = container.append("svg")
-        .attr("width", width)
-        .attr("height", height);
-
-    const yScale = d3.scaleLinear()
-        .domain([d3.min(data, d => d.glucose), d3.max(data, d => d.glucose)])
-        .range([height - margin.bottom, margin.top]);
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
     const xScale = d3.scaleLinear()
-        .domain([0, 1000]) 
-        .range([margin.left, width - margin.right]);
+        .domain([0, 100]) 
+        .range([0, width]);
 
     const line = d3.line()
         .x((d, i) => xScale(i))
         .y(d => yScale(d.glucose));
 
-    const clip = svg.append("defs").append("clipPath")
-        .attr("id", `clip-${container.attr("id")}`)
-        .append("rect")
-        .attr("width", width - margin.left - margin.right)
-        .attr("height", height)
-        .attr("x", margin.left)
-        .attr("y", margin.top);
-
-    const graphGroup = svg.append("g").attr("clip-path", `url(#clip-${container.attr("id")})`);
-
-    const path = graphGroup.append("path")
-        .datum(data.slice(0, 1000))
+    // Create the graph path
+    const path = svg.append("path")
+        .datum(data.slice(0, 100))
         .attr("class", "glucose-line")
         .attr("d", line)
         .attr("stroke", groupColor)
@@ -340,27 +373,43 @@ function createGlucoseLineChart(container, data, groupColor) {
 
     let index = 0;
     function animate() {
-        if (index + 1000 >= data.length) index = 0;
+        if (index + 100 >= data.length) index = 0;
 
-        const subData = data.slice(index, index + 1000);
+        const subData = data.slice(index, index + 100);
         path.datum(subData).attr("d", line);
 
         const midPoint = Math.floor(subData.length / 2);
         dot.transition()
-            .duration(200)
+            .duration(1)
             .ease(d3.easeLinear)
             .attr("cy", yScale(subData[midPoint].glucose));
 
-        index += 10;
-        setTimeout(animate, 0);
+        index += 1;
+        setTimeout(animate, 50);
     }
 
     animate();
+
+    // Create the x-axis
+    const xAxis = d3.axisBottom(xScale).ticks(5);
+    svg.append("g")
+        .attr("class", "x-axis")
+        .attr("transform", `translate(0, ${height})`)
+        .call(xAxis);
+
+    // Create the y-axis
+    const yAxis = d3.axisLeft(yScale).ticks(5);
+    svg.append("g")
+        .attr("class", "y-axis")
+        .call(yAxis);
 }
 
+loadDataAndCreateCharts();
 
 
-// Helper function to get color based on the diabetes level
+
+
+
 function getColorForGroup(group) {
     const colors = {
         "Non-diabetic": "#00bfae",  // Teal
