@@ -1,3 +1,685 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:68433205720b1ca3fe884a8813b41644aeac53332836bd4296f92e4b769b72b8
-size 26581
+{
+  "version": "1",
+  "metadata": {
+    "marimo_version": "0.11.13"
+  },
+  "cells": [
+    {
+      "id": "Hbol",
+      "code_hash": "ee617c55e4e920bac551a703a4925984",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "MJUe",
+      "code_hash": "9bed85c0fa96706d2553ebbd3bcc9a4a",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "vblA",
+      "code_hash": "e4036aef30ce47326d9ef8e2477c8765",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "bkHC",
+      "code_hash": "ddb042e87e3dd1860581c98f3d151086",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "lEQa",
+      "code_hash": "d23c906c8ba7063604b7bce9ac282add",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<marimo-ui-element object-id='lEQa-0' random-id='b3f29cbe-4480-cd6b-fed4-c0f685fe2ddb'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/806-17848-jUbpGhF1.csv&quot;' data-total-rows='14730' data-total-columns='13' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;Timestamp&quot;, [&quot;string&quot;, &quot;object&quot;]], [&quot;Libre GL&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Dexcom GL&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;HR&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Calories (Activity)&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;METs&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Meal Type&quot;, [&quot;string&quot;, &quot;object&quot;]], [&quot;Calories&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Carbs&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Protein&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Fat&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Fiber&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Amount Consumed &quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='true' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "PKri",
+      "code_hash": "5ab022dec0b1292ea06b8420c8acddc2",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "Xref",
+      "code_hash": "dccb17c6d4dca161f0e43886aad6152c",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "SFPL",
+      "code_hash": "744378e29a9d4a545f328fad29bef447",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "BYtC",
+      "code_hash": "3c4c089a245af3e17dab213fee1389f8",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "RGSE",
+      "code_hash": "b0d8b5c5659c112ecc956749c8d75e6b",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "Kclp",
+      "code_hash": "b3fd28747613a8ffee9be95f23bd109d",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "emfo",
+      "code_hash": "4b022704a784a862f600abc74dabaad6",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "Hstk",
+      "code_hash": "5ab022dec0b1292ea06b8420c8acddc2",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "nWHF",
+      "code_hash": "0100e7de54e2103dc3d5cf01f383fa25",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "iLit",
+      "code_hash": "b752e38779c1f011e7e778adff54e607",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "ZHCJ",
+      "code_hash": "589f27e79c31fbd23afd59c459adff18",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<marimo-ui-element object-id='ZHCJ-0' random-id='f0263e75-c3fe-48d9-77d1-aa36f635de4c'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/753-17848-MIGCQ4qQ.csv&quot;' data-total-rows='5' data-total-columns='19' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;PID&quot;, [&quot;integer&quot;, &quot;int64&quot;]], [&quot;Age&quot;, [&quot;integer&quot;, &quot;int64&quot;]], [&quot;Gender&quot;, [&quot;string&quot;, &quot;object&quot;]], [&quot;BMI&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Body weight &quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Height &quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Self-identifid-Race&quot;, [&quot;string&quot;, &quot;object&quot;]], [&quot;A1c PDL (Lab)&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Fasting GLU - PDL (Lab)&quot;, [&quot;integer&quot;, &quot;int64&quot;]], [&quot;Insulin &quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Triglycerides&quot;, [&quot;integer&quot;, &quot;int64&quot;]], [&quot;Cholesterol&quot;, [&quot;integer&quot;, &quot;int64&quot;]], [&quot;HDL&quot;, [&quot;integer&quot;, &quot;int64&quot;]], [&quot;Non HDL &quot;, [&quot;integer&quot;, &quot;int64&quot;]], [&quot;LDL (Cal)&quot;, [&quot;integer&quot;, &quot;int64&quot;]], [&quot;VLDL (Cal)&quot;, [&quot;integer&quot;, &quot;int64&quot;]], [&quot;Cho/HDL Ratio&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Collection time PDL (Lab)&quot;, [&quot;string&quot;, &quot;object&quot;]], [&quot;Starting GLU&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='true' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "ROlb",
+      "code_hash": "f181e9c5a87f955b008365cad12d1030",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<marimo-ui-element object-id='ROlb-0' random-id='79c20d7c-0d85-1179-c344-523dab20709e'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/65-17848-zdKHzKwO.csv&quot;' data-total-rows='45' data-total-columns='1' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;A1c PDL (Lab)&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='true' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "qnkX",
+      "code_hash": "6b40a21c13fcccc024ceba549ad25b87",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "TqIu",
+      "code_hash": "8c67fe2aaf88cebc3c5db95fa33c8bc1",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<marimo-ui-element object-id='TqIu-0' random-id='1cb65ab6-509c-a708-7b69-332714451dde'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/1391-17848-s42pIMb2.csv&quot;' data-total-rows='45' data-total-columns='22' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;PID&quot;, [&quot;integer&quot;, &quot;int64&quot;]], [&quot;Age&quot;, [&quot;integer&quot;, &quot;int64&quot;]], [&quot;Gender&quot;, [&quot;string&quot;, &quot;object&quot;]], [&quot;BMI&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Body weight &quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Height &quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Self-identifid-Race&quot;, [&quot;string&quot;, &quot;object&quot;]], [&quot;A1c PDL (Lab)&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Fasting GLU - PDL (Lab)&quot;, [&quot;integer&quot;, &quot;int64&quot;]], [&quot;Insulin &quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Triglycerides&quot;, [&quot;integer&quot;, &quot;int64&quot;]], [&quot;Cholesterol&quot;, [&quot;integer&quot;, &quot;int64&quot;]], [&quot;HDL&quot;, [&quot;integer&quot;, &quot;int64&quot;]], [&quot;Non HDL &quot;, [&quot;integer&quot;, &quot;int64&quot;]], [&quot;LDL (Cal)&quot;, [&quot;integer&quot;, &quot;int64&quot;]], [&quot;VLDL (Cal)&quot;, [&quot;integer&quot;, &quot;int64&quot;]], [&quot;Cho/HDL Ratio&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Collection time PDL (Lab)&quot;, [&quot;string&quot;, &quot;object&quot;]], [&quot;Starting GLU&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Normal&quot;, [&quot;integer&quot;, &quot;int64&quot;]], [&quot;Prediabetes&quot;, [&quot;integer&quot;, &quot;int64&quot;]], [&quot;Diabetes&quot;, [&quot;integer&quot;, &quot;int64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='true' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "Vxnm",
+      "code_hash": "e682bd2852ddc3a4640aa03bf2d429d9",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><h4 id=\"im-using-dummy-variables-since-well-eventually-need-to-use-decision-trees-when-the-quiz-is-implemented\">im using dummy variables since we'll eventually need to use decision trees when the quiz is implemented</h4></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "DnEU",
+      "code_hash": "c819b27f58912e2effcd716911de30ea",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "ulZA",
+      "code_hash": "5ab022dec0b1292ea06b8420c8acddc2",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "application/json": "[\".git\", \".gitignore\", \".ipynb_checkpoints\", \"background.jpg\", \"bio_mutated.csv\", \"cleaned_data\", \"data\", \"data_cleaning.py\", \"dia_patient_3.csv\", \"eda\", \"felix_single_day_gl.py\", \"Final-Project.code-workspace\", \"global.js\", \"index.html\", \"index.js\", \"meals.png\", \"non_patient_1.csv\", \"pre_dia_patient_8.csv\", \"README.md\", \"script.js\", \"styles.css\", \"__marimo__\", \"__pycache__\"]"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "ecfG",
+      "code_hash": "5826ba919b8c6ada84d70ad9163b8b72",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><hr /></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "Pvdt",
+      "code_hash": "98306483bc19e3ba5026bff482ca442f",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<marimo-ui-element object-id='Pvdt-0' random-id='09986879-2285-2ef6-66cc-8352f7736277'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/858-17848-HcV3mWBL.csv&quot;' data-total-rows='14730' data-total-columns='15' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;Unnamed: 0&quot;, [&quot;integer&quot;, &quot;int64&quot;]], [&quot;Timestamp&quot;, [&quot;string&quot;, &quot;object&quot;]], [&quot;Libre GL&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Dexcom GL&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;HR&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Calories (Activity)&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;METs&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Meal Type&quot;, [&quot;string&quot;, &quot;object&quot;]], [&quot;Calories&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Carbs&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Protein&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Fat&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Fiber&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Amount Consumed &quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Image path&quot;, [&quot;string&quot;, &quot;object&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='true' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "ZBYS",
+      "code_hash": "7409d35b61e3bd9173d2b28b8453177f",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<span class=\"markdown prose dark:prose-invert\"><h3 id=\"missing-files-24-25-37-40\">Missing files: [24, 25, 37, 40]</h3></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "aLJB",
+      "code_hash": "af80b8092918422c8f3487a3fe7d91b3",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": [
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "Missing files: [24, 25, 37, 40]\n"
+        }
+      ]
+    },
+    {
+      "id": "nHfw",
+      "code_hash": "277eaf93566d905f30194619c972e29c",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "xXTn",
+      "code_hash": "7c28788ff2f55ee57023f48d9006419c",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "AjVT",
+      "code_hash": "21a3edbf0e908a6676fb595f2eab5f17",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "pHFh",
+      "code_hash": "a5b405ef9d049f0fcbfa87fde66b3518",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "NCOB",
+      "code_hash": "ef5bc77c12be21937859119c6e0a437c",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "aqbW",
+      "code_hash": "b92fc29c031a9e045ac1f3342b759d5f",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "TRpd",
+      "code_hash": "583de292095946277c0b5a648536e5f1",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "TXez",
+      "code_hash": "ca2c4fe6cb2c10a1eebd63ec2b0d5e80",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "dNNg",
+      "code_hash": "c0e19a34a24651e97b5705029b73494d",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "yCnT",
+      "code_hash": "5ab022dec0b1292ea06b8420c8acddc2",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "wlCL",
+      "code_hash": "92e904485f1f2ecec9f4c9c0db473026",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "kqZH",
+      "code_hash": "30c9ae90ffb3308a37620c569ff2fffe",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "wAgl",
+      "code_hash": "5a888dad8f19541afed1f6e3a92bf430",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "rEll",
+      "code_hash": "e0c6001055d0a9b407ef5faa179bcc3b",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "dGlV",
+      "code_hash": null,
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "SdmI",
+      "code_hash": null,
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "lgWD",
+      "code_hash": "0f2077dc988adde17540df41c902e4da",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "yOPj",
+      "code_hash": "81f50fd9dd9215192bedc276e0c8641d",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "fwwy",
+      "code_hash": "4eaaf7a33ea0a86dd9e981a055f3da94",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "LJZf",
+      "code_hash": "ffb08272836514e8d19d67909c0893bb",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "urSm",
+      "code_hash": "f393adb8074dcceff23257a81c85e01d",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "jxvo",
+      "code_hash": "a14265fa314edfdc43d27c3439bc8003",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "mWxS",
+      "code_hash": "4d0e2cc60c5a7373b0652b80d86af986",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "CcZR",
+      "code_hash": "dd701f802ce7748dccd082fa724ddeef",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "YWSi",
+      "code_hash": "9216e52e0162de11bf2a5c40fd827162",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "zlud",
+      "code_hash": "d4da192f98ed759403405b9b2f681ed0",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<marimo-ui-element object-id='zlud-0' random-id='4970ab5f-3c8f-af5c-8da3-32ea7a1d3db4'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/693-17848-htpaciav.csv&quot;' data-total-rows='14565' data-total-columns='14' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;index&quot;, [&quot;integer&quot;, &quot;int64&quot;]], [&quot;Timestamp&quot;, [&quot;string&quot;, &quot;object&quot;]], [&quot;Libre GL&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Dexcom GL&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;HR&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Calories (Activity)&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;METs&quot;, [&quot;integer&quot;, &quot;int64&quot;]], [&quot;Meal Type&quot;, [&quot;string&quot;, &quot;object&quot;]], [&quot;Calories&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Carbs&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Protein&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Fat&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Fiber&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Amount Consumed&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='true' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "tZnO",
+      "code_hash": "a400ce960f4316c86b365b932181f79c",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "xvXZ",
+      "code_hash": "5696f611a7dba0ba51c34f49bdf55e5a",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<marimo-ui-element object-id='xvXZ-0' random-id='364b0a06-72d7-d0c4-a3b0-b47cec6220b3'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/712-17848-xgzzEB08.csv&quot;' data-total-rows='14760' data-total-columns='14' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;index&quot;, [&quot;integer&quot;, &quot;int64&quot;]], [&quot;Timestamp&quot;, [&quot;string&quot;, &quot;object&quot;]], [&quot;Libre GL&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Dexcom GL&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;HR&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Calories (Activity)&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;METs&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Meal Type&quot;, [&quot;string&quot;, &quot;object&quot;]], [&quot;Calories&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Carbs&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Protein&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Fat&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Fiber&quot;, [&quot;number&quot;, &quot;float64&quot;]], [&quot;Amount Consumed&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='true' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "CLip",
+      "code_hash": "d4d5eb12769d3186e594729ead2985d8",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "YECM",
+      "code_hash": "78d53ace7d8474c87f535bf46baebba2",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<marimo-ui-element object-id='YECM-0' random-id='4c683960-876f-81fd-8b3b-7095daaa927e'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/358-17848-vEq8v0Be.csv&quot;' data-total-rows='1000' data-total-columns='2' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;Timestamp&quot;, [&quot;string&quot;, &quot;object&quot;]], [&quot;Libre GL&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='true' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "cEAS",
+      "code_hash": "d40f49a3c9ec77d7778f79e5597ffa3a",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<marimo-ui-element object-id='cEAS-0' random-id='b902ae74-7980-f724-1a2b-ad1589c38236'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/290-17848-YBrhAG3t.csv&quot;' data-total-rows='1000' data-total-columns='2' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;Timestamp&quot;, [&quot;string&quot;, &quot;object&quot;]], [&quot;Libre GL&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='true' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "iXej",
+      "code_hash": "3b00b90954b0e0add7569627d88c8b41",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<marimo-ui-element object-id='iXej-0' random-id='c12e9b51-4b09-4cd4-55b7-617c74d8409d'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;./@file/290-17848-BjwRh3Wd.csv&quot;' data-total-rows='1000' data-total-columns='2' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;Timestamp&quot;, [&quot;string&quot;, &quot;object&quot;]], [&quot;Libre GL&quot;, [&quot;number&quot;, &quot;float64&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='true' data-row-headers='[]' data-has-stable-row-id='false'></marimo-table></marimo-ui-element>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "EJmg",
+      "code_hash": "b1293fb4d814c701e53971ac31f5b755",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "UmEG",
+      "code_hash": "c87a784a0643bba2d7d371e1f270020e",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "vEBW",
+      "code_hash": "a32dfdf7950f07fbcf70f3daeada6767",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "kLmu",
+      "code_hash": "0343a8c62be17e21e466434eba86f04b",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "IpqN",
+      "code_hash": null,
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "dxZZ",
+      "code_hash": null,
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "dlnW",
+      "code_hash": "34f62f0b8987701fedf0b5301be3b36c",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "TTti",
+      "code_hash": "0a9e70bc2021c760cd0bbf5968bbec7d",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "RKFZ",
+      "code_hash": "fcf34f0f03d19c14d58c59499e620a82",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "IaQp",
+      "code_hash": "f4bd344e748af4827658da5fda9a7e1b",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "IWgg",
+      "code_hash": "f49e8a17b5647389fb7a9edbdca5da7f",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "fCoF",
+      "code_hash": null,
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "LkGn",
+      "code_hash": null,
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "zVRe",
+      "code_hash": null,
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "woaO",
+      "code_hash": null,
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "HnMC",
+      "code_hash": "1e0a19c944191f485a18f99ce651d4d4",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "wadT",
+      "code_hash": "b412e016d6e8751821a44a3bedd526ef",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "VCRE",
+      "code_hash": "be7ddb699d7948e7857c67e463d928ff",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "hgqU",
+      "code_hash": "509692284ab464f6ae47866b7ab4a9b9",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "PSUk",
+      "code_hash": "bde9d4bd0ab3de3cdc7c660465576797",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "mfOT",
+      "code_hash": "42ab8fed20d63380931c8a8c5b4ceb27",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "vGiW",
+      "code_hash": "b37605bedefbb851fe792e80e17bfede",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "SYQT",
+      "code_hash": "b6a49d9f32aae1e127117d9a1bc82a96",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "bMrW",
+      "code_hash": "c63a7f365ea65e2451be5c08405c1429",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "PSQn",
+      "code_hash": "0719ac1dc7bb64fbc662d3e297b123d9",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "OfTS",
+      "code_hash": "e986dec4356a8e3354c3942a8cd70dbb",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "lQxp",
+      "code_hash": null,
+      "outputs": [],
+      "console": []
+    }
+  ]
+}
