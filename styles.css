@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Gluten:wght@600&family=Space+Mono&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&display=swap');
 
 html,
 body {
@@ -8,22 +9,47 @@ body {
   --color-text: oklch(85.82% 0.1342 86.38);
   --color-pastel: oklch(94.39% 0.0227 78.22);
   display: block;
-  overflow-x: hidden; /* Prevent horizontal scroll issues */
-  scroll-behavior: smooth;
-  
+  overflow-x: hidden; 
 }
 
-h1,
-h2 {
+h1, h2, h3, h4, p{
   text-align: center;
+  font-family: "DM Serif Text", serif;
+  margin-left: 10%;
+  margin-right: 10%;
+  padding: 2%;
 }
 
-.full-screen {
-  display: block;
-  width: 100%;
-  height: 100vh;
-  overflow: hidden;
-  gap: 1em;
+h3, p{
+  font-weight: 200;
+}
+
+#question{
+  background-color: var(--color-text);
+  section {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  p {
+    font-size: 100px;
+    text-align: center;
+    position: relative;
+    font-weight: 900;
+    color: #fff;
+    opacity: 0;
+    left: 200px;
+  }
+  .dot {
+    background-color: white;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    position: absolute;
+  }
 }
 
 #panel-1 {
@@ -34,6 +60,10 @@ h2 {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  gap: 1em;
 }
 
 #masthead {
@@ -361,7 +391,6 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 .text {
   width: 100%;
-
   text-shadow: 2px 1px 2px var(--color-placemat);
   text-align: center;
   color: var(--color-text);
@@ -507,7 +536,7 @@ progress::-moz-progress-bar {
 }
 
 section {
-  min-height: 100vh;
+  height: 100vh;
   width: 100%;
   display: flex;
   align-items: center;
@@ -544,16 +573,6 @@ section {
   margin-top: 5px;
 }
 
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 12px;
-  background-color: #f8f9fa;
-}
-
-h1 {
-  text-align: center;
-}
 
 .glucose-section {
   margin-bottom: 30px;
@@ -635,4 +654,8 @@ svg {
   padding: 10px;
   background-color: #f8f8f8;
   border-radius: 10px;
+}
+
+.paragragh   p{
+    font-size: 60%;
 }
