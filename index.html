@@ -10,6 +10,10 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script type="module" src="global.js"></script>
     <script src="script.js"></script>
+    <script src="longRun.js"type = "module"></script>
+    <script src="distribution.js" type="module"></script>
+    
+
     <script src="index.js" type="module"></script>
     <link rel="icon" type="image/x-icon" href="assets/pics/bread.png">
 
@@ -33,7 +37,6 @@
                 <a href="#panel-1" class="anchor">Graph 1</a>
                 <a href="#panel-2" class="anchor">Graph 2</a>
                 <a href="#panel-3" class="anchor">Graph 3</a>
-                <a href="#panel-4" class="anchor">Graph 4</a>
                 <a href="#panel-5" class="anchor">Graph 5</a>
                 <a href="#map" class="anchor">Take Away</a>
             </div>
@@ -47,99 +50,20 @@
       <section id="intro" class="full-screen">
         <div class="mat">
           <img  class = "fork"  src = "assets/pics/fork.png" alt = "fork">
+        
           <div class="plate">
           <div class="text">Secret <br> Life of <br> Blood <br> Glucose</div>
           </div>
+
           <img class = "knife" src = "assets/pics/knife.png" alt = "knife">
+          
         </div>
-      </section>
-
-      <section id="INTRODUCTION">
-        <h1>INTRODUCTION</h1>
-        What is Diabetes?
-        Why is it important?
-        Why should we care about that?
-        How does that related to the blood glucose
-        What is blood glucose
-        What are the three types of Diabetic Groups?
-        - Non-diabetic
-        - Pre-diabetic
-        - Diabetic
-      </section>
-
-      <section id="panel-1">
-        <div class="chart-container">
-
-          <div class="line-category" id="Non-diabetic">
-            <h3>Non-Diabetic</h3>
-            <div id="non-diabetic-container"></div>
-          </div>
-          <div class="line-category" id="Pre-diabetic">
-            <h3>Pre-Diabetic</h3>
-            <div id="pre-diabetic-container"></div>
-          </div>
-          <div class="line-category" id="Diabetic">
-            <h3>Diabetic</h3>
-            <div id="diabetic-container"></div>
-          </div>
-
-        </div>
-      </section>
     
-
-    <section id="panel-1">
-      <div class="chart-container">
-        <div id="non-diabetic-container"></div>
-        <div id="pre-diabetic-container"></div>
-        <div id="diabetic-container"></div>
-      </div>
-    </section>
-
-    <section id="explain-glcuose trend diabetic">
-      <h1>[Temp holder] Showing part of the blood glucose trend</h1>
-      Show the first part of the glucose trend here and explain their fluctuations
-    </section>
-
-    <section id="explain-glcuose trend Pre-diabetic">
-      <h1>[Temp holder] Showing part of the blood glucose trend</h1>
-      Show the second part of the glucose trend here and explain their fluctuations
-    </section>
-
-    <section id="explain-glcuose trend diabetic">
-      <h1>[Temp holder] Showing part of the blood glucose trend</h1>
-      Show the third part of the glucose trend here and explain their fluctuations
-    </section>
-
-    <section id="Explination on the selection of dataset">
-      <h1>Talk about to compare the differnece between blood glucose fluctuations</h1>
-      we look at the breakfast and the lunch consumed by individuals
-      and the intension of the data set
-    </section>
-
-    <section id="explaining how feature engineering work">
-      <h1>Talk about to compare the differnece between blood glucose fluctuations</h1>
-      we look at the breakfast and the lunch consumed by individuals
-    </section>
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
+      </section>
   
    
-
-        <Section id="panel-2">
+      
+        <Section id="panel-1">
             <div class="container">
     
                   <div id="graph-nondiabetic" class="graph-container"></div>
@@ -176,7 +100,7 @@
               </div>
           </Section>
 
-          <Section id="panel-3">
+          <Section id="panel-2">
             <div id="tooltip" class="tooltip" style="display: none;"></div>
             <div id="panel-2-flex-container">
               <div class="control-panel-wrapper">
@@ -206,29 +130,89 @@
                   </div>
                 </div>
               </div>
-              <div class="visualization-wrapper"></div>
+              <div class="visualization-wrapper">
+                <div id="meal-type-legend" class="legend">
+                  <h3>Meal Types</h3>
+                  <div class="legend-items"></div>
+                </div>
+                <!-- <div class="legend-container">
+                  
+                </div> -->
+              </div>
+              <div class="panels-navigation">
+                <div class="nav-panel" data-sign="minus"><a href="#panel-1" class="anchor">Prev</a></div>
+                <div class="nav-panel" data-sign="plus"><a href="#panel-3" class="anchor">Next</a></div>
+              </div>
             </div>          
           </Section>
           
-          <section id="panel-4">
+          <section id="panel-3">
             <div class="container">
               <div class="row">
                 <div class="col-6">
   
-                  <img src="" alt="">
+                  <h2>Glucose Patterns by Non-Diabetic Status</h2>
+                  <div class="graph-wrapper-panel4"></div>
   
                 </div>
                 <div class="col-6 d-flex flex-column">
   
-                  <h2>Panel 4</h2>
-  
+                  <h2>Non-diabetic Participants Comparison</h2>
                   <p class="step-description">
-                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Including versions of Lorem Ipsum.
+                    This visualization compares the glucose levels of the five participants in the non-diabetic status group - during their first day of monitoring.
+                  </p>
+                  <p class="step-description">
+                    Notice how the patterns differ throughout the day, particularly after meals and during overnight periods. 
                   </p>
                 </div>
               </div>
             </div>
         </section>
+
+
+          <section id="panel-4">
+            <div class="container">
+              <div class="row">
+                <div class="col-12">
+                <!-- <div class="col-6 d-flex flex-column"></div> -->
+                  <h2>Glucose Metrics Distribution</h2>
+                  
+                  <div class="controls-container">
+                    <div class="metric-selector">
+                      <label>Select Metric:</label>
+                      <select id="metric-select">
+                        <option value="glucose-excursion">Glucose Excursion</option>
+                        <option value="excursion-time">Glucose Excursion Time</option>
+                        <option value="recovery-time">Glucose Recovery Time</option>
+                      </select>
+                    </div>
+                    
+                    <div class="group-toggles">
+                      <label>Select Groups:</label>
+                      <div class="checkbox-group">
+                        <input type="checkbox" id="diabetic-toggle" checked>
+                        <label for="diabetic-toggle">Diabetic</label>
+                        
+                        <input type="checkbox" id="prediabetic-toggle" checked>
+                        <label for="prediabetic-toggle">Pre-diabetic</label>
+                        
+                        <input type="checkbox" id="nondiabetic-toggle" checked>
+                        <label for="nondiabetic-toggle">Non-diabetic</label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div id="distribution-plot"></div>
+
+                  <p class="step-description">
+                    This visualization shows the distribution of different glucose metrics across diabetic groups. 
+                    The normal distributions are calculated using the mean and standard deviation of each group's data for glucose metrics.
+                    Compare how different metrics vary between diabetic, pre-diabetic, and non-diabetic individuals.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
 
 
           <section id="panel-5">
@@ -242,28 +226,11 @@
                 <div class="col-6 d-flex flex-column">
   
                   <h2>Panel 5</h2>
-                  <div class="graph-wrapper"></div>
-                  <p class="step-description">
-                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Including versions of Lorem Ipsum.
-                  </p>
-                </div>
-              </div>
-            </div>
-        </section>
-
-
-          <section id="panel-6">
-            <div class="container">
-              <div class="row">
-                <div class="col-6">
-  
-                  <img src="" alt="">
-  
-                </div>
-                <div class="col-6 d-flex flex-column">
-  
-                  <h2>Panel 6</h2>
-  
+                  <!-- <div class="long-chart-container">
+                    <div id="non-diabetic-container"></div>
+                    <div id="pre-diabetic-container"></div>
+                    <div id="diabetic-container"></div>
+                  </div> -->
                   <p class="step-description">
                     Lorem Ipsum is simply dummy text of the printing and typesetting industry. Including versions of Lorem Ipsum.
                   </p>
