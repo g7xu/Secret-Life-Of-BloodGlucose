@@ -1,6 +1,17 @@
 import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7/+esm';
 import { mealDataPromise } from './index.js'; // adjust relative path if needed
 
+let tooltipDiv = document.createElement("div");
+tooltipDiv.className = "tooltip";
+tooltipDiv.style.position = "absolute";
+tooltipDiv.style.backgroundColor = "white";
+tooltipDiv.style.border = "1px solid black";
+tooltipDiv.style.borderRadius = "5px";
+tooltipDiv.style.padding = "10px";
+tooltipDiv.style.boxShadow = "0 0 10px rgba(0,0,0,0.3)";
+tooltipDiv.style.zIndex = "1000";
+tooltipDiv.style.display = "none"; // Use display instead of visibility
+document.body.appendChild(tooltipDiv);
 
 const margin = { top: 40, right: 50, bottom: 50, left: 60 };
 let activeParticipants = new Set();
@@ -16,7 +27,8 @@ mealDataPromise.then(data => {
     Timestamp: d.Timestamp,
     glucose: d['Libre GL'],  // Map 'Libre GL' to glucose for consistency
     diabetes_level: d['diabetes level'],  // Keep the diabetes level for coloring
-    time: d.Timestamp.getTime() / 60000  // Convert to minutes for x-scale
+    time: d.Timestamp.getTime() / 60000,  // Convert to minutes for x-scale
+    image: d['Image path']
   }));
 
 });
@@ -44,6 +56,12 @@ const svg = container.append('svg')
 const g = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
+
+document.addEventListener("DOMContentLoaded", function() {
+  // Call the function to create participant buttons
+  loadDataAndPlot();
+});
+
 // Function to create participant buttons
 function createParticipantButtons(participants) {
   // Clear existing buttons
@@ -57,32 +75,36 @@ function createParticipantButtons(participants) {
       button.classList.add('participant-btn');
       button.dataset.pid = pid;
 
-      console.log(button);
-      console.log(participant.diabetic_level);
       const categoryDiv = document.getElementById(participant.diabetic_level);
 
-      console.log(categoryDiv);
       if (categoryDiv) {
         const buttonsDiv = categoryDiv.querySelector('.participant-buttons');
-        buttonsDiv.appendChild(button);
+        if (buttonsDiv) {
+          buttonsDiv.appendChild(button);
 
-        button.addEventListener('click', function() {
-          const isActive = button.classList.contains('active');
-          
-          if (isActive) {
-            activeParticipants.delete(pid);
-            button.classList.remove('active');
-          } else {
-            activeParticipants.add(pid);
-            button.classList.add('active');
-          }
-          
-          updateVisualization();
-        });
+          button.addEventListener('click', function() {
+            const isActive = button.classList.contains('active');
+            
+            if (isActive) {
+              activeParticipants.delete(pid);
+              button.classList.remove('active');
+            } else {
+              activeParticipants.add(pid);
+              button.classList.add('active');
+            }
+            
+            updateVisualization();
+          });
+        } else {
+          console.error(`.participant-buttons element not found in ${participant.diabetic_level} categoryDiv`);
+        }
+      } else {
+        console.error(`categoryDiv with id ${participant.diabetic_level} not found`);
       }
     }
   });
 }
+
 
 // Function to render the time slider
 function rendering_timeSlider(startDay, endDay) {
@@ -382,6 +404,8 @@ function updateVisualization() {
             .attr('xlink:href', mealIcons[d.mealType])
             .attr('width', 20)
             .attr('height', 20)
+            // .attr('fillrule', 'nonzero')
+            // .attr('fill', diabeticLevelColorScale(d.diabetic_level))
             .attr('x', -10) // Center the image horizontally
             .attr('y', -10) // Center the image vertically
             .style('opacity', 0)
@@ -395,7 +419,7 @@ function updateVisualization() {
             .attr('cx', xScale(d.time))
             .attr('cy', yScale(d.glucose)) // Position the dot at the glucose level
             .attr('r', 3) // Radius of the dot
-            .attr('fill', 'gray');
+            .attr('fill', diabeticLevelColorScale(d.diabetic_level)); // Color the dot based on diabetic level
 
           // Transparent square for better event detection
           group.append('rect')
@@ -407,11 +431,28 @@ function updateVisualization() {
             .style('pointer-events', 'all') // Ensure the rect captures all events
             .on('mouseover', function (event) {
               const [x, y] = d3.pointer(event, this);
-              d3.select('#tooltip')
-                .style('display', 'block')
-                .html(`Calories: ${d.calories}`)
-                .style('left', `${x + 10}px`)
-                .style('top', `${y - 10}px`);
+              // d3.select('#tooltip')
+              //   .style('display', 'block')
+              //   .html(`Calories: ${d.calories}`)
+              //   .style('left', `${x + 10}px`)
+              //   .style('top', `${y - 10}px`);
+
+              const imagePath = d.PID < 10
+                    ? `./data/CGMacros/CGMacros-00${d.pid}/${mealData.image}`
+                    : `./data/CGMacros/CGMacros-0${d.pid}/${mealData.image}`;
+
+              tooltipDiv.innerHTML = `
+                  <strong>Meal Type:</strong> ${d.mealType}<br>
+                  <strong>Carbs:</strong> ${d.carbs} g<br>
+                  <strong>Protein:</strong> ${d.protein} g<br>
+                  <strong>Fat:</strong> ${d.fat} g<br>
+                  <strong>Fiber:</strong> ${d.fiber} g<br>
+                  <img src="${imagePath}" alt="Meal Image" width="100" onerror="this.style.display='none'" />
+              `;
+                
+                tooltipDiv.style.left = (event.pageX + 10) + "px";
+                tooltipDiv.style.top = (event.pageY + 10) + "px";
+                tooltipDiv.style.display = "block";
 
               // Make line and dot bold
               line.attr('stroke-width', 3);
@@ -508,7 +549,7 @@ async function loadData() {
       d3.json('assets/vis_data/CGMacros.json'),
       d3.json('assets/vis_data/bio.json')
     ]);
-
+    
     const bioMap = new Map(bioData.map(d => [d.PID, d['diabetes level']]));
     const participants = [...new Set(cgMacrosData.map(d => d.PID))];
 
@@ -536,6 +577,7 @@ async function loadData() {
           fat: d['Fat'],
           fiber: d['Fiber'],
           pid: d.PID,
+          image: d['Image path']
         }))
         .sort((a, b) => a.time - b.time);
 
