@@ -568,7 +568,7 @@ function getColorForGroup(group) {
     const colors = {
         "Non-diabetic": "#00bfae",  // Teal
         "Pre-diabetic": "#fac127",  // Yellow
-        "Diabetic": "#ff9800"       // Orange
+        "Diabetic": "#fb6900"       // Orange
     };
     return colors[group] || "#000000"; // Default to black if no match
 }
