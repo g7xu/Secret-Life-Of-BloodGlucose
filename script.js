@@ -28,8 +28,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 window.onload = playAnimation;
 
-
-
 ScrollTrigger.create({
   trigger: introSection,
   start: "top 50%",  
@@ -45,45 +43,71 @@ gsap.to('progress', {
   scrollTrigger: { scrub: 0.3 }
 });
 
+
 let sections = gsap.utils.toArray("section");
 
-let tl = gsap.timeline({
-    scrollTrigger: {
-        trigger: "main",
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 1,
-        snap: {
-            snapTo: (progress) => {
-                let sectionOffsets = sections.map((section) => section.offsetTop / document.body.scrollHeight);
-                return sectionOffsets.reduce((prev, curr) => 
-                    Math.abs(curr - progress) < Math.abs(prev - progress) ? curr : prev
-                );
-            },
-            duration: 0.5,
-            ease: "power1.inOut"
-        }
-    }
-});
+sections.forEach((section) => {
+    gsap.set(section, { opacity: 0 }); // Start all sections as invisible
 
-// Make sure only one section is visible at a time
-sections.forEach((section, index) => {
     ScrollTrigger.create({
         trigger: section,
-        start: "top 10%", // Change this depending on when you want the fade to happen
-        end: "bottom 70%",
+        start: "top 80%", // When section is 80% into the viewport, start fading in
+        end: "top 30%", // Fully faded in when section reaches 30% of viewport
+        scrub: true, // Smooth transition
         onEnter: () => {
-            gsap.to(sections, { opacity: 0, duration: 0.5 }); // Hide all sections
-            gsap.to(section, { opacity: 1, duration: 0.5 }); // Show only current section
+            gsap.to(section, { opacity: 1, duration: 0.8, ease: "power2.out" });
         },
-        onLeaveBack: () => {
-            gsap.to(sections, { opacity: 0, duration: 0.5 });
-            gsap.to(section, { opacity: 1, duration: 0.5 });
-        }
     });
 });
+
+let section = document.getElementById('question'),
+    title = document.getElementById('title'),
+    mark = title.querySelector("span"),
+    dot = document.querySelector(".dot");
+
+gsap.set(dot, {
+  width: "140vmax", // ensures it fills every part of the screen. 
+  height: "140vmax",
+  xPercent: -50, // center the dot in the section area
+  yPercent: -50,
+  top: "50%",
+  left: "50%"
 });
 
 
 
+let tl1 = gsap.timeline({
+		scrollTrigger: {
+			trigger: section,
+			start: "top top",
+			end: "bottom top",
+			scrub: 1.5, 
+			pin: section,
+			pinSpacing: true,
+      invalidateOnRefresh: true,
+		},	
+		defaults: { ease: "none" }
+	});
 
+tl1
+  .to(title, { opacity: 1 })
+  .fromTo(dot, {
+      scale: 0,
+      x: () => {
+        let markBounds = mark.getBoundingClientRect(),
+            px = markBounds.left + markBounds.width * 0.40; // dot is about 54% from the left of the bounds of the character
+        return px - section.getBoundingClientRect().width / 2;
+      },
+      y: () => {
+         let markBounds = mark.getBoundingClientRect(),
+            py = markBounds.top + markBounds.height * 0.73; // dot is about 73% from the top of the bounds of the character
+        return py - section.getBoundingClientRect().height / 2;
+      }
+   }, { 
+    x: 0,
+    y: 0,
+    ease: "power3.in",
+    scale: 1
+});
+
+});
