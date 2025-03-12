@@ -136,6 +136,56 @@ def clean_CGMarcros(folder_path: str):
 
     return CGMacroDF
 
+def find_metrics(data, meal_data):
+    metrics = []
+
+    for index, meal in meal_data.iterrows():
+        meal_time = meal['Timestamp']
+        baseline_glucose = meal['Libre GL']
+        pid = meal['PID']
+        
+        # filter data
+        post_meal_data = data[
+            (data['PID'] == pid) &
+            (data['Timestamp'] >= meal_time) &
+            (data['Timestamp'] <= meal_time + pd.Timedelta(hours=3))
+        ]
+
+        # Time to Peak Glucose
+        if not post_meal_data.empty:
+            peak_glucose_row = post_meal_data.loc[post_meal_data['Libre GL'].idxmax()]
+            peak_glucose_time = peak_glucose_row['Timestamp']
+            time_to_peak_glucose = peak_glucose_time - meal_time
+
+            # Glucose Excursion
+            peak_glucose = peak_glucose_row['Libre GL']
+            glucose_excursion = peak_glucose - baseline_glucose
+            glucose_excursion_time = peak_glucose_time
+
+            # Glucose Recovery Time
+            recovery_data = post_meal_data[(post_meal_data['Timestamp'] >= peak_glucose_time) & (post_meal_data['Libre GL'] <= baseline_glucose)]
+
+        
+
+            if not recovery_data.empty:
+                recovery_time = recovery_data.sort_values('Timestamp').iloc[0]['Timestamp']
+                glucose_recovery_time = recovery_time - meal_time
+            else:
+                recovery_time = post_meal_data['Timestamp'].max()
+                glucose_recovery_time = recovery_time - meal_time
+
+            metrics.append({
+                'PID': pid,
+                'Meal Time': meal_time,
+                'Meal Type': meal['Meal Type'],
+                'Glucose Level at Meal Time': baseline_glucose,
+                'Time to Peak Glucose': time_to_peak_glucose,
+                'Glucose Excursion': glucose_excursion,
+                'Glucose Excursion Time': glucose_excursion_time,
+                'Glucose Recovery Time': glucose_recovery_time
+            })
+
+    return pd.DataFrame(metrics)
 
 if __name__ == "__main__":
     # read data
@@ -173,6 +223,10 @@ if __name__ == "__main__":
         cleaned_CGMarcros["PID"].isin(NON_DIABETIC_CANIDATES + PRE_DIABETIC_CANIDATES + DIABETIC_CANIDATES)
     ]
 
+    # find metrics
+    metrics = find_metrics(cleaned_CGMarcros, meal_data)
+    
+
     # save the meal data in json file
     meal_data.to_json("assets/vis_data/meal_data.json", orient="records", indent=4)
 
@@ -182,6 +236,8 @@ if __name__ == "__main__":
     cleaned_CGMarcros.to_json("assets/vis_data/CGMacros.json", orient="records", indent=4)  
 
     cleaned_geo_data.to_json("assets/vis_data/bio.json", orient="records", indent=4)
+
+    metrics.to_json("assets/vis_data/metrics.json", orient="records", indent=4)
 
     print("Data cleaning is done")
 

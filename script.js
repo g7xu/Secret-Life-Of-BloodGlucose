@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", function() {
   $plate = document.querySelector(".plate"),
   $fork = document.querySelector(".fork"),
   $knife = document.querySelector(".knife"),
-  homeButton = document.querySelector("#home"),
   introSection = document.querySelector("#intro");
 
   function playAnimation() {
@@ -15,6 +14,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const end = "M 0 100 V 0 Q 50 0 100 0 V 100 z";
 
     // Set initial positions (move fork left and knife right)
+    
     gsap.set($fork, { x: "-100%", opacity: 0 });
     gsap.set($knife, { x: "100%", opacity: 0 });
 
@@ -28,20 +28,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
 window.onload = playAnimation;
 
-if (homeButton) {
-    homeButton.addEventListener("click", function () {
-        playAnimation();
-    });
-}
+
 
 ScrollTrigger.create({
   trigger: introSection,
-  start: "top 70%",  // Animation runs when the intro section is halfway visible
+  start: "top 50%",  
   onEnterBack: () => {
     playAnimation();
   },
 });
-
 
 
 gsap.to('progress', {
@@ -50,39 +45,43 @@ gsap.to('progress', {
   scrollTrigger: { scrub: 0.3 }
 });
 
-let sections = gsap.utils.toArray("section:not(#intro)");
-sections.forEach((section) => {
-  ScrollTrigger.create({
-      trigger: section,
-      start: "top 80%",
-      end: "bottom 20%",
-      onEnter: () => section.classList.add("section-visible"),
-      onLeaveBack: () => section.classList.remove("section-visible"),
-  });
+let sections = gsap.utils.toArray("section");
+
+let tl = gsap.timeline({
+    scrollTrigger: {
+        trigger: "main",
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 1,
+        snap: {
+            snapTo: (progress) => {
+                let sectionOffsets = sections.map((section) => section.offsetTop / document.body.scrollHeight);
+                return sectionOffsets.reduce((prev, curr) => 
+                    Math.abs(curr - progress) < Math.abs(prev - progress) ? curr : prev
+                );
+            },
+            duration: 0.5,
+            ease: "power1.inOut"
+        }
+    }
 });
 
-
-gsap.to(sections, {
-  scrollTrigger: {
-      trigger: "body",
-      start: "top top",
-      end: "bottom bottom",
-      snap: {
-          snapTo: (progress, self) => {
-              let snapPoints = sections.map(section => section.offsetTop / document.body.scrollHeight);
-              let closest = snapPoints.reduce((prev, curr) =>
-                  Math.abs(curr - progress) < Math.abs(prev - progress) ? curr : prev
-              );
-              return closest;
-          },
-          duration: 0.5,
-          ease: "power1.inOut",
-      },
-      scrub: 1
-  }
+// Make sure only one section is visible at a time
+sections.forEach((section, index) => {
+    ScrollTrigger.create({
+        trigger: section,
+        start: "top 10%", // Change this depending on when you want the fade to happen
+        end: "bottom 70%",
+        onEnter: () => {
+            gsap.to(sections, { opacity: 0, duration: 0.5 }); // Hide all sections
+            gsap.to(section, { opacity: 1, duration: 0.5 }); // Show only current section
+        },
+        onLeaveBack: () => {
+            gsap.to(sections, { opacity: 0, duration: 0.5 });
+            gsap.to(section, { opacity: 1, duration: 0.5 });
+        }
+    });
 });
-
-
 });
 
 
