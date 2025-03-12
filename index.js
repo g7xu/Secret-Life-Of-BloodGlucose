@@ -1,5 +1,14 @@
-// Place this at the beginning of your script, outside any functions
-let tooltipDiv = null;
+let tooltipDiv = document.createElement("div");
+tooltipDiv.className = "tooltip";
+tooltipDiv.style.position = "absolute";
+tooltipDiv.style.backgroundColor = "white";
+tooltipDiv.style.border = "1px solid black";
+tooltipDiv.style.borderRadius = "5px";
+tooltipDiv.style.padding = "10px";
+tooltipDiv.style.boxShadow = "0 0 10px rgba(0,0,0,0.3)";
+tooltipDiv.style.zIndex = "1000";
+tooltipDiv.style.display = "none"; // Use display instead of visibility
+document.body.appendChild(tooltipDiv);
 
 async function loadData() {
     try {
@@ -48,19 +57,6 @@ d3.json("./assets/vis_data/meal_data_photos.json").then(data => {
 
     const width = 700, height = 100;
     const margin = {top: 30, right: 30, bottom: 50, left: 50};
-
-    // Create the tooltip only once, outside any functions
-    tooltipDiv = document.createElement("div");
-    tooltipDiv.className = "tooltip";
-    tooltipDiv.style.position = "absolute";
-    tooltipDiv.style.backgroundColor = "white";
-    tooltipDiv.style.border = "1px solid black";
-    tooltipDiv.style.borderRadius = "5px";
-    tooltipDiv.style.padding = "10px";
-    tooltipDiv.style.boxShadow = "0 0 10px rgba(0,0,0,0.3)";
-    tooltipDiv.style.zIndex = "1000";
-    tooltipDiv.style.display = "none"; // Use display instead of visibility
-    document.body.appendChild(tooltipDiv);
 
     function createGraph(group, graphId, title) {
         const container = d3.select(`#${graphId}`);
@@ -146,55 +142,17 @@ d3.json("./assets/vis_data/meal_data_photos.json").then(data => {
                     : `./data/CGMacros/CGMacros-0${d["Participant_ID"]}/${d["Image path"]}`;
 
                 tooltipDiv.innerHTML = `
-                    <strong>Meal Type:</strong> ${d["Meal Type"] || "N/A"}<br>
-                    <strong>Calories:</strong> ${d["Calories (Activity)"]}<br>
-                    <strong>Protein:</strong> ${d["Protein"] || "N/A"} g<br>
-                    <strong>Fat:</strong> ${d["Fat"] || "N/A"} g<br>
-                    <strong>Fiber:</strong> ${d["Fiber"] || "N/A"} g<br>
+                    <strong>Meal Type:</strong> ${d["Meal Type"] || "No data"}<br>
+                    <strong>Carbs:</strong> ${d["Carbs"] + ' g' || "No data"}<br>
+                    <strong>Protein:</strong> ${d["Protein"] + ' g' || "No data"}<br>
+                    <strong>Fat:</strong> ${d["Fat"] + ' g'|| "No data"}<br>
+                    <strong>Fiber:</strong> ${d["Fiber"] + ' g' || "No data"}<br>
                     <img src="${imagePath}" alt="Meal Image" width="100" onerror="this.style.display='none'" />
                 `;
                 
                 tooltipDiv.style.left = (event.pageX + 10) + "px";
                 tooltipDiv.style.top = (event.pageY + 10) + "px";
                 tooltipDiv.style.display = "block";
-
-                tooltipDiv.style.cssText = `
-                position: absolute !important;
-                left: ${event.pageX + 10}px !important;
-                top: ${event.pageY + 10}px !important;
-                z-index: 9999 !important;
-                background-color: white !important;
-                border: 1px solid black !important;
-                border-radius: 5px !important;
-                padding: 10px !important;
-                box-shadow: 0 0 10px rgba(0,0,0,0.3) !important;
-                display: block !important;
-                `;
-
-                const debugTooltip = document.createElement("div");
-                debugTooltip.id = "debug-tooltip";
-                debugTooltip.style.cssText = `
-                position: fixed !important;
-                top: 100px !important;
-                left: 100px !important;
-                width: 200px !important;
-                height: auto !important;
-                background-color: red !important;
-                color: white !important;
-                padding: 15px !important;
-                border: 3px solid black !important;
-                font-size: 16px !important;
-                z-index: 9999 !important;
-                pointer-events: none !important;
-                `;
-                debugTooltip.innerHTML = "<strong>TEST TOOLTIP</strong>";
-                document.body.appendChild(debugTooltip);
-
-                debugTooltip.style.left = (event.pageX + 10) + "px";
-                debugTooltip.style.top = (event.pageY + 10) + "px";
-                debugTooltip.style.display = "block";
-                
-                console.log("Tooltip should be visible now", tooltipDiv);
             })
             .on("mousemove", function(event) {
                 // Update tooltip position as mouse moves
@@ -219,7 +177,7 @@ d3.json("./assets/vis_data/meal_data_photos.json").then(data => {
 
                 tooltipDiv.innerHTML = `
                     <strong>Meal Type:</strong> ${d["Meal Type"] || "N/A"}<br>
-                    <strong>Calories:</strong> ${d["Calories (Activity)"]}<br>
+                    <strong>Carbs:</strong> ${d["Carbs"]} g<br>
                     <strong>Protein:</strong> ${d["Protein"] || "N/A"} g<br>
                     <strong>Fat:</strong> ${d["Fat"] || "N/A"} g<br>
                     <strong>Fiber:</strong> ${d["Fiber"] || "N/A"} g<br>
@@ -246,8 +204,15 @@ d3.json("./assets/vis_data/meal_data_photos.json").then(data => {
 
 }).catch(error => console.error("Error loading the JSON data:", error));
 
-
-
+export const mealDataPromise = d3.json("./assets/vis_data/meal_data_photos.json").then(data => {
+    const parseTime = d3.timeParse("%d days %H:%M:%S");
+    data.forEach(d => {
+        d.Timestamp = parseTime(d.Timestamp);
+    });
+    return data;
+}).catch(error => {
+    console.error("Error loading the JSON data:", error);
+});
 
 // animated dot graph
 document.addEventListener("DOMContentLoaded", async function () {

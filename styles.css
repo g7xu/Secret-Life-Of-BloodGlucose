@@ -207,14 +207,14 @@ p {
 }
 
 .tooltip {
-  background: rgba(255, 255, 255, 0.95);
-  padding: 12px;
-  border-radius: 12px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  font-size: 14px;
-  pointer-events: none;
+  position: absolute;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  z-index: 1000;
+  display: none; /* Use display instead of visibility */
 }
 
 .axis-label {
@@ -307,30 +307,8 @@ input[type="range"]::-webkit-slider-thumb:hover {
   border-color: #1e7e34;
 }
 
-.tooltip {
-  position: absolute;
-  background: white;
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-
 .tooltip.show {
   opacity: 1;
-}
-
-.tooltip {
-  position: absolute;
-  background-color: white;
-  border: 1px solid #ccc;
-  padding: 5px;
-  border-radius: 3px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-  pointer-events: none;
-  font-size: 12px;
 }
 
 .plate {
@@ -533,14 +511,6 @@ section {
   stroke: #000; /* Optional: Add a stroke color */
 }
 
-.tooltip {
-  position: absolute !important;
-  z-index: 9999 !important;
-  background-color: white !important;
-  border: 1px solid black !important;
-  padding: 10px !important;
-  pointer-events: none !important;
-}
 
 .tooltip img {
   width: 100px;
