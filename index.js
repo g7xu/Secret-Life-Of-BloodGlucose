@@ -231,7 +231,6 @@ d3.json("./assets/vis_data/meal_data_photos.json").then(data => {
                 tooltipDiv.style.display = "block";
             });
 
-        // Add title to the graph
         svg.append("text")
             .attr("x", width / 2)
             .attr("y", -10)
@@ -285,14 +284,12 @@ async function loadDataAndCreateCharts() {
         return;
     }
 
-    // Initialize groups
     const groups = {
         "Non-diabetic": {},
         "Pre-diabetic": {},
         "Diabetic": {}
     };
 
-    // Populate groups
     data.forEach(({ pid, values, diabetic_level }) => {
         if (!groups[diabetic_level][pid]) {
             groups[diabetic_level][pid] = [];
@@ -300,7 +297,6 @@ async function loadDataAndCreateCharts() {
         groups[diabetic_level][pid] = values;
     });
 
-    // Find the global min and max glucose values for y-axis scaling
     let globalMin = Infinity;
     let globalMax = -Infinity;
 
@@ -311,12 +307,10 @@ async function loadDataAndCreateCharts() {
         });
     });
 
-    // Define a global yScale based on the global min and max values
     const globalYScale = d3.scaleLinear()
         .domain([globalMin, globalMax])
-        .range([100 - 5, 5]); // Set the range according to your graph size
+        .range([100 - 5, 5]);
 
-    // Create the graphs for each group
     Object.entries(groups).forEach(([group, participants]) => {
         const container = d3.select(`#${group.replace(" ", "-").toLowerCase()}-container`);
         if (container.empty()) {
@@ -330,7 +324,6 @@ async function loadDataAndCreateCharts() {
             const participantDiv = groupRow.append("div")
                 .attr("class", "participant-section");
 
-            // Only append the label once per participant
             participantDiv.append("h4").text(`P${pid}`);
             const color = getColorForGroup(group);
 
@@ -340,123 +333,191 @@ async function loadDataAndCreateCharts() {
 }
 
 function createGlucoseLineChart(container, data, groupColor, yScale) {
-    const width = 100, height = 100, margin = { top: 20, right: 20, bottom: 40, left: 80 };
-    const dotX = width / 2;
+    let width = container.node().getBoundingClientRect().width - 100;
+    let height = 100;
+    const margin = { top: 20, right: 20, bottom: 70, left: 80 };
     
     const svg = container.append("svg")
-        .attr("width", width + margin.left + margin.right)
+        .attr("width", "100%")
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", `translate(${margin.left}, ${margin.top})`);
     
-    const xScale = d3.scaleLinear()
-        .domain([0, 100])
-        .range([0, width]);
-
-    // Gridlines for x-axis
-    svg.append("g")
-        .attr("class", "x-grid")
-        .selectAll("line")
-        .data(xScale.ticks(5))
-        .enter()
-        .append("line")
-        .attr("x1", d => xScale(d))
-        .attr("x2", d => xScale(d))
-        .attr("y1", 0)
-        .attr("y2", height)
-        .attr("stroke", "#ccc")
-        .attr("stroke-dasharray", "2,2");
+    const clipPath = svg.append("defs").append("clipPath")
+        .attr("id", "clip-" + container.attr("id"))
+        .append("rect")
+        .attr("height", height);
     
-    // Gridlines for y-axis
-    svg.append("g")
-        .attr("class", "y-grid")
-        .selectAll("line")
-        .data(yScale.ticks(5))
-        .enter()
-        .append("line")
-        .attr("x1", 0)
-        .attr("x2", width)
-        .attr("y1", d => yScale(d))
-        .attr("y2", d => yScale(d))
-        .attr("stroke", "#ccc")
-        .attr("stroke-dasharray", "2,2");
+    const chartGroup = svg.append("g")
+        .attr("clip-path", `url(#clip-${container.attr("id")})`);
+    
+    let startTime = 0;
+    const windowSize = 100;
+    
+    const minutesPerReading = 15;
+    
+    const xScale = d3.scaleLinear()
+        .range([0, width]);
+    
+    const yGrid = svg.append("g")
+        .attr("class", "y-grid");
+    
+    const xGrid = chartGroup.append("g")
+        .attr("class", "x-grid");
     
     const line = d3.line()
-        .x((d, i) => xScale(i))
+        .x((d, i) => xScale(startTime + i))
         .y(d => yScale(d.glucose));
     
-    // Create the graph path
-    const path = svg.append("path")
-        .datum(data.slice(0, 100))
+    const path = chartGroup.append("path")
         .attr("class", "glucose-line")
-        .attr("d", line)
         .attr("stroke", groupColor)
         .attr("fill", "none")
         .attr("stroke-width", 2);
     
-    const dot = svg.append("circle")
+    const dot = chartGroup.append("circle")
         .attr("r", 5)
-        .attr("fill", "red")
-        .attr("cx", xScale(0))
-        .attr("cy", yScale(data[0].glucose));
+        .attr("fill", "red");
     
-    let index = 0;
-    function animate() {
-        if (index + 100 >= data.length) index = 0;
-        
-        const subData = data.slice(index, index + 100);
-        path.datum(subData).attr("d", line);
-        
-        const midPoint = Math.floor(subData.length / 2);
-        dot.transition()
-            .duration(1)
-            .ease(d3.easeLinear)
-            .attr("cx", xScale(midPoint))
-            .attr("cy", yScale(subData[midPoint].glucose));
-        
-        index += 1;
-        setTimeout(animate, 50);
-    }
+    const xAxisGroup = svg.append("g")
+        .attr("class", "x-axis");
     
-    animate();
-    
-    // Create the x-axis with time/index labels
-    const xAxis = d3.axisBottom(xScale)
-        .ticks(5)
-        .tickFormat(d => `${d}`);
-    
-    svg.append("g")
-        .attr("class", "x-axis")
-        .attr("transform", `translate(0, ${height})`)
-        .call(xAxis);
-    
-    // Create the y-axis with glucose labels
     const yAxis = d3.axisLeft(yScale)
         .ticks(5)
         .tickFormat(d => `${d} mg/dL`);
     
-    svg.append("g")
-        .attr("class", "y-axis")
-        .call(yAxis);
+    const yAxisGroup = svg.append("g")
+        .attr("class", "y-axis");
     
-    
-    
-    // x-axis
-    svg.append("text")
-        .attr("x", width / 2)
-        .attr("y", height + 30)
+    const xLabel = svg.append("text")
         .attr("text-anchor", "middle")
         .attr("font-size", 10)
-        .text("Time (minutes)");
+        .attr("y", height*1.6)
+        .text("Time (hours)");
     
-    // y-axis
-    svg.append("text")
+    const yLabel = svg.append("text")
         .attr("transform", "rotate(-90)")
-        .attr("x", -height / 2)
-        .attr("y", -margin.left + 15)
         .attr("text-anchor", "middle")
         .attr("font-size", 10)
         .text("Glucose (mg/dL)");
+    
+    function formatTime(index) {
+        const totalMinutes = index * minutesPerReading;
+        const hours = Math.floor((totalMinutes % 1440) / 60);
+        const mins = totalMinutes % 60;
+        const day = Math.floor(totalMinutes / 1440);
+        
+        return `Day ${day} ${hours}:${mins.toString().padStart(2, '0')}`;
+    }
+    
+    function getTickCount(width) {
+        if (width < 100) return 3;
+        if (width < 200) return 4;
+        if (width < 300) return 5;
+        return 5;
+    }
+    
+    function updateChart() {
+        width = container.node().getBoundingClientRect().width - 100;
+        
+        clipPath.attr("width", width);
+        
+        xScale.range([0, width])
+              .domain([startTime, startTime + windowSize]);
+        
+        const tickCount = getTickCount(width);
+        
+        xAxisGroup.attr("transform", `translate(0, ${height})`)
+                  .call(d3.axisBottom(xScale)
+                        .ticks(tickCount)
+                        .tickFormat(d => formatTime(d)));
+        
+        xAxisGroup.selectAll("text")
+                  .attr("dy", "1em")
+                  .attr("transform", "rotate(-25)")
+                  .style("text-anchor", "end");
+        
+        yAxisGroup.call(yAxis);
+        
+        yGrid.selectAll("line").remove();
+        yGrid.selectAll("line")
+            .data(yScale.ticks(5))
+            .enter()
+            .append("line")
+            .attr("x1", 0)
+            .attr("x2", width)
+            .attr("y1", d => yScale(d))
+            .attr("y2", d => yScale(d))
+            .attr("stroke", "#ccc")
+            .attr("stroke-dasharray", "2,2");
+        
+        updateXGrid(tickCount);
+        
+        xLabel.attr("x", width / 3)
+            .attr("y", height*1.6);
+        
+        yLabel.attr("x", -height / 2)
+            .attr("y", -margin.left + 15);
+    }
+    
+    function updateXGrid(tickCount) {
+        xGrid.selectAll("line").remove();
+        
+        xGrid.selectAll("line")
+            .data(xScale.ticks(tickCount))
+            .enter()
+            .append("line")
+            .attr("x1", d => xScale(d))
+            .attr("x2", d => xScale(d))
+            .attr("y1", 0)
+            .attr("y2", height)
+            .attr("stroke", "#ccc")
+            .attr("stroke-dasharray", "2,2");
+    }
+    
+    function animate() {
+        startTime += 1;
+        if (startTime + windowSize >= data.length) {
+            startTime = 0;
+        }
+        
+        xScale.domain([startTime, startTime + windowSize]);
+        
+        const tickCount = getTickCount(width);
+        
+        const xAxis = d3.axisBottom(xScale)
+            .ticks(tickCount)
+            .tickFormat(d => formatTime(d));
+        
+        xAxisGroup.call(xAxis);
+        
+        xAxisGroup.selectAll("text")
+                  .attr("dy", "1em")
+                  .attr("transform", "rotate(-25)")
+                  .style("text-anchor", "end");
+        
+        updateXGrid(tickCount);
+        
+        const visibleData = data.slice(startTime, startTime + windowSize);
+        
+        path.datum(visibleData).attr("d", line);
+        
+        const midIndex = Math.floor(windowSize / 2);
+        if (midIndex < visibleData.length) {
+            dot.attr("cx", xScale(startTime + midIndex))
+               .attr("cy", yScale(visibleData[midIndex].glucose));
+        }
+        
+        setTimeout(animate, 20);
+    }
+    
+    updateChart();
+    
+    window.addEventListener('resize', function() {
+        updateChart();
+    });
+    
+    animate();
 }
 
 loadDataAndCreateCharts();
