@@ -12,6 +12,7 @@
     <script src="script.js"></script>
     <script src="longRun.js"type = "module"></script>
     <script src="trends.js"type = "module"></script>
+    <script src="distribution.js" type="module"></script>
     
 
     <script src="index.js" type="module"></script>
@@ -173,22 +174,45 @@
           <section id="panel-4">
             <div class="container">
               <div class="row">
-                <div class="col-6">
-  
-                  <img src="" alt="">
-  
-                </div>
-                <div class="col-6 d-flex flex-column">
-  
-                  <h2>Panel 4</h2>
-  
+                <div class="col-12">
+                  <h2>Glucose Metrics Distribution</h2>
+                  
+                  <div class="controls-container">
+                    <div class="metric-selector">
+                      <label>Select Metric:</label>
+                      <select id="metric-select">
+                        <option value="glucose-excursion">Glucose Excursion</option>
+                        <option value="excursion-time">Glucose Excursion Time</option>
+                        <option value="recovery-time">Glucose Recovery Time</option>
+                      </select>
+                    </div>
+                    
+                    <div class="group-toggles">
+                      <label>Select Groups:</label>
+                      <div class="checkbox-group">
+                        <input type="checkbox" id="diabetic-toggle" checked>
+                        <label for="diabetic-toggle">Diabetic</label>
+                        
+                        <input type="checkbox" id="prediabetic-toggle" checked>
+                        <label for="prediabetic-toggle">Pre-diabetic</label>
+                        
+                        <input type="checkbox" id="nondiabetic-toggle" checked>
+                        <label for="nondiabetic-toggle">Non-diabetic</label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div id="distribution-plot"></div>
+
                   <p class="step-description">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                    This visualization shows the distribution of different glucose metrics across diabetic groups. 
+                    The normal distributions are calculated using the mean and standard deviation of each group's data.
+                    Compare how different metrics vary between diabetic, pre-diabetic, and non-diabetic individuals.
                   </p>
                 </div>
               </div>
             </div>
-        </section>
+          </section>
 
 
           <section id="panel-5">
