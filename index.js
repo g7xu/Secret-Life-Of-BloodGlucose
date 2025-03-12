@@ -277,6 +277,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 });
 
+
 async function loadDataAndCreateCharts() {
     const data = await loadData();
     if (!data || data.length === 0) {
@@ -296,6 +297,8 @@ async function loadDataAndCreateCharts() {
         }
         groups[diabetic_level][pid] = values;
     });
+
+    const charts = [];
 
     let globalMin = Infinity;
     let globalMax = -Infinity;
@@ -327,13 +330,18 @@ async function loadDataAndCreateCharts() {
             participantDiv.append("h4").text(`P${pid}`);
             const color = getColorForGroup(group);
 
-            createGlucoseLineChart(participantDiv, entries, color, globalYScale); // Pass globalYScale
+            const chart = createGlucoseLineChart(participantDiv, entries, color, globalYScale);
+            charts.push(chart);
         });
     });
+    
+    setTimeout(function() {
+        charts.forEach(chart => chart.update());
+    }, 300);
 }
 
 function createGlucoseLineChart(container, data, groupColor, yScale) {
-    let width = container.node().getBoundingClientRect().width - 100;
+    let width = 100;
     let height = 100;
     const margin = { top: 20, right: 20, bottom: 70, left: 80 };
     
@@ -353,7 +361,6 @@ function createGlucoseLineChart(container, data, groupColor, yScale) {
     
     let startTime = 0;
     const windowSize = 100;
-    
     const minutesPerReading = 15;
     
     const xScale = d3.scaleLinear()
@@ -392,7 +399,6 @@ function createGlucoseLineChart(container, data, groupColor, yScale) {
     const xLabel = svg.append("text")
         .attr("text-anchor", "middle")
         .attr("font-size", 10)
-        .attr("y", height*1.6)
         .text("Time (hours)");
     
     const yLabel = svg.append("text")
@@ -417,8 +423,11 @@ function createGlucoseLineChart(container, data, groupColor, yScale) {
         return 5;
     }
     
+    let animationRunning = false;
+    
     function updateChart() {
         width = container.node().getBoundingClientRect().width - 100;
+        width = Math.max(width, 150);
         
         clipPath.attr("width", width);
         
@@ -453,11 +462,20 @@ function createGlucoseLineChart(container, data, groupColor, yScale) {
         
         updateXGrid(tickCount);
         
-        xLabel.attr("x", width / 3)
-            .attr("y", height*1.6);
+        xLabel.attr("x", width / 2)
+              .attr("y", height + 50);
         
         yLabel.attr("x", -height / 2)
-            .attr("y", -margin.left + 15);
+              .attr("y", -margin.left + 15);
+        
+        const visibleData = data.slice(startTime, startTime + windowSize);
+        path.datum(visibleData).attr("d", line);
+        
+        const midIndex = Math.floor(windowSize / 2);
+        if (midIndex < visibleData.length) {
+            dot.attr("cx", xScale(startTime + midIndex))
+               .attr("cy", yScale(visibleData[midIndex].glucose));
+        }
     }
     
     function updateXGrid(tickCount) {
@@ -476,6 +494,8 @@ function createGlucoseLineChart(container, data, groupColor, yScale) {
     }
     
     function animate() {
+        if (!animationRunning) return;
+        
         startTime += 1;
         if (startTime + windowSize >= data.length) {
             startTime = 0;
@@ -511,14 +531,30 @@ function createGlucoseLineChart(container, data, groupColor, yScale) {
         setTimeout(animate, 20);
     }
     
-    updateChart();
-    
-    window.addEventListener('resize', function() {
-        updateChart();
+    requestAnimationFrame(function() {
+        setTimeout(function() {
+            updateChart();
+            
+            animationRunning = true;
+            animate();
+        }, 100);
     });
     
-    animate();
+    const resizeHandler = function() {
+        updateChart();
+    };
+    
+    window.addEventListener('resize', resizeHandler);
+    
+    return {
+        update: updateChart,
+        cleanup: function() {
+            window.removeEventListener('resize', resizeHandler);
+            animationRunning = false;
+        }
+    };
 }
+
 
 loadDataAndCreateCharts();
 
