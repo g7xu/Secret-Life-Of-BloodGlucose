@@ -3,14 +3,14 @@
 html,
 body {
   margin: 0;
-  height: 100%;
   font-weight: 300;
   --color-placemat: oklch(58.04% 0.0486 76.76 / 50%);
   --color-text: oklch(85.82% 0.1342 86.38);
   --color-pastel: oklch(94.39% 0.0227 78.22);
-}
-body {
-  overflow-x: hidden;
+  display: block;
+  overflow-x: hidden; /* Prevent horizontal scroll issues */
+  scroll-behavior: smooth;
+  
 }
 
 h1,
@@ -27,7 +27,7 @@ h2 {
 }
 
 #panel-1 {
-  height: 170vh;
+  height: 100%;
 }
 
 #intro {
@@ -507,20 +507,16 @@ progress::-moz-progress-bar {
 }
 
 section {
-  height: 100vh;
+  min-height: 100vh;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   font-size: 2rem;
   opacity: 0;  /* Initially hidden */
-  transform: translateY(50px); /* Starts slightly lower */
-}
-
-.section-visible {
-  opacity: 1 !important;
-  transform: translateY(0) !important;
-  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  position: relative; /* Ensures proper stacking */
+  z-index: 1;
 }
 
 #intro {
@@ -616,6 +612,7 @@ h2 {
   width: 100%;
   overflow-x: auto;
   padding: 20px;
+  height: 100%;
 }
 
 svg {
