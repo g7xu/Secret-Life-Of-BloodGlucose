@@ -356,7 +356,7 @@ function createGlucoseLineChart(container, data, groupColor, yScale) {
     
     const yAxis = d3.axisLeft(yScale)
         .ticks(5)
-        .tickFormat(d => `${d} mg/dL`);
+        .tickFormat(d => `${d}`);
     
     const yAxisGroup = svg.append("g")
         .attr("class", "y-axis");
