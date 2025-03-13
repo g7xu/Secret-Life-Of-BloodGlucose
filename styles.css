@@ -6,9 +6,9 @@ body {
   margin: 0;
   height: 100%;
   font-weight: 300;
-  --color-placemat: oklch(58.04% 0.0486 76.76 / 50%);
-  --color-text: oklch(85.82% 0.1342 86.38);
-  --color-pastel: oklch(94.39% 0.0227 78.22);
+  --color-placemat: oklch(66.89% 0.0807 246.33 / 50%);
+  --color-text: oklch(81.98% 0.1466 81.17);
+  --color-pastel: #eff2f1;
 }
 body {
   overflow-x: hidden;
@@ -350,7 +350,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
   overflow: hidden;
   display: grid;
   place-items: center;
-  grid-template-areas: "bowl";
+  grid-template-areas: "plate";
   aspect-ratio: 1;
 
   width: 50vmin;
@@ -362,18 +362,18 @@ input[type="range"]::-webkit-slider-thumb:hover {
     hsla(0 0% 0% / 0.05) 2vmin 2vmin 2vmin -2vmin,
     hsla(0 0% 0% / 0.05) -2vmin -2vmin 2vmin -2vmin,
     white 0 0 0 3vmin,
-    rgba(139, 119, 90, 0.5) 0 0 0 3.5vmin,
+    var(--color-pastel) 0 0 0 3.5vmin,
     white 0 0 0 5vmin,
     hsl(0deg 0% 0% / 60%) 5vmin 5vmin 5vmin;
 }
 
-.bowl > * {
-  grid-area: bowl;
+.plate > * {
+  grid-area: plate;
 }
 
 .text {
   width: 100%;
-  text-shadow: 2px 1px 2px var(--color-placemat);
+  text-shadow: 2px 1px 2px var(--color-pastel);
   text-align: center;
   color: var(--color-text);
   font-family: "Gluten", monospace;
