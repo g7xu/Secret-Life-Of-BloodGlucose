@@ -35,16 +35,33 @@ mealDataPromise.then(data => {
 
 
 
-const mealIcons = {
-  breakfast: 'assets/pics/breakfast.png',
-  lunch: 'assets/pics/lunch.png',
-  dinner: 'assets/pics/dinner.png',
-  snack: 'assets/pics/snack.png',
-  breakfastblod: 'assets/pics/breakfastbold.png',
-  lunchbold: 'assets/pics/lunchbold.png',
-  dinnerbold: 'assets/pics/dinnerbold.png',
-  snackbold: 'assets/pics/snackbold.png'
+const diabetic = {
+  breakfast: 'assets/pics/d_breakfast.png',
+  lunch: 'assets/pics/d_lunch.png',
+  dinner: 'assets/pics/d_dinner.png',
+  snack: 'assets/pics/d_snack.png',
 };
+
+const prediabetic = {
+  breakfast: 'assets/pics/pd_breakfast.png',
+  lunch: 'assets/pics/pd_lunch.png',
+  dinner: 'assets/pics/pd_dinner.png',
+  snack: 'assets/pics/pd_snack.png'
+};
+
+const nondiabetic = {
+  breakfast: 'assets/pics/nd_breakfast.png',
+  lunch: 'assets/pics/nd_lunch.png',
+  dinner: 'assets/pics/nd_dinner.png',
+  snack: 'assets/pics/nd_snack.png'
+};
+
+const mealIcons = {
+  "Diabetic": diabetic,        // Lowercase keys
+  "Pre-diabetic": prediabetic, // Lowercase keys
+  "Non-diabetic": nondiabetic  // Lowercase keys
+};
+
 
 // Select the container for the visualization
 const container = d3.select('.visualization-wrapper');
@@ -300,7 +317,7 @@ function updateVisualization() {
   // Define a color scale for diabetic levels
   const diabeticLevelColorScale = d3.scaleOrdinal()
     .domain(['Non-diabetic', 'Pre-diabetic', 'Diabetic'])
-    .range(['#2ecc71', '#f1c40f', '#e74c3c']); // Green, Yellow, Red
+    .range(['#2ecc71', '#f1c40f', '#4059ad']); // Green, Yellow, Red
 
   const lines = g.selectAll(".line")
     .data(filteredData.filter(d => activeParticipants.has(d.pid)));
@@ -383,6 +400,7 @@ function updateVisualization() {
     if (activeParticipants.has(participant.pid)) {
       participant.values.forEach(d => {
         if (d.mealType) {
+
           const group = g.append('g') // Group to hold both image and interactive rect
             .attr('class', 'meal-group')
             .attr('transform', `translate(${xScale(d.time)}, ${yScale(d.glucose) * 0.7 - 30})`); // Move up by 30%
@@ -401,7 +419,7 @@ function updateVisualization() {
           // Meal image
           const image = group.append('image')
             .attr('class', 'meal-dot')
-            .attr('xlink:href', mealIcons[d.mealType])
+            .attr('xlink:href', mealIcons[participant.diabetic_level][d.mealType])
             .attr('width', 20)
             .attr('height', 20)
             // .attr('fillrule', 'nonzero')
@@ -495,7 +513,7 @@ function updateVisualization() {
 
     const mealColorScale = d3.scaleOrdinal()
     .domain(['Non-diabetic', 'Pre-diabetic', 'Diabetic'])
-    .range(['#2ecc71', '#f1c40f', '#e74c3c']); // Green, Yellow, Red
+    .range(['#2ecc71', '#f1c40f', '#4059ad']); // Green, Yellow, Red
 
     const mealCircles = g.selectAll(".meal-circle")
         .data(mealData.filter(d => d.time >= timeExtent[0] && d.time <= timeExtent[1]));
@@ -661,4 +679,3 @@ window.addEventListener('resize', () => {
 
 // Initial call to load data and plot it
 loadDataAndPlot();
-

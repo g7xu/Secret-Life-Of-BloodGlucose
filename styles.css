@@ -440,6 +440,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
   padding-right: 20px; /* Add padding to the right side */
 }
 
+
 .navbar {
   position: fixed;
   top: 0;
@@ -556,7 +557,6 @@ section {
   margin-top: 5px;
 }
 
-
 .glucose-section {
   margin-bottom: 30px;
 }
@@ -609,11 +609,10 @@ h2 {
 
 .chart-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  overflow-x: auto;
-  padding: 20px;
+  flex-direction: column; /* Ensures horizontal stacking */
+  justify-content: space-evenly; /* Evenly distributes charts */
+  align-items: center; /* Centers content */
+  gap: 20px; /* Adds space between charts */
 }
 
 svg {
