@@ -16,6 +16,7 @@ located the data from the [website](https://physionet.org/content/cgmacros/1.0.0
     ├── index.html                  # The main HTML file that structures the webpage and includes references to CSS and JavaScript files
     ├── global.js                   # Manages state and interactions for visualizations, including participant selection and time range controls, using D3.js
 
+
 # Design Logistics
 ...
 

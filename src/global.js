@@ -19,8 +19,6 @@ let timeRange = [1440, 14385];
 let data, processedData, xScale, yScale, colorScale;
 let tooltip;
 let mealData;
-// const baseDate = new Date(1900, 0, 1); // Jan 1, 1900
-
 
 mealDataPromise.then(data => {
   mealData = data.map(d => ({
@@ -30,10 +28,7 @@ mealDataPromise.then(data => {
     time: d.Timestamp.getTime() / 60000,  // Convert to minutes for x-scale
     image: d['Image path']
   }));
-
 });
-
-
 
 const diabetic = {
   breakfast: 'assets/pics/d_breakfast.png',
@@ -57,13 +52,11 @@ const nondiabetic = {
 };
 
 const mealIcons = {
-  "Diabetic": diabetic,        // Lowercase keys
-  "Pre-diabetic": prediabetic, // Lowercase keys
-  "Non-diabetic": nondiabetic  // Lowercase keys
+  "Diabetic": diabetic,
+  "Pre-diabetic": prediabetic,
+  "Non-diabetic": nondiabetic
 };
 
-
-// Select the container for the visualization
 const container = d3.select('.visualization-wrapper');
 const svg = container.append('svg')
   .attr('width', '100%')
@@ -73,15 +66,11 @@ const svg = container.append('svg')
 const g = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-
 document.addEventListener("DOMContentLoaded", function() {
-  // Call the function to create participant buttons
   loadDataAndPlot();
 });
 
-// Function to create participant buttons
 function createParticipantButtons(participants) {
-  // Clear existing buttons
   d3.selectAll('.participant-buttons').selectAll('*').remove();
 
   participants.forEach(pid => {
@@ -122,11 +111,9 @@ function createParticipantButtons(participants) {
   });
 }
 
-
-// Function to render the time slider
 function rendering_timeSlider(startDay, endDay) {
   const container = d3.select("#time-range-selector");
-  container.selectAll("*").remove(); // Clear existing slider elements
+  container.selectAll("*").remove();
 
   const style = window.getComputedStyle(container.node());
   const paddingLeft = parseFloat(style.paddingLeft);
@@ -137,11 +124,11 @@ function rendering_timeSlider(startDay, endDay) {
   const margin = { left: 8, right: 8 };
   const sliderWidth = width - margin.left - margin.right;
 
-  const fullTimeExtent = [1440, 14385]; // Full time extent in minutes
-  const daysExtent = [1, Math.ceil(fullTimeExtent[1] / 1440)]; // Convert minutes to days, starting from day 1
+  const fullTimeExtent = [1440, 14385];
+  const daysExtent = [1, Math.ceil(fullTimeExtent[1] / 1440)];
 
   const xScale = d3.scaleLinear()
-    .domain(daysExtent) // Adjust range to match the actual time range in days
+    .domain(daysExtent)
     .range([margin.left, sliderWidth + margin.left])
     .clamp(true);
 
@@ -172,13 +159,13 @@ function rendering_timeSlider(startDay, endDay) {
 
   const handleStart = svg.append('circle')
     .attr('class', 'handle')
-    .attr('cx', xScale(startDay)) // Use the provided startDay
+    .attr('cx', xScale(startDay))
     .attr('cy', height / 2)
     .attr('r', circle_size)
     .attr('fill', '#0071e3')
     .call(d3.drag()
       .on('start drag', function(event) {
-        const day = Math.round(xScale.invert(event.x - margin.left)); // Snap to nearest day
+        const day = Math.round(xScale.invert(event.x - margin.left));
         const endDay = Math.round(xScale.invert(handleEnd.attr('cx') - margin.left));
         if (day < endDay) {
           handleStart.attr('cx', xScale(day));
@@ -189,13 +176,13 @@ function rendering_timeSlider(startDay, endDay) {
 
   const handleEnd = svg.append('circle')
     .attr('class', 'handle')
-    .attr('cx', xScale(endDay)) // Use the provided endDay
+    .attr('cx', xScale(endDay))
     .attr('cy', height / 2)
     .attr('r', circle_size)
     .attr('fill', '#0071e3')
     .call(d3.drag()
       .on('start drag', function(event) {
-        const day = Math.round(xScale.invert(event.x - margin.left)); // Snap to nearest day
+        const day = Math.round(xScale.invert(event.x - margin.left));
         const startDay = Math.round(xScale.invert(handleStart.attr('cx') - margin.left));
         if (day > startDay) {
           handleEnd.attr('cx', xScale(day));
@@ -204,26 +191,24 @@ function rendering_timeSlider(startDay, endDay) {
         }
       }));
 
-  // Add x-axis scale without the axis line
   const xAxis = d3.axisBottom(xScale)
     .ticks(daysExtent[1])
     .tickFormat(d => `${d}d`)
-    .tickSize(0); // Remove the axis line
+    .tickSize(0);
 
   const xAxisGroup = svg.append("g")
     .attr("class", "x-axis")
-    .attr("transform", `translate(0, ${height / 2 + circle_size + 5})`) // Position the x-axis scale below the slider
+    .attr("transform", `translate(0, ${height / 2 + circle_size + 5})`)
     .call(xAxis);
 
-  xAxisGroup.select(".domain").remove(); // Remove the axis line
+  xAxisGroup.select(".domain").remove();
 
   function updateTimeRange(startDay, endDay) {
-    timeRange = [startDay * 1440, endDay * 1440]; // Convert days to minutes, adjusting for day 1 start
+    timeRange = [startDay * 1440, endDay * 1440];
     updateVisualization();
   }
 }
 
-// Function to get the time range extent
 function getTimeRangeExtent(range) {
   if (Array.isArray(range)) {
     if (range[0] > range[1]) {
@@ -233,7 +218,6 @@ function getTimeRangeExtent(range) {
   }
 }
 
-// Function to update the visualization
 function updateVisualization() {
   const containerWidth = container.node().clientWidth;
   const containerHeight = container.node().clientHeight;
@@ -246,14 +230,12 @@ function updateVisualization() {
 
   const timeExtent = getTimeRangeExtent(timeRange);
 
-  // Filter data within the selected time range
   const filteredData = processedData.map(d => ({
     pid: d.pid,
     diabetic_level: d.diabetic_level,
     values: d.values.filter(v => v.time >= timeExtent[0] && v.time <= timeExtent[1])
   })).filter(d => d.values.length > 0);
 
-  // Update xScale domain based on filtered data
   const filteredTimeExtent = [
     d3.min(filteredData, d => d3.min(d.values, v => v.time)),
     d3.max(filteredData, d => d3.max(d.values, v => v.time))
@@ -262,23 +244,22 @@ function updateVisualization() {
   xScale.domain(filteredTimeExtent).range([0, width]);
   yScale.range([height, 0]);
 
-  // Determine the tick format based on the filtered time extent
   let tickFormat;
   let tickValues = [];
   const timeRangeInMinutes = filteredTimeExtent[1] - filteredTimeExtent[0];
   const startTime = filteredTimeExtent[0];
 
-  if (timeRangeInMinutes <= 1440) { // Less than or equal to 1 day
+  if (timeRangeInMinutes <= 1440) {
     tickFormat = d => {
       const hour = Math.floor((d - startTime) / 60);
-      return hour === 12 ? 'noon' : `${hour}h`; // Format as HH or "noon"
+      return hour === 12 ? 'noon' : `${hour}h`;
     };
-    for (let i = filteredTimeExtent[0]; i <= filteredTimeExtent[1]; i += 60) { // 1-hour intervals
+    for (let i = filteredTimeExtent[0]; i <= filteredTimeExtent[1]; i += 60) {
       tickValues.push(i);
     }
-  } else { // More than 3 days
-    tickFormat = d => `${Math.floor(d / 1440)}d`; // Format as days
-    for (let i = filteredTimeExtent[0]; i <= filteredTimeExtent[1]; i += 1440) { // 1-day intervals
+  } else {
+    tickFormat = d => `${Math.floor(d / 1440)}d`;
+    for (let i = filteredTimeExtent[0]; i <= filteredTimeExtent[1]; i += 1440) {
       tickValues.push(i);
     }
   } 
@@ -290,7 +271,6 @@ function updateVisualization() {
       .tickValues(tickValues)
       .tickFormat(tickFormat));
 
-  // Make "noon" bold
   g.selectAll(".x-axis .tick text")
     .filter(function(d) { return Math.floor((d - startTime) / 60) === 12; })
     .style("font-weight", "bold");
@@ -314,10 +294,9 @@ function updateVisualization() {
     .attr("stroke-width", 1)
     .attr("stroke-dasharray", "3,3");
 
-  // Define a color scale for diabetic levels
   const diabeticLevelColorScale = d3.scaleOrdinal()
     .domain(['Non-diabetic', 'Pre-diabetic', 'Diabetic'])
-    .range(['#2ecc71', '#f1c40f', '#4059ad']); // Green, Yellow, Red
+    .range(['#2ecc71', '#f1c40f', '#4059ad']);
 
   const lines = g.selectAll(".line")
     .data(filteredData.filter(d => activeParticipants.has(d.pid)));
@@ -332,12 +311,12 @@ function updateVisualization() {
       .y(d => yScale(d.glucose))
       .curve(d3.curveMonotoneX)(d.values))
     .style("stroke-width", 3)
-    .style("stroke", d => diabeticLevelColorScale(d.diabetic_level)); // Ensure color is set here as well
+    .style("stroke", d => diabeticLevelColorScale(d.diabetic_level));
 
   lines.enter()
     .append("path")
     .attr("class", "line")
-    .style("stroke", d => diabeticLevelColorScale(d.diabetic_level)) // Use diabetic level color scale
+    .style("stroke", d => diabeticLevelColorScale(d.diabetic_level))
     .style("opacity", 0)
     .attr("d", d => d3.line()
       .x(d => xScale(d.time))
@@ -348,26 +327,21 @@ function updateVisualization() {
         .duration(200)
         .style('opacity', .9);
       
-      // Get mouse x position in data coordinates
       const [mouseX] = d3.pointer(event, this);
       const hoveredTime = xScale.invert(mouseX);
       
-      // Find the closest data point to the mouse position
       const bisect = d3.bisector(d => d.time).left;
       const index = bisect(d.values, hoveredTime);
       const dataPoint = index > 0 ? d.values[index - 1] : d.values[0];
       
-      // Display the specific glucose value at this position
       tooltip.html(`Participant: ${d.pid}<br>Time: ${Math.round(dataPoint.time)} min<br>Glucose: ${dataPoint.glucose}`)
         .style('left', (event.pageX + 5) + 'px')
         .style('top', (event.pageY - 28) + 'px');
     })
     .on('mousemove', function(event, d) {
-      // Get mouse x position in data coordinates
       const [mouseX] = d3.pointer(event, this);
       const hoveredTime = xScale.invert(mouseX);
       
-      // Find the closest data point to the mouse position
       const bisect = d3.bisector(d => d.time).left;
       const index = bisect(d.values, hoveredTime);
       const dataPoint = index > 0 && index < d.values.length ? 
@@ -375,7 +349,6 @@ function updateVisualization() {
                          d.values[index-1] : d.values[index]) : 
                         (index > 0 ? d.values[index-1] : d.values[0]);
       
-      // Display the specific glucose value at this position
       tooltip.html(`Participant: ${d.pid}<br>Time: ${Math.round(dataPoint.time)} min<br>Glucose: ${dataPoint.glucose}`)
         .style('left', (event.pageX + 5) + 'px')
         .style('top', (event.pageY - 28) + 'px');
@@ -389,71 +362,57 @@ function updateVisualization() {
     .duration(750)
     .style("opacity", 0.7);
 
-  // Remove existing meal dots and dashed lines
   g.selectAll('.meal-group').remove();
   g.selectAll('.meal-time-line').remove();
   g.selectAll('.meal-time-dot').remove();
   g.selectAll('.meal-dot').remove();
 
-  // Add meal dots for each participant if they are active
   filteredData.forEach(participant => {
     if (activeParticipants.has(participant.pid)) {
       participant.values.forEach(d => {
         if (d.mealType) {
-
-          const group = g.append('g') // Group to hold both image and interactive rect
+          const group = g.append('g')
             .attr('class', 'meal-group')
-            .attr('transform', `translate(${xScale(d.time)}, ${yScale(d.glucose) * 0.7 - 30})`); // Move up by 30%
+            .attr('transform', `translate(${xScale(d.time)}, ${yScale(d.glucose) * 0.7 - 30})`);
 
-          // Vertical dashed line for meal time
           const line = g.append('line')
             .attr('class', 'meal-time-line')
             .attr('x1', xScale(d.time))
             .attr('x2', xScale(d.time))
-            .attr('y1', yScale(d.glucose)) // Start at the top of the rectangle
-            .attr('y2', yScale(d.glucose) * 0.7) // Stop at the glucose level
+            .attr('y1', yScale(d.glucose))
+            .attr('y2', yScale(d.glucose) * 0.7)
             .attr('stroke', 'gray')
             .attr('stroke-width', 1)
             .attr('stroke-dasharray', '4,4');
 
-          // Meal image
           const image = group.append('image')
             .attr('class', 'meal-dot')
             .attr('xlink:href', mealIcons[participant.diabetic_level][d.mealType])
             .attr('width', 20)
             .attr('height', 20)
-            // .attr('fillrule', 'nonzero')
-            // .attr('fill', diabeticLevelColorScale(d.diabetic_level))
-            .attr('x', -10) // Center the image horizontally
-            .attr('y', -10) // Center the image vertically
+            .attr('x', -10)
+            .attr('y', -10)
             .style('opacity', 0)
             .transition()
             .duration(750)
             .style('opacity', 1);
 
-          // Add a small dot on the y-axis at the meal time
           const dot = g.append('circle')
             .attr('class', 'meal-time-dot')
             .attr('cx', xScale(d.time))
-            .attr('cy', yScale(d.glucose)) // Position the dot at the glucose level
-            .attr('r', 3) // Radius of the dot
-            .attr('fill', diabeticLevelColorScale(d.diabetic_level)); // Color the dot based on diabetic level
+            .attr('cy', yScale(d.glucose))
+            .attr('r', 3)
+            .attr('fill', diabeticLevelColorScale(d.diabetic_level));
 
-          // Transparent square for better event detection
           group.append('rect')
             .attr('width', 20)
-            .attr('height', yScale(d.glucose) - (yScale(d.glucose) * 0.7 - 30)) // Height to span the area between the line plot and the icon
-            .attr('x', -10) // Center the rectangle horizontally
-            .attr('y', -10) // Position the rectangle at the top middle
-            .attr('fill', 'transparent') // Invisible but captures events
-            .style('pointer-events', 'all') // Ensure the rect captures all events
+            .attr('height', yScale(d.glucose) - (yScale(d.glucose) * 0.7 - 30))
+            .attr('x', -10)
+            .attr('y', -10)
+            .attr('fill', 'transparent')
+            .style('pointer-events', 'all')
             .on('mouseover', function (event) {
               const [x, y] = d3.pointer(event, this);
-              // d3.select('#tooltip')
-              //   .style('display', 'block')
-              //   .html(`Calories: ${d.calories}`)
-              //   .style('left', `${x + 10}px`)
-              //   .style('top', `${y - 10}px`);
 
               const imagePath = d.PID < 10
                     ? `./data/CGMacros/CGMacros-00${d.pid}/${mealData.image}`
@@ -472,29 +431,50 @@ function updateVisualization() {
                 tooltipDiv.style.top = (event.pageY + 10) + "px";
                 tooltipDiv.style.display = "block";
 
-              // Make line and dot bold
               line.attr('stroke-width', 3);
               dot.attr('r', 5);
-
-              // Replace image with bold version
-              // image.attr('xlink:href', mealIcons[d.mealType + 'bold']);
             })
             .on('mouseout', function () {
-              d3.select('#tooltip').style('display', 'none');
+              tooltipDiv.style.display = "none";
 
               // Revert line and dot to original
               line.attr('stroke-width', 1);
               dot.attr('r', 3);
-
-              // Revert image to original version
-              // image.attr('xlink:href', mealIcons[d.mealType]);
             });
         }
       });
     }
   });
 
-  // adding a legend on the top right corner of the line plot 
+  // Adding a legend on the top right corner of the line plot
+  const legend = svg.append("g")
+    .attr("class", "legend")
+    .attr("transform", `translate(${containerWidth - margin.right - 100}, ${margin.top})`);
+
+  const legendData = [
+    { label: 'Non-diabetic', color: '#2ecc71' },
+    { label: 'Pre-diabetic', color: '#f1c40f' },
+    { label: 'Diabetic', color: '#4059ad' }
+  ];
+
+  legend.selectAll("rect")
+    .data(legendData)
+    .enter()
+    .append("rect")
+    .attr("x", 0)
+    .attr("y", (d, i) => i * 20)
+    .attr("width", 18)
+    .attr("height", 18)
+    .style("fill", d => d.color);
+
+  legend.selectAll("text")
+    .data(legendData)
+    .enter()
+    .append("text")
+    .attr("x", 24)
+    .attr("y", (d, i) => i * 20 + 9)
+    .attr("dy", ".35em")
+    .text(d => d.label);
 
   const noDataMessage = g.selectAll(".no-data-message")
     .data(activeParticipants.size === 0 ? [1] : []);

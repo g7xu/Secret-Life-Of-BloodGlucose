@@ -3,268 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Secret Life of Blood Glucose</title>
 
-    <script type="module" src="global.js"></script>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script type="module" src="global.js"></script>
-    <script src="script.js"></script>
-    <script src="longRun.js"type = "module"></script>
-    <script src="distribution.js" type="module"></script>
-    
-
-    <script src="index.js" type="module"></script>
+    <link rel="stylesheet" href="styles/styles.css">
     <link rel="icon" type="image/x-icon" href="assets/pics/bread.png">
 
-     
+    <script type="module" src="src/global.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="src/script.js"></script>
+    <script src="src/longRun.js" type="module"></script>
+    <script src="src/distribution.js" type="module"></script>
+    <script src="src/index.js" type="module"></script>
 </head>
 <body>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollToPlugin.min.js"></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
-
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollToPlugin.min.js"></script>
-
-  <div id="page" class="site">
-
-
-  
-    <header id="masthead" class="site-header" role="banner">
-        <nav class="navbar">
-            <div class="nav-links">
-                <a href="#intro" id = "home" class="anchor">Home</a>
-                <a href="#panel-1" class="anchor">Graph 1</a>
-                <a href="#panel-2" class="anchor">Graph 2</a>
-                <a href="#panel-3" class="anchor">Graph 3</a>
-                <a href="#map" class="anchor">Take Away</a>
-            </div>
-            <div class="progress-container">
-                <progress max="100" value="0"></progress>
-            </div>
-        </nav>
-    </header>
-  
-    <main id="content" class="site-content" role="main">
-      <section id="intro" class="full-screen">
-        <div class="mat">
-          <img  class = "fork"  src = "assets/pics/fork.png" alt = "fork">
-        
-          <div class="plate">
-          <div class="text">Secret <br> Life of <br> Blood <br> Glucose</div>
-          </div>
-
-          <img class = "knife" src = "assets/pics/knife.png" alt = "knife">
-          
-        </div>
-      </section>
-
-      <section class= "full-screen" id="question">
-        <p id="title">What is Diabetes <span>?</span></p>
-        <div class="dot"></div>
-      </section>
-      
-      <section id="introduction">
-        <div class = "paragragh">
-          <h3> Diabetes is a chronic (long-lasting) health condition that affects how your body turns food into energy. </h3>
-
-          <h2>
-            11.6% of the US population have diabetes and over 38.0% of adults have prediabetes.
-          </h2>
-          
-          <p>
-            With this information in our mind, we want to investigate the trend in glucose level across healthy, prediabetic, and diabetic individuals.
-          </p>
-      </div>
-      </section>
-
-
-      <Section >
-        <div class="container">
-
-              <div id="graph-nondiabetic" class="graph-container"></div>
-              <div id="graph-prediabetic" class="graph-container"></div>
-              <div id="graph-diabetic" class="graph-container"></div>
-
-              <dl id="meal-tooltip" class="info tooltip" hidden>
-                <dt>Meal Type</dt>
-                <dd id="meal-meal-type"></dd>
-                
-                <dt>Calories</dt>
-                <dd id="meal-calories"></dd>
-            
-                <dt>Protein</dt>
-                <dd id="meal-protein"></dd>
-            
-                <dt>Fat</dt>
-                <dd id="meal-fat"></dd>
-            
-                <dt>Fiber</dt>
-                <dd id="meal-fiber"></dd>
-            
-                <dt>Image</dt>
-                <dd id="meal-image"></dd>
-            </dl>
-
-          </div>
-      </Section>
-
-
-      <section id="panel-1">
-        <div class="chart-container">
-
-          <div class="line-category" id="Non-diabetic Individuals">
-            <h3>Non-Diabetic</h3>
-            <div id="non-diabetic-container"></div>
-          </div>
-          <div class="line-category" id="Pre-diabetic Individuals">
-            <h3>Pre-Diabetic</h3>
-            <div id="pre-diabetic-container"></div>
-          </div>
-          <div class="line-category" id="Diabetic Individuals">
-            <h3>Diabetic</h3>
-            <div id="diabetic-container"></div>
-          </div>
-
-        </div>
-      </section>
-    
-
-
-    <section id="explanation">
-      <div class = "paragragh"> 
-        <p>The blood glucose trend can be compared to surfing on a wave—while non-diabetic individuals experience a relatively calm and predictable ride, pre-diabetic individuals encounter a bit more excitement with occasional swells. In contrast, diabetic individuals face a wild and unpredictable journey, with extreme fluctuations resembling the chaos of stormy waves.</p>
-    </div>
-    </section>
-
-
-        
-
-          
-          
-          <section id="panel-3">
-            <div class="container">
-              <div class="row">
-                <div class="col-6">
-  
-                  <h2>Glucose Patterns by Non-Diabetic Status</h2>
-                  <div class="graph-wrapper-panel4"></div>
-  
+    <div id="page" class="site">
+        <header id="masthead" class="site-header" role="banner">
+            <nav class="navbar">
+                <div class="nav-links">
+                    <a href="#intro" id="home" class="anchor">Home</a>
+                    <a href="#panel-1" class="anchor">Graph 1</a>
+                    <a href="#panel-2" class="anchor">Graph 2</a>
+                    <a href="#panel-3" class="anchor">Graph 3</a>
+                    <a href="#map" class="anchor">Take Away</a>
                 </div>
-                <div class="col-6 d-flex flex-column">
-  
-                  <h2>Non-diabetic Participants Comparison</h2>
-                  <p class="step-description">
-                    This visualization compares the glucose levels of the five participants in the non-diabetic status group - during their first day of monitoring.
-                  </p>
-                  <p class="step-description">
-                    Notice how the patterns differ throughout the day, particularly after meals and during overnight periods. 
-                  </p>
+                <div class="progress-container">
+                    <progress max="100" value="0"></progress>
                 </div>
-              </div>
-            </div>
-        </section>
+            </nav>
+        </header>
 
-
-          <section id="panel-4">
-            <div class="container">
-              <div class="row">
-                <div class="col-12">
-                <!-- <div class="col-6 d-flex flex-column"></div> -->
-                  <h2>Glucose Metrics Distribution</h2>
-                  
-                  <div class="controls-container">
-                    <div class="metric-selector">
-                      <label>Select Metric:</label>
-                      <select id="metric-select">
-                        <option value="glucose-excursion">Glucose Excursion</option>
-                        <option value="excursion-time">Glucose Excursion Time</option>
-                        <option value="recovery-time">Glucose Recovery Time</option>
-                      </select>
+        <main id="content" class="site-content" role="main">
+            <section id="intro" class="full-screen">
+                <div class="mat">
+                    <img class="fork" src="assets/pics/fork.png" alt="fork">
+                    <div class="plate">
+                        <div class="text">Secret <br> Life of <br> Blood <br> Glucose</div>
                     </div>
-                    
-                    <div class="group-toggles">
-                      <label>Select Groups:</label>
-                      <div class="checkbox-group">
-                        <input type="checkbox" id="diabetic-toggle" checked>
-                        <label for="diabetic-toggle">Diabetic</label>
-                        
-                        <input type="checkbox" id="prediabetic-toggle" checked>
-                        <label for="prediabetic-toggle">Pre-diabetic</label>
-                        
-                        <input type="checkbox" id="nondiabetic-toggle" checked>
-                        <label for="nondiabetic-toggle">Non-diabetic</label>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div id="distribution-plot"></div>
-
-                  <p class="step-description">
-                    This visualization shows the distribution of different glucose metrics across diabetic groups. 
-                    The normal distributions are calculated using the mean and standard deviation of each group's data for glucose metrics.
-                    Compare how different metrics vary between diabetic, pre-diabetic, and non-diabetic individuals.
-                  </p>
+                    <img class="knife" src="assets/pics/knife.png" alt="knife">
                 </div>
-              </div>
-            </div>
-          </section>
+            </section>
 
-          <Section id="panel-2">
-            <div id="tooltip" class="tooltip" style="display: none;"></div>
-            <div id="panel-2-flex-container">
-              <div class="control-panel-wrapper">
-                <div class="control-panel">
-                  <div class="control-section">
-                    <h3>Participants</h3>
-                    <div id="participant-selector" class="selector-grid">
-                      <div class="participant-category" id="Non-diabetic">
+            <section class="full-screen" id="question">
+                <p id="title">What is Diabetes <span>?</span></p>
+                <div class="dot"></div>
+            </section>
+
+            <section id="introduction">
+                <div class="paragragh">
+                    <h3>Diabetes is a chronic (long-lasting) health condition that affects how your body turns food into energy.</h3>
+                    <h2>11.6% of the US population have diabetes and over 38.0% of adults have prediabetes.</h2>
+                    <p>With this information in our mind, we want to investigate the trend in glucose level across healthy, prediabetic, and diabetic individuals.</p>
+                </div>
+            </section>
+
+            <section>
+                <div class="container">
+                    <div id="graph-nondiabetic" class="graph-container"></div>
+                    <div id="graph-prediabetic" class="graph-container"></div>
+                    <div id="graph-diabetic" class="graph-container"></div>
+
+                    <dl id="meal-tooltip" class="info tooltip" hidden>
+                        <dt>Meal Type</dt>
+                        <dd id="meal-meal-type"></dd>
+                        <dt>Calories</dt>
+                        <dd id="meal-calories"></dd>
+                        <dt>Protein</dt>
+                        <dd id="meal-protein"></dd>
+                        <dt>Fat</dt>
+                        <dd id="meal-fat"></dd>
+                        <dt>Fiber</dt>
+                        <dd id="meal-fiber"></dd>
+                        <dt>Image</dt>
+                        <dd id="meal-image"></dd>
+                    </dl>
+                </div>
+            </section>
+
+            <section id="panel-1">
+                <div class="chart-container">
+                    <div class="line-category" id="Non-diabetic Individuals">
                         <h3>Non-Diabetic</h3>
-                        <div class="participant-buttons"></div>
-                      </div>
-                      <div class="participant-category" id="Pre-diabetic">
+                        <div id="non-diabetic-container"></div>
+                    </div>
+                    <div class="line-category" id="Pre-diabetic Individuals">
                         <h3>Pre-Diabetic</h3>
-                        <div class="participant-buttons"></div>
-                      </div>
-                      <div class="participant-category" id="Diabetic">
+                        <div id="pre-diabetic-container"></div>
+                    </div>
+                    <div class="line-category" id="Diabetic Individuals">
                         <h3>Diabetic</h3>
-                        <div class="participant-buttons"></div>
-                      </div>
+                        <div id="diabetic-container"></div>
                     </div>
-                  </div>
-                  <div class="control-section">
-                    <h3>Time Range</h3>
-                    <div id="time-range-selector" class="time-controls">
-                      <!-- New draggable range selector will be added here by D3 -->
+                </div>
+            </section>
+
+            <section id="explanation">
+                <div class="paragragh">
+                    <p>The blood glucose trend can be compared to surfing on a wave—while non-diabetic individuals experience a relatively calm and predictable ride, pre-diabetic individuals encounter a bit more excitement with occasional swells. In contrast, diabetic individuals face a wild and unpredictable journey, with extreme fluctuations resembling the chaos of stormy waves.</p>
+                </div>
+            </section>
+
+            <section id="panel-3">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-6">
+                            <h2>Glucose Patterns by Non-Diabetic Status</h2>
+                            <div class="graph-wrapper-panel4"></div>
+                        </div>
+                        <div class="col-6 d-flex flex-column">
+                            <h2>Non-diabetic Participants Comparison</h2>
+                            <p class="step-description">This visualization compares the glucose levels of the five participants in the non-diabetic status group - during their first day of monitoring.</p>
+                            <p class="step-description">Notice how the patterns differ throughout the day, particularly after meals and during overnight periods.</p>
+                        </div>
                     </div>
-                  </div>
                 </div>
-              </div>
-              <div class="visualization-wrapper">
-                <div id="meal-type-legend" class="legend">
-                  <h3>Meal Types</h3>
-                  <div class="legend-items"></div>
+            </section>
+
+            <section id="panel-4">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <h2>Glucose Metrics Distribution</h2>
+                            <div class="controls-container">
+                                <div class="metric-selector">
+                                    <label>Select Metric:</label>
+                                    <select id="metric-select">
+                                        <option value="glucose-excursion">Glucose Excursion</option>
+                                        <option value="excursion-time">Glucose Excursion Time</option>
+                                        <option value="recovery-time">Glucose Recovery Time</option>
+                                    </select>
+                                </div>
+                                <div class="group-toggles">
+                                    <label>Select Groups:</label>
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="diabetic-toggle" checked>
+                                        <label for="diabetic-toggle">Diabetic</label>
+                                        <input type="checkbox" id="prediabetic-toggle" checked>
+                                        <label for="prediabetic-toggle">Pre-diabetic</label>
+                                        <input type="checkbox" id="nondiabetic-toggle" checked>
+                                        <label for="nondiabetic-toggle">Non-diabetic</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="distribution-plot"></div>
+                            <p class="step-description">This visualization shows the distribution of different glucose metrics across diabetic groups. The normal distributions are calculated using the mean and standard deviation of each group's data for glucose metrics. Compare how different metrics vary between diabetic, pre-diabetic, and non-diabetic individuals.</p>
+                        </div>
+                    </div>
                 </div>
-                <!-- <div class="legend-container">
-                  
-                </div> -->
-              </div>
-              <div class="panels-navigation">
-                <div class="nav-panel" data-sign="minus"><a href="#panel-1" class="anchor">Prev</a></div>
-                <div class="nav-panel" data-sign="plus"><a href="#panel-3" class="anchor">Next</a></div>
-              </div>
-            </div>          
-          </Section>
+            </section>
 
+            <section id="panel-2">
+                <div id="tooltip" class="tooltip" style="display: none;"></div>
+                <div id="panel-2-flex-container">
+                    <div class="control-panel-wrapper">
+                        <div class="control-panel">
+                            <div class="control-section">
+                                <h3>Participants</h3>
+                                <div id="participant-selector" class="selector-grid">
+                                    <div class="participant-category" id="Non-diabetic">
+                                        <h3>Non-Diabetic</h3>
+                                        <div class="participant-buttons"></div>
+                                    </div>
+                                    <div class="participant-category" id="Pre-diabetic">
+                                        <h3>Pre-Diabetic</h3>
+                                        <div class="participant-buttons"></div>
+                                    </div>
+                                    <div class="participant-category" id="Diabetic">
+                                        <h3>Diabetic</h3>
+                                        <div class="participant-buttons"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="control-section">
+                                <h3>Time Range</h3>
+                                <div id="time-range-selector" class="time-controls">
+                                    <!-- New draggable range selector will be added here by D3 -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="visualization-wrapper">
+                        <div id="meal-type-legend" class="legend">
+                            <h3>Meal Types</h3>
+                            <div class="legend-items"></div>
+                        </div>
+                    </div>
+                    <div class="panels-navigation">
+                        <div class="nav-panel" data-sign="minus"><a href="#panel-1" class="anchor">Prev</a></div>
+                        <div class="nav-panel" data-sign="plus"><a href="#panel-3" class="anchor">Next</a></div>
+                    </div>
+                </div>
+            </section>
 
-
-
-  
-      <section id="map" class="conclusion"></section>
-  
-    </main>
-  
-  </div>
-
+            <section id="map" class="conclusion"></section>
+        </main>
+    </div>
 </body>
 </html>
