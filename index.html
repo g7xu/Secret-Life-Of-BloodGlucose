@@ -14,6 +14,7 @@
     <script src="src/longRun.js" type="module"></script>
     <script src="src/distribution.js" type="module"></script>
     <script src="src/index.js" type="module"></script>
+    <script src="src/quiz.js" type="module"></script>
 </head>
 <body>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
@@ -57,6 +58,52 @@
                     <h3>Diabetes is a chronic (long-lasting) health condition that affects how your body turns food into energy.</h3>
                     <h2>11.6% of the US population have diabetes and over 38.0% of adults have prediabetes.</h2>
                     <p>With this information in our mind, we want to investigate the trend in glucose level across healthy, prediabetic, and diabetic individuals.</p>
+                </div>
+            </section>
+
+            <section id="quiz">
+                <div class="quiz-container">
+                    <h2>Interactive Quiz</h2>
+                    <form id="quiz-form">
+                        <div class="quiz-question" data-question="1">
+                            <label for="weight">What's your weight (kg)?</label>
+                            <input type="number" id="weight" name="weight" required>
+                        </div>
+                        <div class="quiz-question" data-question="2" style="display: none;">
+                            <label for="height">What's your height (cm)?</label>
+                            <input type="number" id="height" name="height" required>
+                        </div>
+                        <div class="quiz-question" data-question="3" style="display: none;">
+                            <label for="gender">Gender:</label>
+                            <select id="gender" name="gender" required>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="quiz-question" data-question="4" style="display: none;">
+                            <label for="type2-diabetes">What is Type 2 Diabetes?</label>
+                            <select id="type2-diabetes" name="type2-diabetes" required>
+                                <option value="insulin-resistance">A condition where the body becomes resistant to insulin</option>
+                                <option value="autoimmune">An autoimmune disease</option>
+                                <option value="genetic">A genetic disorder</option>
+                            </select>
+                        </div>
+                        <div class="quiz-question" data-question="5" style="display: none;">
+                            <label>Is eating food following a regular schedule good?</label>
+                            <div>
+                                <input type="radio" id="regular-schedule-true" name="regular-schedule" value="true" required>
+                                <label for="regular-schedule-true">True</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="regular-schedule-false" name="regular-schedule" value="false" required>
+                                <label for="regular-schedule-false">False</label>
+                            </div>
+                        </div>
+                        <button type="button" id="next-button" disabled>Next</button>
+                        <button type="submit" style="display: none;">Submit</button>
+                    </form>
+                    <div id="quiz-result"></div>
                 </div>
             </section>
 
