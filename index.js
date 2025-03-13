@@ -292,7 +292,8 @@ async function loadDataAndCreateCharts() {
         Object.entries(participants).forEach(([pid, entries]) => {
             const participantDiv = container.append("div")
                 .attr("class", "participant-section")
-                .style("height", `${participantHeight}%`); // Set height for each participant section
+                .style("display", "flex")
+                .style("flex-direction", "column");
 
             const color = getColorForGroup(group);
 
