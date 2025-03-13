@@ -1,5 +1,5 @@
 import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7/+esm';
-import { mealDataPromise } from './index.js'; // adjust relative path if needed
+// import { mealDataPromise } from 'index.js'; // adjust relative path if needed
 
 let tooltipDiv = document.createElement("div");
 tooltipDiv.className = "tooltip";
@@ -20,15 +20,15 @@ let data, processedData, xScale, yScale, colorScale;
 let tooltip;
 let mealData;
 
-mealDataPromise.then(data => {
-  mealData = data.map(d => ({
-    Timestamp: d.Timestamp,
-    glucose: d['Libre GL'],  // Map 'Libre GL' to glucose for consistency
-    diabetes_level: d['diabetes level'],  // Keep the diabetes level for coloring
-    time: d.Timestamp.getTime() / 60000,  // Convert to minutes for x-scale
-    image: d['Image path']
-  }));
-});
+// mealDataPromise.then(data => {
+//   mealData = data.map(d => ({
+//     Timestamp: d.Timestamp,
+//     glucose: d['Libre GL'],  // Map 'Libre GL' to glucose for consistency
+//     diabetes_level: d['diabetes level'],  // Keep the diabetes level for coloring
+//     time: d.Timestamp.getTime() / 60000,  // Convert to minutes for x-scale
+//     image: d['Image path']
+//   }));
+// });
 
 const diabetic = {
   breakfast: 'assets/pics/d_breakfast.png',
