@@ -7,14 +7,14 @@ document.addEventListener("DOMContentLoaded", function () {
         { time: 3, glucose: 140 }, { time: 3.5, glucose: 135 }, { time: 4, glucose: 130 }, 
         { time: 4.5, glucose: 120 }, { time: 5, glucose: 110 }, { time: 5.5, glucose: 82 }, 
         { time: 6, glucose: 76 }, { time: 6.5, glucose: 72 }
-    ]
+    ];
 
     const container = document.getElementById("explain_graph");
     const svgContainer = document.createElement("div");
     svgContainer.classList.add("svg-container");
     container.appendChild(svgContainer);
 
-    const margin = { top: 20, right: 20, bottom: 30, left: 50 };
+    const margin = { top: 40, right: 40, bottom: 50, left: 60 };
     const width = container.clientWidth - margin.left - margin.right;
     const height = container.clientHeight - margin.top - margin.bottom;
 
@@ -39,6 +39,15 @@ document.addEventListener("DOMContentLoaded", function () {
         .attr("stroke-width", 2)
         .attr("d", line);
 
+    // Add title
+    svg.append("text")
+        .attr("x", width / 2)
+        .attr("y", -margin.top / 2)
+        .attr("text-anchor", "middle")
+        .attr("font-size", "24px")
+        .attr("font-weight", "bold")
+        .text("Blood Glucose Levels Over Time");
+
     // Add x-axis
     svg.append("g")
         .attr("transform", `translate(0,${height})`)
@@ -49,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .attr("class", "x label")
         .attr("text-anchor", "end")
         .attr("x", width)
-        .attr("y", height - 6)
+        .attr("y", height + margin.bottom - 10)
         .text("Time");
 
     // Add y-axis
@@ -60,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
     svg.append("text")
         .attr("class", "y label")
         .attr("text-anchor", "end")
-        .attr("y", 6)
+        .attr("y", -margin.left + 20)
         .attr("dy", "-2.5em")
         .attr("transform", "rotate(-90)")
         .text("Glucose Level");
@@ -76,7 +85,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // Calculate dynamic values for arrow thickness and text size
     const arrowThickness = Math.min(2, width / 100);
     const textSize = Math.min(18, width / 50);
-    console.log("Arrow Thickness:", textSize);
 
     // Add an arrow with the text "After having meal"
     svg.append("line")
@@ -109,7 +117,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .attr("fill", "black");
 
     // Add a red vertical line at time = 3
-    const glucose_excursion = svg.append("line")
+    svg.append("line")
         .attr("x2", xScale(finalState[6].time))
         .attr("y2", yScale(finalState[6].glucose))
         .attr("x1", xScale(finalState[6].time))
@@ -127,7 +135,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .text("Glucose Excursion");
 
     // Add a red vertical line at time = 3
-    const glucose_excursion_time = svg.append("line")
+    svg.append("line")
         .attr("x2", xScale(finalState[6].time))
         .attr("y2", yScale(finalState[2].glucose))
         .attr("x1", xScale(finalState[2].time))
@@ -145,7 +153,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .text("Glucose Excursion Time");
 
     // Add a red vertical line at time = 3
-    const glucose_recover_time = svg.append("line")
+    svg.append("line")
         .attr("x2", xScale(finalState[11].time))
         .attr("y2", yScale(finalState[2].glucose))
         .attr("x1", xScale(finalState[6].time))
@@ -161,6 +169,4 @@ document.addEventListener("DOMContentLoaded", function () {
         .attr("font-size", `${textSize}px`) // Use the calculated text size
         .attr("text-anchor", "middle") // Center the text
         .text("Glucose Recovery Time");
-    
-
 });
