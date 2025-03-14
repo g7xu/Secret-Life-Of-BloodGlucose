@@ -683,3 +683,21 @@ input[type="range"]::-webkit-slider-thumb:hover {
 .legend g:hover {
   opacity: 0.8;
 }
+
+#glu_metrics_explain {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px; /* Add padding around the section */
+}
+
+#explain_graph {
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  padding: 20px; /* Add padding inside the div */
+  box-sizing: border-box; /* Ensure padding is included in the width and height */
+  background: white; /* Optional: Add a background color */
+  border-radius: 10px; /* Optional: Add rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow */
+}
