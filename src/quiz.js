@@ -55,25 +55,5 @@ document.addEventListener('DOMContentLoaded', () => {
             <p>What is Type 2 Diabetes: ${type2Diabetes}</p>
             <p>Is eating food following a regular schedule good?: ${regularSchedule === 'true' ? 'True' : 'False'}</p>
         `;
-
-        // Enable scrolling after the quiz is completed
-        document.body.style.overflow = 'auto';
     });
-
-    // Disable scrolling beyond the quiz section
-    const quizSection = document.getElementById('quiz');
-    const nextSection = quizSection.nextElementSibling;
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            const submitButton = quizForm.querySelector('button[type="submit"]');
-            if (entry.isIntersecting && submitButton.style.display !== 'block') {
-                document.body.style.overflowY = 'hidden';
-            } else {
-                document.body.style.overflowY = 'auto';
-            }
-        });
-    }, { threshold: 0.1 });
-
-    observer.observe(nextSection);
 });
