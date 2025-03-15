@@ -231,14 +231,10 @@ async function loadDataAndCreateCharts() {
 
     Object.entries(groups).forEach(([group, participants]) => {
         const container = d3.select(`#${group.replace(" ", "-").toLowerCase()}-vis`);
-
         
-
         Object.entries(participants).forEach(([pid, entries]) => {
-            const participantDiv = container.append("div")
-                .attr("class", "participant-section");
+            const participantDiv = container.append("div").attr("class", "participant-section");
 
-            participantDiv.append("h4").text(`P${pid}`);
             const color = getColorForGroup(group);
 
             const chart = createGlucoseLineChart(participantDiv, entries, color, globalYScale);
@@ -246,16 +242,16 @@ async function loadDataAndCreateCharts() {
         });
     });
 
-    // setTimeout(function() {
-    //     charts.forEach(chart => chart.update());
-    // }, 300);
+    setTimeout(function() {
+        charts.forEach(chart => chart.update());
+    }, 300);
 }
 
 // Create glucose line chart
 function createGlucoseLineChart(container, data, groupColor, yScale) {
-    console.log(container);
+    console.log(container)
 
-    let width = 100;
+    let width = container.node().getBoundingClientRect().width - 100;
     let height = 100;
     const margin = { top: 20, right: 20, bottom: 70, left: 80 };
 
@@ -265,15 +261,14 @@ function createGlucoseLineChart(container, data, groupColor, yScale) {
         .append("g")
         .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-    // console.log('fuck')
-    // console.log(container)
-
     const clipPath = svg.append("defs").append("clipPath")
+        .attr("id", `clip-${container.attr("id")}`)
         .append("rect")
+        .attr("width", width)
         .attr("height", height);
-    
+
     const chartGroup = svg.append("g")
-        // .attr("clip-path", `url(#clip-${container.attr("id")})`);
+        .attr("clip-path", `url(#clip-${container.attr("id")})`);
 
     let startTime = 0;
     const windowSize = 100;
@@ -303,11 +298,8 @@ function createGlucoseLineChart(container, data, groupColor, yScale) {
         .attr("fill", "red");
 
     const xAxisGroup = svg.append("g")
-        .attr("class", "x-axis");
-
-    const yAxis = d3.axisLeft(yScale)
-        .ticks(5)
-        .tickFormat(d => `${d}`);
+        .attr("class", "x-axis")
+        .attr("transform", `translate(0, ${height})`);
 
     const yAxisGroup = svg.append("g")
         .attr("class", "y-axis");
@@ -315,12 +307,16 @@ function createGlucoseLineChart(container, data, groupColor, yScale) {
     const xLabel = svg.append("text")
         .attr("text-anchor", "middle")
         .attr("font-size", 10)
+        .attr("x", width / 2)
+        .attr("y", height + 50)
         .text("Time (hours)");
 
     const yLabel = svg.append("text")
         .attr("transform", "rotate(-90)")
         .attr("text-anchor", "middle")
         .attr("font-size", 10)
+        .attr("x", -height / 2)
+        .attr("y", -margin.left + 15)
         .text("Glucose (mg/dL)");
 
     function formatTime(index) {
@@ -352,17 +348,16 @@ function createGlucoseLineChart(container, data, groupColor, yScale) {
 
         const tickCount = getTickCount(width);
 
-        xAxisGroup.attr("transform", `translate(0, ${height})`)
-            .call(d3.axisBottom(xScale)
-                .ticks(tickCount)
-                .tickFormat(d => formatTime(d)));
+        xAxisGroup.call(d3.axisBottom(xScale)
+            .ticks(tickCount)
+            .tickFormat(d => formatTime(d)));
 
         xAxisGroup.selectAll("text")
             .attr("dy", "1em")
             .attr("transform", "rotate(-25)")
             .style("text-anchor", "end");
 
-        yAxisGroup.call(yAxis);
+        yAxisGroup.call(d3.axisLeft(yScale).ticks(5));
 
         yGrid.selectAll("line").remove();
         yGrid.selectAll("line")
@@ -377,12 +372,6 @@ function createGlucoseLineChart(container, data, groupColor, yScale) {
             .attr("stroke-dasharray", "2,2");
 
         updateXGrid(tickCount);
-
-        xLabel.attr("x", width / 2)
-            .attr("y", height + 50);
-
-        yLabel.attr("x", -height / 2)
-            .attr("y", -margin.left + 15);
 
         const visibleData = data.slice(startTime, startTime + windowSize);
         path.datum(visibleData).attr("d", line);
@@ -421,11 +410,9 @@ function createGlucoseLineChart(container, data, groupColor, yScale) {
 
         const tickCount = getTickCount(width);
 
-        const xAxis = d3.axisBottom(xScale)
+        xAxisGroup.call(d3.axisBottom(xScale)
             .ticks(tickCount)
-            .tickFormat(d => formatTime(d));
-
-        xAxisGroup.call(xAxis);
+            .tickFormat(d => formatTime(d)));
 
         xAxisGroup.selectAll("text")
             .attr("dy", "1em")
@@ -435,7 +422,6 @@ function createGlucoseLineChart(container, data, groupColor, yScale) {
         updateXGrid(tickCount);
 
         const visibleData = data.slice(startTime, startTime + windowSize);
-
         path.datum(visibleData).attr("d", line);
 
         const midIndex = Math.floor(windowSize / 2);
@@ -470,8 +456,6 @@ function createGlucoseLineChart(container, data, groupColor, yScale) {
         }
     };
 }
-
-
 
 // Load data and create charts on DOMContentLoaded
 document.addEventListener("DOMContentLoaded", loadDataAndCreateCharts);
