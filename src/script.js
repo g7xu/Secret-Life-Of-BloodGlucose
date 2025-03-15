@@ -1,7 +1,8 @@
+
 document.addEventListener("DOMContentLoaded", function() {
   gsap.registerPlugin(ScrollToPlugin, Observer, ScrollTrigger);
 
- 
+
   let $path = document.querySelector(".mat"),
   $plate = document.querySelector(".plate"),
   $fork = document.querySelector(".fork"),
@@ -27,6 +28,7 @@ document.addEventListener("DOMContentLoaded", function() {
 }
 
 window.onload = playAnimation;
+
 
 ScrollTrigger.create({
   trigger: introSection,
@@ -110,4 +112,39 @@ tl1
     scale: 1
 });
 
+
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+  let trans = document.querySelector("#transition");
+  let tl = gsap.timeline();
+  let gp2 = document.querySelector("#goPage2"); // Go to Page 2 Button
+  let gb = document.querySelector("#goBack");  // Go Back Button
+  let page1 = document.querySelector(".page1");
+  let page2 = document.querySelector(".page2");
+
+  // Initially hide Page 2 and show Page 1
+  gsap.set(page2, { opacity: 0, display: "none" });
+  gsap.set(gb, { opacity: 1, display: "block" }); // Ensure "Go Back" is visible on Page 2
+
+  gp2.addEventListener("click", function () {
+    tl.to(trans, { opacity: 1, duration: 0}) // Fade in transition
+      .to(trans, { scale: 1000, duration: 0.8 }) // Expand effect
+      .set(page1, { opacity: 0, display: "none" }) // Hide Page 1
+      .set(page2, { opacity: 1, display: "block" }) // Show Page 2
+      .to(trans, { scale: 1, duration: 0.8, backgroundColor: "#6b9ac4" }) // Shrink effect
+      .to(trans, { opacity: 0, duration: 0}); // Fade out
+  });
+
+  gb.addEventListener("click", function () {
+    tl.to(trans, { opacity: 1, duration: 0 }) // Fade in transition
+      .to(trans, { scale: 1000, duration: 0.8 }) // Expand effect
+      .set(page2, { opacity: 0, display: "none" }) // Hide Page 2
+      .set(page1, { opacity: 1, display: "block" }) // Show Page 1
+      .to(trans, { scale: 1, duration: 0.8, backgroundColor: "#f4b942" }) // Shrink effect
+      .to(trans, { opacity: 0, duration: 0 }); // Fade out
+  });
+
+ 
+});
+

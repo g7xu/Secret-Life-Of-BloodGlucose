@@ -1,11 +1,13 @@
 /* Import Fonts */
 @import url("https://fonts.googleapis.com/css2?family=Gluten:wght@600&family=Space+Mono&display=swap");
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Text:ital,wght@0,300..700;1,300..700&display=swap');
 
 /* Global Variables */
 :root {
   --color-placemat: oklch(66.89% 0.0807 246.33 / 50%);
-  --color-text: oklch(81.98% 0.1466 81.17);
+  --color-yellow: oklch(81.98% 0.1466 81.17);
+  --color-blue: oklch(66.89% 0.0807 246.33 );
   --color-pastel: #eff2f1;
 }
 
@@ -19,6 +21,7 @@ html, body {
 body {
   overflow-x: hidden;
   display: block;
+  position: relative;
 }
 
 h1, h2, h3, h4, p {
@@ -32,6 +35,17 @@ h1, h2, h3, h4, p {
 h3, p {
   font-weight: 200;
 }
+
+.scroll-indicator {
+  animation: bounce 1.5s infinite;
+  width: 100px;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(10px); }
+}
+
 
 a {
   color: var(--color-placemat);
@@ -71,6 +85,7 @@ section {
 
 /* Navbar Styles */
 .navbar {
+  font-family: "Red Hat Text", sans-serif;
   position: fixed;
   top: 0;
   width: 100%;
@@ -508,7 +523,7 @@ h4 {
 
 /* Specific Element Styles */
 #question {
-  background-color: var(--color-text);
+  background-color: var(--color-yellow);
 }
 
 #question section {
@@ -578,7 +593,7 @@ h4 {
   width: 100%;
   text-shadow: 2px 1px 2px var(--color-pastel);
   text-align: center;
-  color: var(--color-text);
+  color: var(--color-yellow);
   font-family: "Gluten", monospace;
 }
 
@@ -700,4 +715,50 @@ input[type="range"]::-webkit-slider-thumb:hover {
   background: white; /* Optional: Add a background color */
   border-radius: 10px; /* Optional: Add rounded corners */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow */
+}
+
+ .page__button:hover,  .page__button {
+  transition: all 0.2s ease-in-out;
+}
+
+ .page__button {
+  padding: 10px 20px;
+  background:var(--color-yellow);
+  color: #fff;
+  border: solid 2px var(--color-yellow);
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 24px;
+}
+ .page__button:hover {
+  background: #fff;
+  color: var(--color-yellow);
+  border: solid 2px var(--color-yellow);
+}
+ .page__button--back {
+  background: var(--color-blue);
+  border-color: var(--color-blue);
+}
+
+ .page__button--back:hover {
+  background: #fff;
+  color: var(--color-blue);
+  border-color: var(--color-blue);
+}
+
+ #transition {
+  height: 20px;
+  width: 20px;
+  background: var(--color-yellow);
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  border-radius: 50%;
+}
+
+
+button{
+  font-family: "Red Hat Text", sans-serif;
+  border-radius: 40px;
 }
