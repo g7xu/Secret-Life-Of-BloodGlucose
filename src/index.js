@@ -47,6 +47,18 @@ async function loadData() {
     }
 }
 
+//helper function to format the timestamp
+
+// Get color for group
+function getColorForGroup(group) {
+    const colors = {
+        "Non-diabetic": "#00bfae",  // Teal
+        "Pre-diabetic": "#fac127",  // Yellow
+        "Diabetic": "#fb6900"       // Orange
+    };
+    return colors[group] || "#000000"; // Default to black if no match
+}
+
 // // Create graph function
 // function createGraph(group, graphId, title) {
 //     const container = d3.select(`#${graphId}`);
@@ -220,21 +232,18 @@ async function loadDataAndCreateCharts() {
     Object.entries(groups).forEach(([group, participants]) => {
         const container = d3.select(`#${group.replace(" ", "-").toLowerCase()}-vis`);
 
-        console.log('fuck');
-        console.log(container);
-        // const groupRow = container.append("div").attr("class", "group-row");
+        
 
-        // Object.entries(participants).forEach(([pid, entries]) => {
-        //     const participantDiv = groupRow.append("div")
-            // const participantDiv = groupRow.append("div")
-            //     .attr("class", "participant-section");
+        Object.entries(participants).forEach(([pid, entries]) => {
+            const participantDiv = container.append("div")
+                .attr("class", "participant-section");
 
-            // participantDiv.append("h4").text(`P${pid}`);
-            // const color = getColorForGroup(group);
+            participantDiv.append("h4").text(`P${pid}`);
+            const color = getColorForGroup(group);
 
-            // const chart = createGlucoseLineChart(participantDiv, entries, color, globalYScale);
+            const chart = createGlucoseLineChart(participantDiv, entries, color, globalYScale);
             // charts.push(chart);
-        // });
+        });
     });
 
     // setTimeout(function() {
@@ -242,91 +251,96 @@ async function loadDataAndCreateCharts() {
     // }, 300);
 }
 
-// // Create glucose line chart
-// function createGlucoseLineChart(container, data, groupColor, yScale) {
-//     let width = 100;
-//     let height = 100;
-//     const margin = { top: 20, right: 20, bottom: 70, left: 80 };
+// Create glucose line chart
+function createGlucoseLineChart(container, data, groupColor, yScale) {
+    console.log(container);
 
-//     const svg = container.append("svg")
-//         .attr("width", "100%")
-//         .attr("height", height + margin.top + margin.bottom)
-//         .append("g")
-//         .attr("transform", `translate(${margin.left}, ${margin.top})`);
+    let width = 100;
+    let height = 100;
+    const margin = { top: 20, right: 20, bottom: 70, left: 80 };
 
-//     const clipPath = svg.append("defs").append("clipPath")
-//         .attr("id", "clip-" + container.attr("id"))
-//         .append("rect")
-//         .attr("height", height);
+    const svg = container.append("svg")
+        .attr("width", "100%")
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-//     const chartGroup = svg.append("g")
-//         .attr("clip-path", `url(#clip-${container.attr("id")})`);
+    // console.log('fuck')
+    // console.log(container)
 
-//     let startTime = 0;
-//     const windowSize = 100;
-//     const minutesPerReading = 15;
+    const clipPath = svg.append("defs").append("clipPath")
+        .attr("id", "clip-" + container.attr("id"))
+        .append("rect")
+        .attr("height", height);
 
-//     const xScale = d3.scaleLinear()
-//         .range([0, width]);
+    // const chartGroup = svg.append("g")
+    //     .attr("clip-path", `url(#clip-${container.attr("id")})`);
 
-//     const yGrid = svg.append("g")
-//         .attr("class", "y-grid");
+    // let startTime = 0;
+    // const windowSize = 100;
+    // const minutesPerReading = 15;
 
-//     const xGrid = chartGroup.append("g")
-//         .attr("class", "x-grid");
+    // const xScale = d3.scaleLinear()
+    //     .range([0, width]);
 
-//     const line = d3.line()
-//         .x((d, i) => xScale(startTime + i))
-//         .y(d => yScale(d.glucose));
+    // const yGrid = svg.append("g")
+    //     .attr("class", "y-grid");
 
-//     const path = chartGroup.append("path")
-//         .attr("class", "glucose-line")
-//         .attr("stroke", groupColor)
-//         .attr("fill", "none")
-//         .attr("stroke-width", 2);
+    // const xGrid = chartGroup.append("g")
+    //     .attr("class", "x-grid");
 
-//     const dot = chartGroup.append("circle")
-//         .attr("r", 5)
-//         .attr("fill", "red");
+    // const line = d3.line()
+    //     .x((d, i) => xScale(startTime + i))
+    //     .y(d => yScale(d.glucose));
 
-//     const xAxisGroup = svg.append("g")
-//         .attr("class", "x-axis");
+    // const path = chartGroup.append("path")
+    //     .attr("class", "glucose-line")
+    //     .attr("stroke", groupColor)
+    //     .attr("fill", "none")
+    //     .attr("stroke-width", 2);
 
-//     const yAxis = d3.axisLeft(yScale)
-//         .ticks(5)
-//         .tickFormat(d => `${d}`);
+    // const dot = chartGroup.append("circle")
+    //     .attr("r", 5)
+    //     .attr("fill", "red");
 
-//     const yAxisGroup = svg.append("g")
-//         .attr("class", "y-axis");
+    // const xAxisGroup = svg.append("g")
+    //     .attr("class", "x-axis");
 
-//     const xLabel = svg.append("text")
-//         .attr("text-anchor", "middle")
-//         .attr("font-size", 10)
-//         .text("Time (hours)");
+    // const yAxis = d3.axisLeft(yScale)
+    //     .ticks(5)
+    //     .tickFormat(d => `${d}`);
 
-//     const yLabel = svg.append("text")
-//         .attr("transform", "rotate(-90)")
-//         .attr("text-anchor", "middle")
-//         .attr("font-size", 10)
-//         .text("Glucose (mg/dL)");
+    // const yAxisGroup = svg.append("g")
+    //     .attr("class", "y-axis");
 
-//     function formatTime(index) {
-//         const totalMinutes = index * minutesPerReading;
-//         const hours = Math.floor((totalMinutes % 1440) / 60);
-//         const mins = totalMinutes % 60;
-//         const day = Math.floor(totalMinutes / 1440);
+    // const xLabel = svg.append("text")
+    //     .attr("text-anchor", "middle")
+    //     .attr("font-size", 10)
+    //     .text("Time (hours)");
 
-//         return `Day ${day} ${hours}:${mins.toString().padStart(2, '0')}`;
-//     }
+    // const yLabel = svg.append("text")
+    //     .attr("transform", "rotate(-90)")
+    //     .attr("text-anchor", "middle")
+    //     .attr("font-size", 10)
+    //     .text("Glucose (mg/dL)");
 
-//     function getTickCount(width) {
-//         if (width < 100) return 3;
-//         if (width < 200) return 4;
-//         if (width < 300) return 5;
-//         return 5;
-//     }
+    // function formatTime(index) {
+    //     const totalMinutes = index * minutesPerReading;
+    //     const hours = Math.floor((totalMinutes % 1440) / 60);
+    //     const mins = totalMinutes % 60;
+    //     const day = Math.floor(totalMinutes / 1440);
 
-//     let animationRunning = false;
+    //     return `Day ${day} ${hours}:${mins.toString().padStart(2, '0')}`;
+    // }
+
+    // function getTickCount(width) {
+    //     if (width < 100) return 3;
+    //     if (width < 200) return 4;
+    //     if (width < 300) return 5;
+    //     return 5;
+    // }
+
+    // let animationRunning = false;
 
 //     function updateChart() {
 //         width = container.node().getBoundingClientRect().width - 100;
@@ -456,17 +470,9 @@ async function loadDataAndCreateCharts() {
 //             animationRunning = false;
 //         }
 //     };
-// }
+}
 
-// // Get color for group
-// function getColorForGroup(group) {
-//     const colors = {
-//         "Non-diabetic": "#00bfae",  // Teal
-//         "Pre-diabetic": "#fac127",  // Yellow
-//         "Diabetic": "#fb6900"       // Orange
-//     };
-//     return colors[group] || "#000000"; // Default to black if no match
-// }
+
 
 // Load data and create charts on DOMContentLoaded
 document.addEventListener("DOMContentLoaded", loadDataAndCreateCharts);
