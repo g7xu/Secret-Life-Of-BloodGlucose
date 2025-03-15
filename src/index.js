@@ -47,140 +47,153 @@ async function loadData() {
     }
 }
 
-// Create graph function
-function createGraph(group, graphId, title) {
-    const container = d3.select(`#${graphId}`);
-    const width = 700, height = 100;
-    const margin = { top: 30, right: 30, bottom: 50, left: 50 };
+//helper function to format the timestamp
 
-    const svg = container.append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", `translate(${margin.left},${margin.top})`);
-
-    container.append("button")
-        .text("Reset Zoom")
-        .on("click", () => {
-            svg.transition().duration(750).call(zoom.transform, d3.zoomIdentity);
-        });
-
-    const xScale = d3.scaleTime()
-        .domain([d3.min(group, d => d.Timestamp), d3.max(group, d => d.Timestamp)])
-        .range([0, width]);
-
-    const simulation = d3.forceSimulation(group)
-        .force("x", d3.forceX(d => xScale(d.Timestamp)).strength(1))
-        .force("y", d3.forceY(height / 2))
-        .force("collide", d3.forceCollide(4))
-        .on("tick", () => {
-            svg.selectAll("circle")
-                .attr("cx", d => d.x)
-                .attr("cy", d => d.y);
-        });
-
-    for (let i = 0; i < 120; i++) simulation.tick();
-
-    svg.append("g")
-        .attr("transform", `translate(0,${height})`)
-        .attr("class", "x-axis")
-        .call(d3.axisBottom(xScale)
-            .ticks(d3.timeDay.every(1))
-            .tickFormat(d3.timeFormat("Day %d")));
-
-    const zoom = d3.zoom()
-        .scaleExtent([1, 10])
-        .on("zoom", function(event) {
-            const newX = event.transform.rescaleX(xScale);
-            const zoomLevel = event.transform.k;
-
-            svg.select(".x-axis").call(d3.axisBottom(newX)
-                .ticks(zoomLevel > 3 ? d3.timeHour.every() : d3.timeDay.every(1))
-                .tickFormat(zoomLevel > 3 ? d3.timeFormat("%H:%M") : d3.timeFormat("Day %d")));
-
-            svg.selectAll("circle")
-                .attr("cx", d => newX(d.Timestamp));
-        });
-
-    svg.append("rect")
-        .attr("width", width)
-        .attr("height", height)
-        .style("fill", "none")
-        .style("pointer-events", "all")
-        .call(zoom);
-
-    svg.selectAll("circle")
-        .data(group)
-        .enter()
-        .append("circle")
-        .attr("cx", d => d.x)
-        .attr("cy", d => d.y)
-        .attr("r", 3)
-        .attr("fill", "red")
-        .on("mouseover", function(event, d) {
-            d3.select(this)
-                .attr("r", 8)
-                .attr("stroke", "blue");
-
-            const imagePath = d["Participant_ID"] < 10
-                ? `./data/CGMacros/CGMacros-00${d["Participant_ID"]}/${d["Image path"]}`
-                : `./data/CGMacros/CGMacros-0${d["Participant_ID"]}/${d["Image path"]}`;
-
-            tooltipDiv.innerHTML = `
-                <strong>Meal Type:</strong> ${d["Meal Type"] || "No data"}<br>
-                <strong>Carbs:</strong> ${d["Carbs"] + ' g' || "No data"}<br>
-                <strong>Protein:</strong> ${d["Protein"] + ' g' || "No data"}<br>
-                <strong>Fat:</strong> ${d["Fat"] + ' g'|| "No data"}<br>
-                <strong>Fiber:</strong> ${d["Fiber"] + ' g' || "No data"}<br>
-                <img src="${imagePath}" alt="Meal Image" width="100" onerror="this.style.display='none'" />
-            `;
-
-            tooltipDiv.style.left = (event.pageX + 10) + "px";
-            tooltipDiv.style.top = (event.pageY + 10) + "px";
-            tooltipDiv.style.display = "block";
-        })
-        .on("mousemove", function(event) {
-            tooltipDiv.style.left = (event.pageX + 10) + "px";
-            tooltipDiv.style.top = (event.pageY + 10) + "px";
-        })
-        .on("mouseout", function() {
-            d3.select(this)
-                .attr("r", 3)
-                .attr("fill", "red")
-                .attr("stroke", "none");
-
-            tooltipDiv.style.display = "none";
-        })
-        .on("click", function(event, d) {
-            const imagePath = d["Participant_ID"] < 10
-                ? `./data/CGMacros/CGMacros-00${d["Participant_ID"]}/${d["Image path"]}`
-                : `./data/CGMacros/CGMacros-0${d["Participant_ID"]}/${d["Image path"]}`;
-
-            tooltipDiv.innerHTML = `
-                <strong>Meal Type:</strong> ${d["Meal Type"] || "N/A"}<br>
-                <strong>Carbs:</strong> ${d["Carbs"]} g<br>
-                <strong>Protein:</strong> ${d["Protein"] || "N/A"} g<br>
-                <strong>Fat:</strong> ${d["Fat"] || "N/A"} g<br>
-                <strong>Fiber:</strong> ${d["Fiber"] || "N/A"} g<br>
-                <img src="${imagePath}" alt="Meal Image" width="100" onerror="this.style.display='none'" />
-            `;
-
-            tooltipDiv.style.left = (event.pageX + 10) + "px";
-            tooltipDiv.style.top = (event.pageY + 10) + "px";
-            tooltipDiv.style.display = "block";
-        });
-
-    svg.append("text")
-        .attr("x", width / 2)
-        .attr("y", -10)
-        .attr("text-anchor", "middle")
-        .attr("font-size", "16px")
-        .attr("font-weight", "bold")
-        .text(title);
+// Get color for group
+function getColorForGroup(group) {
+    const colors = {
+        "Non-diabetic": "#00bfae",  // Teal
+        "Pre-diabetic": "#fac127",  // Yellow
+        "Diabetic": "#fb6900"       // Orange
+    };
+    return colors[group] || "#000000"; // Default to black if no match
 }
+
+// // Create graph function
+// function createGraph(group, graphId, title) {
+//     const container = d3.select(`#${graphId}`);
+//     const width = 700, height = 100;
+//     const margin = { top: 30, right: 30, bottom: 50, left: 50 };
+
+//     const svg = container.append("svg")
+//         .attr("width", width + margin.left + margin.right)
+//         .attr("height", height + margin.top + margin.bottom)
+//         .append("g")
+//         .attr("transform", `translate(${margin.left},${margin.top})`);
+
+//     container.append("button")
+//         .text("Reset Zoom")
+//         .on("click", () => {
+//             svg.transition().duration(750).call(zoom.transform, d3.zoomIdentity);
+//         });
+
+//     const xScale = d3.scaleTime()
+//         .domain([d3.min(group, d => d.Timestamp), d3.max(group, d => d.Timestamp)])
+//         .range([0, width]);
+
+//     const simulation = d3.forceSimulation(group)
+//         .force("x", d3.forceX(d => xScale(d.Timestamp)).strength(1))
+//         .force("y", d3.forceY(height / 2))
+//         .force("collide", d3.forceCollide(4))
+//         .on("tick", () => {
+//             svg.selectAll("circle")
+//                 .attr("cx", d => d.x)
+//                 .attr("cy", d => d.y);
+//         });
+
+//     for (let i = 0; i < 120; i++) simulation.tick();
+
+//     svg.append("g")
+//         .attr("transform", `translate(0,${height})`)
+//         .attr("class", "x-axis")
+//         .call(d3.axisBottom(xScale)
+//             .ticks(d3.timeDay.every(1))
+//             .tickFormat(d3.timeFormat("Day %d")));
+
+//     const zoom = d3.zoom()
+//         .scaleExtent([1, 10])
+//         .on("zoom", function(event) {
+//             const newX = event.transform.rescaleX(xScale);
+//             const zoomLevel = event.transform.k;
+
+//             svg.select(".x-axis").call(d3.axisBottom(newX)
+//                 .ticks(zoomLevel > 3 ? d3.timeHour.every() : d3.timeDay.every(1))
+//                 .tickFormat(zoomLevel > 3 ? d3.timeFormat("%H:%M") : d3.timeFormat("Day %d")));
+
+//             svg.selectAll("circle")
+//                 .attr("cx", d => newX(d.Timestamp));
+//         });
+
+//     svg.append("rect")
+//         .attr("width", width)
+//         .attr("height", height)
+//         .style("fill", "none")
+//         .style("pointer-events", "all")
+//         .call(zoom);
+
+//     svg.selectAll("circle")
+//         .data(group)
+//         .enter()
+//         .append("circle")
+//         .attr("cx", d => d.x)
+//         .attr("cy", d => d.y)
+//         .attr("r", 3)
+//         .attr("fill", "red")
+//         .on("mouseover", function(event, d) {
+//             d3.select(this)
+//                 .attr("r", 8)
+//                 .attr("stroke", "blue");
+
+//             const imagePath = d["Participant_ID"] < 10
+//                 ? `./data/CGMacros/CGMacros-00${d["Participant_ID"]}/${d["Image path"]}`
+//                 : `./data/CGMacros/CGMacros-0${d["Participant_ID"]}/${d["Image path"]}`;
+
+//             tooltipDiv.innerHTML = `
+//                 <strong>Meal Type:</strong> ${d["Meal Type"] || "No data"}<br>
+//                 <strong>Carbs:</strong> ${d["Carbs"] + ' g' || "No data"}<br>
+//                 <strong>Protein:</strong> ${d["Protein"] + ' g' || "No data"}<br>
+//                 <strong>Fat:</strong> ${d["Fat"] + ' g'|| "No data"}<br>
+//                 <strong>Fiber:</strong> ${d["Fiber"] + ' g' || "No data"}<br>
+//                 <img src="${imagePath}" alt="Meal Image" width="100" onerror="this.style.display='none'" />
+//             `;
+
+//             tooltipDiv.style.left = (event.pageX + 10) + "px";
+//             tooltipDiv.style.top = (event.pageY + 10) + "px";
+//             tooltipDiv.style.display = "block";
+//         })
+//         .on("mousemove", function(event) {
+//             tooltipDiv.style.left = (event.pageX + 10) + "px";
+//             tooltipDiv.style.top = (event.pageY + 10) + "px";
+//         })
+//         .on("mouseout", function() {
+//             d3.select(this)
+//                 .attr("r", 3)
+//                 .attr("fill", "red")
+//                 .attr("stroke", "none");
+
+//             tooltipDiv.style.display = "none";
+//         })
+//         .on("click", function(event, d) {
+//             const imagePath = d["Participant_ID"] < 10
+//                 ? `./data/CGMacros/CGMacros-00${d["Participant_ID"]}/${d["Image path"]}`
+//                 : `./data/CGMacros/CGMacros-0${d["Participant_ID"]}/${d["Image path"]}`;
+
+//             tooltipDiv.innerHTML = `
+//                 <strong>Meal Type:</strong> ${d["Meal Type"] || "N/A"}<br>
+//                 <strong>Carbs:</strong> ${d["Carbs"]} g<br>
+//                 <strong>Protein:</strong> ${d["Protein"] || "N/A"} g<br>
+//                 <strong>Fat:</strong> ${d["Fat"] || "N/A"} g<br>
+//                 <strong>Fiber:</strong> ${d["Fiber"] || "N/A"} g<br>
+//                 <img src="${imagePath}" alt="Meal Image" width="100" onerror="this.style.display='none'" />
+//             `;
+
+//             tooltipDiv.style.left = (event.pageX + 10) + "px";
+//             tooltipDiv.style.top = (event.pageY + 10) + "px";
+//             tooltipDiv.style.display = "block";
+//         });
+
+//     svg.append("text")
+//         .attr("x", width / 2)
+//         .attr("y", -10)
+//         .attr("text-anchor", "middle")
+//         .attr("font-size", "16px")
+//         .attr("font-weight", "bold")
+//         .text(title);
+// }
 
 // Load and create charts
 async function loadDataAndCreateCharts() {
+    // load in the data
     const data = await loadData();
     if (!data || data.length === 0) {
         console.error("No glucose data loaded!");
@@ -217,19 +230,11 @@ async function loadDataAndCreateCharts() {
         .range([100 - 5, 5]);
 
     Object.entries(groups).forEach(([group, participants]) => {
-        const container = d3.select(`#${group.replace(" ", "-").toLowerCase()}-container`);
-        if (container.empty()) {
-            console.error(`Container #${group.replace(" ", "-").toLowerCase()}-container not found!`);
-            return;
-        }
-
-        const groupRow = container.append("div").attr("class", "group-row");
-
+        const container = d3.select(`#${group.replace(" ", "-").toLowerCase()}-vis`);
+        
         Object.entries(participants).forEach(([pid, entries]) => {
-            const participantDiv = groupRow.append("div")
-                .attr("class", "participant-section");
+            const participantDiv = container.append("div").attr("class", "participant-section");
 
-            participantDiv.append("h4").text(`P${pid}`);
             const color = getColorForGroup(group);
 
             const chart = createGlucoseLineChart(participantDiv, entries, color, globalYScale);
@@ -244,7 +249,9 @@ async function loadDataAndCreateCharts() {
 
 // Create glucose line chart
 function createGlucoseLineChart(container, data, groupColor, yScale) {
-    let width = 100;
+    console.log(container)
+
+    let width = container.node().getBoundingClientRect().width - 100;
     let height = 100;
     const margin = { top: 20, right: 20, bottom: 70, left: 80 };
 
@@ -255,8 +262,9 @@ function createGlucoseLineChart(container, data, groupColor, yScale) {
         .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
     const clipPath = svg.append("defs").append("clipPath")
-        .attr("id", "clip-" + container.attr("id"))
+        .attr("id", `clip-${container.attr("id")}`)
         .append("rect")
+        .attr("width", width)
         .attr("height", height);
 
     const chartGroup = svg.append("g")
@@ -290,11 +298,8 @@ function createGlucoseLineChart(container, data, groupColor, yScale) {
         .attr("fill", "red");
 
     const xAxisGroup = svg.append("g")
-        .attr("class", "x-axis");
-
-    const yAxis = d3.axisLeft(yScale)
-        .ticks(5)
-        .tickFormat(d => `${d}`);
+        .attr("class", "x-axis")
+        .attr("transform", `translate(0, ${height})`);
 
     const yAxisGroup = svg.append("g")
         .attr("class", "y-axis");
@@ -302,12 +307,16 @@ function createGlucoseLineChart(container, data, groupColor, yScale) {
     const xLabel = svg.append("text")
         .attr("text-anchor", "middle")
         .attr("font-size", 10)
+        .attr("x", width / 2)
+        .attr("y", height + 50)
         .text("Time (hours)");
 
     const yLabel = svg.append("text")
         .attr("transform", "rotate(-90)")
         .attr("text-anchor", "middle")
         .attr("font-size", 10)
+        .attr("x", -height / 2)
+        .attr("y", -margin.left + 15)
         .text("Glucose (mg/dL)");
 
     function formatTime(index) {
@@ -339,17 +348,16 @@ function createGlucoseLineChart(container, data, groupColor, yScale) {
 
         const tickCount = getTickCount(width);
 
-        xAxisGroup.attr("transform", `translate(0, ${height})`)
-            .call(d3.axisBottom(xScale)
-                .ticks(tickCount)
-                .tickFormat(d => formatTime(d)));
+        xAxisGroup.call(d3.axisBottom(xScale)
+            .ticks(tickCount)
+            .tickFormat(d => formatTime(d)));
 
         xAxisGroup.selectAll("text")
             .attr("dy", "1em")
             .attr("transform", "rotate(-25)")
             .style("text-anchor", "end");
 
-        yAxisGroup.call(yAxis);
+        yAxisGroup.call(d3.axisLeft(yScale).ticks(5));
 
         yGrid.selectAll("line").remove();
         yGrid.selectAll("line")
@@ -364,12 +372,6 @@ function createGlucoseLineChart(container, data, groupColor, yScale) {
             .attr("stroke-dasharray", "2,2");
 
         updateXGrid(tickCount);
-
-        xLabel.attr("x", width / 2)
-            .attr("y", height + 50);
-
-        yLabel.attr("x", -height / 2)
-            .attr("y", -margin.left + 15);
 
         const visibleData = data.slice(startTime, startTime + windowSize);
         path.datum(visibleData).attr("d", line);
@@ -408,11 +410,9 @@ function createGlucoseLineChart(container, data, groupColor, yScale) {
 
         const tickCount = getTickCount(width);
 
-        const xAxis = d3.axisBottom(xScale)
+        xAxisGroup.call(d3.axisBottom(xScale)
             .ticks(tickCount)
-            .tickFormat(d => formatTime(d));
-
-        xAxisGroup.call(xAxis);
+            .tickFormat(d => formatTime(d)));
 
         xAxisGroup.selectAll("text")
             .attr("dy", "1em")
@@ -422,7 +422,6 @@ function createGlucoseLineChart(container, data, groupColor, yScale) {
         updateXGrid(tickCount);
 
         const visibleData = data.slice(startTime, startTime + windowSize);
-
         path.datum(visibleData).attr("d", line);
 
         const midIndex = Math.floor(windowSize / 2);
@@ -456,16 +455,6 @@ function createGlucoseLineChart(container, data, groupColor, yScale) {
             animationRunning = false;
         }
     };
-}
-
-// Get color for group
-function getColorForGroup(group) {
-    const colors = {
-        "Non-diabetic": "#00bfae",  // Teal
-        "Pre-diabetic": "#fac127",  // Yellow
-        "Diabetic": "#fb6900"       // Orange
-    };
-    return colors[group] || "#000000"; // Default to black if no match
 }
 
 // Load data and create charts on DOMContentLoaded
